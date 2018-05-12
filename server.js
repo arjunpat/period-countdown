@@ -7,24 +7,45 @@
 'use strict';
 
 //process.env.NODE_ENV = 'production';
-const appStartTime = Date.now();
-const express = require('express');
-const app = express();
+console.time('startup');
+const http = require('http');
 
 // cache of local files
 const cache = require('./app/cache.js');
+const utils = require('./app/utils.js');
 
-// app config
-app.set('etag', false);
+const server = http.createServer((req, res) => {
+
+	var path = utils.parseURL(req.url);
+	console.log(path);
+
+	if (path.layers[0] === 'api') {
+
+		res.end('hi');
 
 
-// app middleware
-app.use(express.json());
+	} else { // if is a static file
 
-app.use((req, res, next) => {
-	res.set({
-		'X-Powered-By': 'SavageScript/1.0',
-		'Server': 'WebServer'
-	});
-	return next();
+		cache.getFile(path.pathname).then((file) => {
+			console.log(file);
+			res.writeHead(200, utils.mergeHeaders(file.headers));
+			res.end(file.content);
+
+		}).catch((err) => {
+			console.log(err);
+
+			// handle 404 errors
+			cache.getFile('/404.html').then((file) => {
+
+				res.writeHead(404, utils.mergeHeaders(file.headers));
+				res.end(file.content);
+			
+			});
+		});
+
+	}
+
+
+}).listen(8080, () => {
+	console.timeEnd('startup');
 });

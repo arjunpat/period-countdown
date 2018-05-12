@@ -25,7 +25,5 @@
 		"url": "https://github.com/arjunpat/bell-countdown/issues"
 	},
 	"homepage": "https://github.com/arjunpat/bell-countdown#readme",
-	"dependencies": {
-		"express": "^4.16.3"
-	}
+	"dependencies": {}
 }
