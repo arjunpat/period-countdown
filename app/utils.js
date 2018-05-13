@@ -17,20 +17,16 @@ class Utils {
 	}
 
 	parseURL(url) {
-		console.time('time-to-parse-url');
 
 		var indexOfSearch = url.indexOf('?')
 		if (indexOfSearch === -1) indexOfSearch = url.length;
 
 		var path = url.substring(0, indexOfSearch);
 		var search = url.substring(indexOfSearch + 1, url.length);
-		var layers = path.split('/');
-
-		layers = layers.filter((val) => {
+		
+		var layers = path.split('/').filter((val) => {
 			return val !== '';
 		});
-
-		console.timeEnd('time-to-parse-url');
 
 		return {
 			path,
