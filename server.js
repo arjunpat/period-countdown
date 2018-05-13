@@ -12,7 +12,13 @@ const http = require('http');
 
 // cache of local files
 const cache = require('./app/cache.js');
+
+// homemade utility class
 const utils = require('./app/utils.js');
+
+// entire api
+const api = require('./app/api.js');
+
 
 const server = http.createServer((req, res) => {
 
@@ -21,8 +27,13 @@ const server = http.createServer((req, res) => {
 
 	if (path.layers[0] === 'api') {
 
-		res.end('hi');
+		api(req, path.layers).then((val) => {
 
+			res.writeHead(200, val.headers);
+			res.end(val.content);
+
+		});
+		
 
 	} else { // if is a static file
 
