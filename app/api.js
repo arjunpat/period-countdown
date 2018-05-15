@@ -49,6 +49,12 @@ class BellData {
 var test = new BellData();
 
 // example request
+// TODO: think about device id's and having associatied devices
+// have api call to add a device to a person
+// that way, we don't have to load google api library on every load
+
+
+'POST /api/v1'
 var schema = {
 	auth: 'ajpat1234@gmail.com',
 	request: [
@@ -63,18 +69,44 @@ var schema = {
 			data: {
 				new_theme: 'default_reverse'
 			}
+		},
+		{
+			do: 'update_name',
+			data: {
+				first_name: 'Arjun',
+
+			}
 		}
 	]
 }
 
+// get requests
+'GET /api/time';
+'GET /api/schedule';
+'GET /api/presets'
 
 // bell data schema
 schema = {
 	hits: [
 		{
-
+			new_load: true,
+			device_id: 'HJnbG8jDRG',
+			date: 1526165118086,
+			prefs: {
+				theme: 'asdf',
+				period: 4,
+				period_name: 'history'
+			},
+			// user agent and browser saved by device
+			user: 'ajpat1234@gmail.com',
+			from: 'https://google.com' // referer
 		}
 	],
+	devices: {
+		id: 'HJnbG8jDRG',
+		user_agent: 'thing',
+		browser: 'Chrome'
+	},
 	users: {
 		'ajpat1234@gmail.com': {
 			first_name: 'Arjun',
