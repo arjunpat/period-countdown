@@ -17,8 +17,7 @@ const cache = require('./app/cache.js');
 const utils = require('./app/utils.js');
 
 // entire api
-const api = require('./app/api.js');
-
+//const api = require('./app/api.js');
 
 const server = http.createServer((req, res) => {
 
@@ -27,18 +26,42 @@ const server = http.createServer((req, res) => {
 
 	if (path.layers[0] === 'api') {
 
-		api(req, path.layers).then((val) => {
+		switch (path.layers[1]) {
+			case 'time':
 
-			res.writeHead(200, val.headers);
-			res.end(val.content);
+				let json = {
+					success: true,
+					data: {
+						ms: Date.now()
+					}
+				}
+				//setTimeout(() => res.end(JSON.stringify(json)), 1432);
+				res.end(JSON.stringify(json));
 
-		});
+				break;
+			case 'schedule':
+				break;
+			case 'presets':
+				break;
+			case 'v1':
+
+				api(req, path.layers).then((val) => {
+
+					res.writeHead(200, val.headers);
+					res.end(val.content);
+
+				});
+
+				break;
+			default:
+				cache.getFile('/404.html').then((file) => {res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content)});
+
+		}
 		
 
 	} else { // if is a static file
 
-		cache.getFile(path.pathname).then((file) => {
-			console.log(file);
+		cache.getFile(path.path).then((file) => {
 			res.writeHead(200, utils.mergeHeaders(file.headers));
 			res.end(file.content);
 
@@ -46,12 +69,7 @@ const server = http.createServer((req, res) => {
 			console.log(err);
 
 			// handle 404 errors
-			cache.getFile('/404.html').then((file) => {
-
-				res.writeHead(404, utils.mergeHeaders(file.headers));
-				res.end(file.content);
-			
-			});
+			cache.getFile('/404.html').then((file) => {res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content)});
 		});
 
 	}
