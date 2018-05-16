@@ -54,7 +54,60 @@ var test = new BellData();
 // that way, we don't have to load google api library on every load
 
 
-'POST /api/v1'
+'POST /api/v1/update_period_names'
+{
+	a: 'ajpat1234@gmail.com',
+	d: {
+		period_0: 'hello' // updateObjectWithValues
+	}
+}
+
+'POST /api/v1/update_theme';
+{
+	a: 'ajpat1234@gmail.com',
+	d: {
+		new_theme: 'default_reverse'
+	}
+}
+
+'POST /api/v1/update_theme'
+{
+	a: 'ajpat1234@gmail.com',
+	d: {
+		first_name: 'Arjun' // updateObjectWithValues
+	}
+}
+
+'POST /api/v1/user';
+{
+	a: 'ajpat1234@gmail.com'
+}
+'response'
+{
+	success: true,
+	data: {
+		first_name: 'Arjun',
+		last_name: 'Patrawala',
+		email: 'ajpat1234@gmail.com',
+		profile_pic: 'htasdf',
+		settings: {
+			period_names: {
+				period_0: 'Nothing',
+				period_1: '', // default name
+				period_2: 'Journalism',
+				period_3: 'Physical Education',
+				period_4: 'Bio',
+				period_5: 'History',
+				period_6: 'Spanish',
+				period_7: 'Survey Comp/Lit'
+			},
+			theme: [
+				'default', 'default_reverse' // last being most recent
+			]
+		}
+	}
+}
+
 var schema = {
 	auth: 'ajpat1234@gmail.com',
 	request: [
@@ -83,7 +136,7 @@ var schema = {
 // get requests
 'GET /api/time';
 'GET /api/schedule';
-'GET /api/presets'
+'GET /api/presets';
 
 // bell data schema
 schema = {
@@ -105,7 +158,13 @@ schema = {
 	devices: {
 		id: 'HJnbG8jDRG',
 		user_agent: 'thing',
-		browser: 'Chrome'
+		browser: 'Chrome',
+		platform: 'MacIntel'
+	},
+	errors: {
+		time: 1526165118086,
+		user: 'ajpat1234@gmail.com',
+		device_id: 'HJnbG8jDRG'
 	},
 	users: {
 		'ajpat1234@gmail.com': {
@@ -124,7 +183,7 @@ schema = {
 					period_7: 'Survey Comp/Lit'
 				},
 				theme: [
-					'default', 'default_reverse' // last being most recent
+					'default', 'default_reverse' // last being most recent, delete when too long
 				]
 			},
 			stats: {

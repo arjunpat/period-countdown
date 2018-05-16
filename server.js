@@ -44,15 +44,36 @@ const server = http.createServer((req, res) => {
 			case 'presets':
 				break;
 			case 'v1':
+				if (req.method = 'POST') {
 
-				api(req, path.layers).then((val) => {
+					// wait for post data
+					var postData = '';
 
-					res.writeHead(200, val.headers);
-					res.end(val.content);
+					req.on('data', (chunk) => { postData += chunk.toString() });
 
-				});
+					req.on('end', () => {
+						try {
+							postData = JSON.parse(postData);
+						} catch (e) {
+							res.end(JSON.stringify({
+								success: false,
+								error: 'unable_to_read_request'
+							}));
+							return;
+						}
 
-				break;
+						/*api(req, path.layers).then((val) => {
+
+							res.writeHead(200, val.headers);
+							res.end(val.content);
+
+						});*/
+
+					});
+
+					break;
+				}
+
 			default:
 				cache.getFile('/404.html').then((file) => {res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content)});
 
