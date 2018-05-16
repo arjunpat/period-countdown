@@ -11,6 +11,20 @@ class Utils {
 		return object1;
 	}
 
+	updateObjectWithValues(main, augment) {
+		for (var key in main)
+			if (main.hasOwnProperty(key) && augment.hasOwnProperty(key))
+				main[key] = augment[key];
+		return main;
+	}
+
+	areObjectStringsShorterThan(arr, length) {
+		for (var key in arr)
+			if (arr.hasOwnProperty(key) && arr[key].length >= length)
+				return false;
+		return true;
+	}
+
 	mergeHeaders(headers) {
 		return this.mergeObjects({
 			'Server': 'Spice',
@@ -47,6 +61,5 @@ class Utils {
 
 	}
 }
-
 
 module.exports = new Utils();
