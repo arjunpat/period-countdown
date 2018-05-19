@@ -29,14 +29,12 @@ const server = http.createServer((req, res) => {
 		switch (path.layers[1]) {
 			case 'time':
 
-				let json = {
+				res.end(JSON.stringify({
 					success: true,
 					data: {
 						ms: Date.now()
 					}
-				}
-				//setTimeout(() => res.end(JSON.stringify(json)), 1432);
-				res.end(JSON.stringify(json));
+				}));
 
 				break;
 			case 'schedule':
