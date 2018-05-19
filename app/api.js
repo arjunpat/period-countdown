@@ -25,24 +25,36 @@ class BellData {
 
 	}
 
-	recordHit(args) {
+	recordHit(params) {
 
 	}
 
-	createUser(args) {
+	createUser(params) {
 
 	}
 
-	retrieveUserData(args) {
+	retrieveUserData(params) {
 
 	}
 
-	editUser(args) {
+	editUser(params) {
 
 	}
 
-	writeData(args) {
+	writeData(params) {
 
+	}
+
+	getDeviceInfo(id) {
+
+	}
+
+	registerNewDevice(params) {
+		if (params.user_agent && params.browser && params.platform) {
+			// creates id
+			// adds date & other stuff
+			// returns object with that info
+		}
 	}
 }
 
@@ -50,37 +62,17 @@ var test = new BellData();
 
 // example request
 // TODO: think about device id's and having associatied devices
-// have api call to add a device to a person
-// that way, we don't have to load google api library on every load
 
 
-'POST /api/v1/update_period_names'
+// on load
+
+'if device has id';
+'POST /api/v1/load';
 {
-	a: 'ajpat1234@gmail.com',
-	d: {
-		period_0: 'hello' // updateObjectWithValues
+	data: {
+		new_load: false,
+		device_id: 'H23jfksdD'
 	}
-}
-
-'POST /api/v1/update_theme';
-{
-	a: 'ajpat1234@gmail.com',
-	d: {
-		new_theme: 'default_reverse'
-	}
-}
-
-'POST /api/v1/update_theme'
-{
-	a: 'ajpat1234@gmail.com',
-	d: {
-		first_name: 'Arjun' // updateObjectWithValues
-	}
-}
-
-'POST /api/v1/user';
-{
-	a: 'ajpat1234@gmail.com'
 }
 'response'
 {
@@ -108,30 +100,106 @@ var test = new BellData();
 	}
 }
 
-var schema = {
-	auth: 'ajpat1234@gmail.com',
-	request: [
-		{
-			do: 'update_period_names',
-			data: {
-				period_0: 'hello'
-			}
-		},
-		{
-			do: 'update_theme',
-			data: {
-				new_theme: 'default_reverse'
-			}
-		},
-		{
-			do: 'update_name',
-			data: {
-				first_name: 'Arjun',
-
-			}
+'if device lacks id';
+'POST /api/v1/load'
+{	
+	data: {
+		new_load: true,
+		device: {
+			user_agent: 'thing',
+			browser: 'Chrome',
+			platform: 'MacIntel',
 		}
-	]
+	}
 }
+// creates device
+'response';
+{
+	success: true,
+	data: {
+		device_id: 'asJfiej2k3'
+	}
+}
+// if creates a device and does not recieve a analytics recording in like 30 sec, delete the device b/c it is probably spam
+
+
+// only do this if already has device_id; otherwise it will record on getting device_id
+'POST /api/v1/write/analytics';
+{
+	data: {
+		device_id: 'asJfiej2k3',
+		referer: 'https://www.google.com'
+		prefs: {
+			theme: 'asdf',
+			period: 4,
+			period_name: 'history'
+		}
+	}
+}
+'response';
+{
+	success: true
+}
+// don't allow another analytics request for like 30 seconds
+// limit size of all requests
+
+
+'POST /api/v1/write/login';
+{
+	data: {
+		device_id: 'asJfiej2k3',
+		account: {
+			email: 'ajpat1234@gmail.com',
+			first_name: 'Arjun',
+			last_name: 'Patrawala',
+			profile_pic: 'https;asdf/asd/fsadf'
+		}
+	}
+}
+'response';
+{
+	success: true,
+	data: {
+		status: 'new_user' // or returning_user
+	}
+}
+// then call /api/v1/load to actually then get the data
+
+'POST /api/v1/write/logout';
+{
+	data: {
+		device_id: 'asJfiej2k3'
+	}
+}
+// make sure to remove this also from the user profile as well
+// you can keep the device in the database
+
+
+'POST /api/v1/update/period_names'
+{
+	a: 'ajpat1234@gmail.com',
+	data: {
+		period_0: 'hello' // updateObjectWithValues
+	}
+}
+
+'POST /api/v1/update/theme';
+{
+	a: 'ajpat1234@gmail.com',
+	data: {
+		new_theme: 'default_reverse'
+	}
+}
+
+'POST /api/v1/update/name'
+{
+	a: 'ajpat1234@gmail.com',
+	data: {
+		first_name: 'Arjun' // updateObjectWithValues
+	}
+}
+
+
 
 // get requests
 'GET /api/time';
@@ -152,20 +220,27 @@ schema = {
 			},
 			// user agent and browser saved by device
 			user: 'ajpat1234@gmail.com',
-			from: 'https://google.com' // referer
+			referer: 'https://google.com', // referer
 		}
 	],
-	devices: {
-		id: 'HJnbG8jDRG',
-		user_agent: 'thing',
-		browser: 'Chrome',
-		platform: 'MacIntel'
-	},
-	errors: {
-		time: 1526165118086,
-		user: 'ajpat1234@gmail.com',
-		device_id: 'HJnbG8jDRG'
-	},
+	devices: [
+		{
+			id: 'HJnbG8jDRG',
+			user_agent: 'thing',
+			browser: 'Chrome',
+			platform: 'MacIntel',
+			date_registered: 1526165118086,
+			registered_to: 'ajpat1234@gmail.com'
+		}
+	],
+	errors: [
+		{
+			time: 1526165118086,
+			user: 'ajpat1234@gmail.com',
+			device_id: 'HJnbG8jDRG'
+			// needs to be filled out
+		}
+	],
 	users: {
 		'ajpat1234@gmail.com': {
 			first_name: 'Arjun',
@@ -185,6 +260,9 @@ schema = {
 				theme: [
 					'default', 'default_reverse' // last being most recent, delete when too long
 				]
+			},
+			devices: {
+				'HJnbG8jDRG': 1526165118086 // date added to this profile
 			},
 			stats: {
 				created: 1526165118086,

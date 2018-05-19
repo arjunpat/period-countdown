@@ -52,9 +52,9 @@ class Utils {
 	}
 
 	generateRandomID(length) {
-		var id = "";
+		var id = '';
 
-		for (var i = 0; i <= length; i++)
+		for (var i = 0; i < length; i++)
 			id += this.alphaNumerics[Math.floor(Math.random() * 62)];
 
 		return id;
