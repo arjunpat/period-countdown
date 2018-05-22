@@ -17,7 +17,7 @@ const cache = require('./app/cache.js');
 const utils = require('./app/utils.js');
 
 // entire api
-//const api = require('./app/api.js');
+const api = require('./app/api/api.js');
 
 const server = http.createServer((req, res) => {
 
@@ -25,62 +25,28 @@ const server = http.createServer((req, res) => {
 	console.log(path);
 
 	if (path.layers[0] === 'api') {
-
-		switch (path.layers[1]) {
-			case 'time':
-
-				res.end(JSON.stringify({
-					success: true,
-					data: {
-						ms: Date.now()
-					}
-				}));
-
-				break;
-			case 'schedule':
-				break;
-			case 'presets':
-				break;
-			case 'v1':
-				if (req.method = 'POST') {
-
-					// wait for post data
-					var postData = '';
-
-					req.on('data', (chunk) => { postData += chunk.toString() });
-
-					req.on('end', () => {
-						try {
-							postData = JSON.parse(postData);
-						} catch (e) {
-							res.end(JSON.stringify({
-								success: false,
-								error: 'unable_to_read_request'
-							}));
-							return;
-						}
-
-						/*api(req, path.layers).then((val) => {
-
-							res.writeHead(200, val.headers);
-							res.end(val.content);
-
-						});*/
-
-					});
-
-					break;
-				}
-
-			default:
-				cache.getFile('/404.html').then((file) => {res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content)});
-
-		}
 		
+		api(req, res, path).then(data => {
+			if (data.valid) {
+
+				res.writeHead(200, data.headers);
+				res.end(data.content);
+
+			} else {
+
+				cache.getFile('/404.html').then(file => { res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content) });
+
+			}
+		}).catch(err => {
+			res.end(JSON.stringify({
+				success: false,
+				error: 'bad_request'
+			}));
+		});
 
 	} else { // if is a static file
 
-		cache.getFile(path.path).then((file) => {
+		cache.getFile(path.path).then(file => {
 			res.writeHead(200, utils.mergeHeaders(file.headers));
 			res.end(file.content);
 
@@ -88,7 +54,7 @@ const server = http.createServer((req, res) => {
 			console.log(err);
 
 			// handle 404 errors
-			cache.getFile('/404.html').then((file) => {res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content)});
+			cache.getFile('/404.html').then(file => { res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content) });
 		});
 
 	}
