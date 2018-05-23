@@ -9,17 +9,31 @@
 <script type="text/javascript">
 	var ajax = function(params) {
 		return new Promise((resolve, reject) => {
-
 			let xhr = new XMLHttpRequest();
+
 			if (!params.type) params.type = "GET";
 			xhr.open(params.type, params.url, true);
+
 			if (params.type !== "GET") xhr.setRequestHeader("Content-Type", "application/json");
 			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-			xhr.onerror = () => {xhr.loadTime = Date.now() - startTime; reject(xhr)}
-			xhr.onload = () => {xhr.loadTime = Date.now() - startTime; resolve(xhr)}
-			var startTime = Date.now();
+
+			xhr.onerror = () => {
+				xhr.loadTime = Date.now() - startTime;
+				//throw Error("Error with ajax");
+				reject(xhr);
+			}
+			xhr.onload = () => {
+
+				xhr.loadTime = Date.now() - startTime;
+
+				if (xhr.getResponseHeader("Content-Type").includes('application/json')) xhr.json = JSON.parse(xhr.responseText);
+				
+				//return xhr;
+				resolve(xhr);
+			}
+
+			let startTime = Date.now();
 			(params.data !== null || params.data !== undefined) ? xhr.send(params.data) : xhr.send();
-			
 		});
 	}
 

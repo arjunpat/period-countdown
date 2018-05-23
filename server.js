@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
 			if (data.valid) {
 
 				res.writeHead(200, data.headers);
-				res.end(data.content);
+				res.end(JSON.stringify(data.content));
 
 			} else {
 

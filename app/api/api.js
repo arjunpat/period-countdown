@@ -1,3 +1,4 @@
+"use strict";
 const v1 = require('./v1.js');
 
 
@@ -15,7 +16,9 @@ module.exports = async (req, res, path) => {
 
 			return {
 				valid: true,
-				headers: {},
+				headers: {
+					'Content-Type': 'application/json'
+				},
 				content: {
 					success: true,
 					data: {

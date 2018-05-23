@@ -1,3 +1,4 @@
+"use strict";
 const bellData = require('./bellData.js');
 
 
@@ -8,7 +9,7 @@ const bellData = require('./bellData.js');
 
 'if device has id';
 'POST /api/v1/load';
-{
+/*{
 	data: {
 		new_load: false,
 		device_id: 'H23jfksdD'
@@ -54,11 +55,9 @@ const bellData = require('./bellData.js');
 {	
 	data: {
 		new_load: true,
-		device: {
-			user_agent: 'thing',
-			browser: 'Chrome',
-			platform: 'MacIntel',
-		}
+		user_agent: 'thing',
+		browser: 'Chrome',
+		platform: 'MacIntel'
 	}
 }
 // creates device
@@ -146,7 +145,7 @@ const bellData = require('./bellData.js');
 	data: {
 		first_name: 'Arjun' // updateObjectWithValues
 	}
-}
+}*/
 
 
 
@@ -182,23 +181,29 @@ module.exports = (path, postData) => {
 		case '/load':
 
 			let {new_load, user_agent, platform, browser, device_id} = postData.data;
+			
 			if (new_load && user_agent && platform && browser) {
 				// if we need to register a new device
 
 				return generateResponse(true, null, {
-					device_id: bellData.createNewDevice(reqData.device)
+					device_id: bellData.createNewDevice(postData.data)
 				})
 
 			} else if (!new_load && device_id) {
 				// if the device has already been registered
 				
-
+				return generateResponse(true, null, bellData.getUserDataByDeviceId(device_id));
 
 			}
 
 			return responses.missing_data;
 
-			//break;
+			break;
+		case '':
+
+			
+
+			break;
 		default:
 			return responses.bad_path;
 	}
