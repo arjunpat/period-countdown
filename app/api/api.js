@@ -1,5 +1,12 @@
 const v1 = require('./v1.js');
 
+
+// get requests
+'GET /api/time';
+'GET /api/schedule';
+'GET /api/presets';
+
+
 module.exports = async (req, res, path) => {
 
 
@@ -42,10 +49,7 @@ module.exports = async (req, res, path) => {
 
 					postData = JSON.parse(postData);
 
-					var result = v1(path.path.substring(7, path.path.length), postData);
-					result.valid = true;
-					
-					return result;
+					return v1(path.path.substring(7, path.path.length), postData);
 
 				});
 

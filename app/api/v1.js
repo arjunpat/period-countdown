@@ -1,12 +1,8 @@
 const bellData = require('./bellData.js');
 
 
-
-var test = new BellData();
-
 // example request
 // TODO: think about device id's and having associatied devices
-
 
 // on load
 
@@ -145,27 +141,25 @@ var test = new BellData();
 
 
 
-// get requests
-'GET /api/time';
-'GET /api/schedule';
-'GET /api/presets';
 
-
-var generateResponse = (success, error = null) => {
+var generateResponse = (success, error = null, data = null) => {
 	let res = {
+		valid: true,
 		headers: {},
 		content: {
 			success
 		}
 	}
 	if (!success) res.content.error = error;
+	if (data) res.content.data = data;
 	return res;
 }
 
 const responses = {
 	success: generateResponse(true),
 	missing_data: generateResponse(false, 'missing_data'),
-	authorization: generateResponse(false, 'missing_authorization')
+	authorization: generateResponse(false, 'missing_authorization'),
+	bad_path: generateResponse(false, 'bad_path')
 }
 
 
@@ -173,21 +167,31 @@ module.exports = (path, postData) => {
 	
 	// TODO: limit size of any entry into the userData
 
+	if (!postData.data) return responses.missing_data;
+
 	switch (path) {
 		case '/load':
 
-			if (postData.data);
+			let {new_load, user_agent, platform, browser, device_id} = postData.data;
+			if (new_load && user_agent && platform && browser) {
+				// if we need to register a new device
+
+				return generateResponse(true, null, {
+					device_id: bellData.createNewDevice(reqData.device)
+				})
+
+			} else if (!new_load && device_id) {
+				// if the device has already been registered
+				
 
 
-			break;
-		default:
-			return {
-				headers: {},
-				content: {
-					success: false,
-					error: 'bad_path'
-				}
 			}
+
+			return responses.missing_data;
+
+			//break;
+		default:
+			return responses.bad_path;
 	}
 
 }
