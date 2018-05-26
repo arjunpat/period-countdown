@@ -1,3 +1,4 @@
+"use strict";
 const fs = require('fs');
 const utils = require('../utils.js');
 
@@ -72,7 +73,7 @@ class BellData {
 	// create user, devices, etc.
 	// assumes that other code checks all params to make sure not undefined
 
-	createUser(params) {
+	createNewUser(params) {
 		let {email, first_name, last_name, profile_pic} = params;
 
 		this.users.push({

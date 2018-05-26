@@ -1,3 +1,4 @@
+"use strict";
 const bellData = require('./bellData.js');
 
 
@@ -182,6 +183,7 @@ module.exports = (path, postData) => {
 		case '/load':
 
 			let {new_load, user_agent, platform, browser, device_id} = postData.data;
+			
 			if (new_load && user_agent && platform && browser) {
 				// if we need to register a new device
 
