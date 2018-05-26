@@ -39,6 +39,15 @@ const bellData = require('./bellData.js');
 		}
 	}
 }
+// if not registered to a Google account yet
+{
+	success: true,
+	data: {
+		registered: false
+	}
+}
+
+
 
 'if device lacks id';
 'POST /api/v1/load'
