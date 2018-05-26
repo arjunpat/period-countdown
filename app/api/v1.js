@@ -1,3 +1,4 @@
+"use strict";
 const bellData = require('./bellData.js');
 
 
