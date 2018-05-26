@@ -37,20 +37,36 @@ class BellData {
 	// all the file system methods
 
 	writeDataSync() {
-		fs.writeFileSync(this.filename, this.prepareData());
+		fs.writeFileSync(this.filename, this.getPreparedData());
 	}
 
 	writeDataAsync() {
-		fs.writeFile(this.filename, this.prepareData(), err => {});
+		fs.writeFile(this.filename, this.getPreparedData(), err => {});
 	}
 
-	prepareData() {
+	getPreparedData() {
 		return JSON.stringify({
 			users: this.users,
 			devices: this.devices,
 			hits: this.hits,
 			errors: this.errors
 		});
+	}
+
+	// helper methods
+
+	getDeviceIndexById(id) {
+
+		if (this.devices_index[id]) return this.devices_index[id];
+		return false;
+
+	}
+
+	getUserIndexByEmail(email) {
+
+		if (this.user_index[email]) return this.user_index[email];
+		return false;
+
 	}
 
 	// create user, devices, etc.
@@ -78,7 +94,6 @@ class BellData {
 	}
 
 	createNewDevice(params) {
-		
 		let {user_agent, browser, platform} = params;
 
 		// creates id
@@ -112,20 +127,54 @@ class BellData {
 
 	getUserDataByDeviceId(id) {
 		
-		if (this.devices_index[id]) {
+		let index = getDeviceIndexById(id);
 
-			
+		if (index && this.devices[index].registered_to) return getUserDataByEmail(this.devices[index].registered_to);
+
+		return false;
+	}
+
+	getUserDataByEmail(email) {
+
+		let index = getUserIndexByEmail(email);
+
+		if (index && this.users[index] && this.users[index].email === email) {
+			let {first_name, last_name, email, profile_pic, settings} = this.users[index];
+
+			return {
+				first_name,
+				last_name,
+				email,
+				profile_pic,
+				settings
+			}
 
 		}
 
 		return false;
 	}
 
-	getUserDataByEmail(params) {
-
-	}
-
 	getDeviceDataByDeviceId(id) {
+
+		let index = getDeviceIndexById(id);
+
+		if (index && this.devices[index] && this.devices[index].id === id) {
+
+			let cache = this.devices[index];
+
+			if (cache.registered_to) {
+				let res = getUserDataByEmail(cache.registered_to);
+				if (res) {
+					res.registered = true;
+					return res;
+				}
+			}
+
+			return { registered: false }
+
+		}
+
+		return false;
 
 	}
 
