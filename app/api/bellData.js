@@ -155,7 +155,7 @@ class BellData {
 		return false;
 	}
 
-	getDeviceDataByDeviceId(id) {
+	getUserDataByDeviceId(id) {
 
 		let index = getDeviceIndexById(id);
 
@@ -186,12 +186,12 @@ class BellData {
 	}
 }
 
-module.exports = new BellData((process.env.NODE_ENV === 'production') ? '/home/centos/serve/data/bell_data.json' : './dev_data/bell_data.json');
+module.exports = new BellData((process.env.NODE_ENV === 'production') ? '/home/centos/serve/data/bell_data.json' : './bell_data.json');
 
 
 
 // bell data schema
-schema = {
+var schema = {
 	hits: [
 		{
 			new_load: true,
@@ -236,11 +236,9 @@ schema = {
 			settings: {
 				period_names: {
 					period_0: 'Nothing',
-					period_1: '', // default name
 					period_2: 'Journalism',
 					period_3: 'Physical Education',
 					period_4: 'Bio',
-					period_5: 'History',
 					period_6: 'Spanish',
 					period_7: 'Survey Comp/Lit'
 				},
@@ -257,5 +255,5 @@ schema = {
 				updated_period_names: [1526165118086, 1526165189886]
 			}
 		}
-]
+	]
 }

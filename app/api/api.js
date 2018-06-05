@@ -16,7 +16,9 @@ module.exports = async (req, res, path) => {
 
 			return {
 				valid: true,
-				headers: {},
+				headers: {
+					'Content-Type': 'application/json'
+				},
 				content: {
 					success: true,
 					data: {
