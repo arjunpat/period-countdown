@@ -3,6 +3,8 @@
 class BellTimer {
 
 	constructor() {
+		this.calender = {};
+		this.schedule = [];
 		this.offset = 0;
 	}
 
@@ -35,8 +37,9 @@ class BellTimer {
 
 	}
 
-	getOffest() {
-		return this.offset;
-	}
+	getCurrentTime() { return this.offset + Date.now(); }
+	
+	createDateObject(dateString) { return new Date(dateString); }
+	
 
 }
