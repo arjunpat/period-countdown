@@ -1,5 +1,6 @@
 "use strict";
 const v1 = require('./v1.js');
+const timingData = require('./timing-data.js');
 
 
 // get requests
@@ -19,12 +20,21 @@ module.exports = async (req, res, path) => {
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				content: {
+				content: JSON.stringify({
 					success: true,
 					data: {
 						ms: Date.now()
 					}
-				}
+				})
+			}
+
+			break;
+		case 'calendar':
+
+			return {
+				valid: true,
+				headers: timingData.calendar.headers,
+				content: timingData.calendar.data
 			}
 
 			break;
