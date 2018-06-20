@@ -6,6 +6,9 @@ class BellTimer {
 		this.calendar = {};
 		this.schedule = [];
 		this.offset = 0;
+
+
+
 	}
 
 	calculateOffset(numOfRequests) {
@@ -40,11 +43,26 @@ class BellTimer {
 	parseCalendar(calendar) {
 		for (let i = 0; i < calendar.length; i++) {
 			let cache = calendar[i];
+
 			if (cache.date) {
 
-			} else if (cache.to && cache.from) {
-				
+				this.calendar[cache.date] = cache.content;
+
+			} else if (cache.from && cache.to) {
+
+				let date = cache.from;
+				let to = this.getNextDayDateString(cache.to);
+
+				do {
+
+					this.calendar[date] = cache.content;
+
+					date = this.getNextDayDateString(date);
+
+				} while (date !== to);
+
 			}
+
 		}
 	}
 
@@ -57,6 +75,11 @@ class BellTimer {
 	getDateObjectFromDateString(dateString) {
 		var a = dateString.split('/');
 		return new Date(a[2], (parseInt(a[0]) - 1), a[1], 0, 0, 0, 0);
+	}
+
+	getNextDayDateString(dateString) {
+		let d = new Date(this.getDateObjectFromDateString(dateString).getTime() + 8.64e7);
+		return this.getDateStringFromDateObject(d);
 	}
 
 }

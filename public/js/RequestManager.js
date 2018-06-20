@@ -36,4 +36,10 @@ class RequestManager {
 			url: '/api/time'
 		}).then(res => res.json.data.ms + res.loadTime);
 	}
+
+	static getCalendar() {
+		return this.ajax({
+			url: '/api/calendar'
+		}).then(res => res.json);
+	}
 }
