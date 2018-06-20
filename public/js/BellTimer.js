@@ -3,7 +3,7 @@
 class BellTimer {
 
 	constructor() {
-		this.calender = {};
+		this.calendar = {};
 		this.schedule = [];
 		this.offset = 0;
 	}
@@ -27,8 +27,8 @@ class BellTimer {
 
 
 					this.offset = temp / offsets.length;
-					console.log(this.offset);
-					console.log(offsets);
+					/*console.log(this.offset);
+					console.log(offsets);*/
 
 				});
 
@@ -37,9 +37,26 @@ class BellTimer {
 
 	}
 
+	parseCalendar(calendar) {
+		for (let i = 0; i < calendar.length; i++) {
+			let cache = calendar[i];
+			if (cache.date) {
+
+			} else if (cache.to && cache.from) {
+				
+			}
+		}
+	}
+
 	getCurrentTime() { return this.offset + Date.now(); }
-	
-	createDateObject(dateString) { return new Date(dateString); }
-	
+
+	getDateStringFromDateObject(dateObject) {
+		return (dateObject.getMonth() + 1) + '/' + dateObject.getDate() + '/' + dateObject.getFullYear();
+	}
+
+	getDateObjectFromDateString(dateString) {
+		var a = dateString.split('/');
+		return new Date(a[2], (parseInt(a[0]) - 1), a[1], 0, 0, 0, 0);
+	}
 
 }

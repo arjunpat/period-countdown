@@ -1,5 +1,5 @@
 "use strict";
-const bellData = require('./bellData.js');
+const bellData = require('./bell-data.js');
 
 
 // example request
@@ -160,7 +160,7 @@ var generateResponse = (success, error = null, data = null) => {
 	}
 	if (!success) res.content.error = error;
 	if (data) res.content.data = data;
-	return res;
+	return JSON.stringify(res);
 }
 
 const responses = {
