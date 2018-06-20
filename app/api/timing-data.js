@@ -1,14 +1,18 @@
 let calendar = [
 	{
 		date: '6/20/2018',
-		type: 'A',
-		name: 'Custom Name Support'
+		content: {
+			type: 'A',
+			name: 'Custom Name Support'
+		}
 	},
 	{
 		from: '6/21/2018',
 		to: '6/25/2018',
-		schedule: [],
-		name: 'BREAK!'
+		content: {
+			schedule: [],
+			name: 'BREAK!'
+		}
 	}
 ]
 
