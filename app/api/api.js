@@ -41,6 +41,13 @@ module.exports = async (req, res, path) => {
 		case 'schedule':
 			break;
 		case 'presets':
+
+			return {
+				valid: true,
+				headers: timingData.presets.headers,
+				content: timingData.presets.data
+			}
+
 			break;
 		case 'v1':
 

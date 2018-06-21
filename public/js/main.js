@@ -3,7 +3,11 @@
 var bellTimer = new BellTimer();
 
 
-RequestManager.getCalendar().then(data => {
+RequestManager.getPresets().then(data => {
+	bellTimer.presets = data;
+	
+	return RequestManager.getCalendar();
+}).then(data => {
 	bellTimer.parseCalendar(data);
 });
 
