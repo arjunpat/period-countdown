@@ -37,6 +37,12 @@ class RequestManager {
 		}).then(res => res.json.data.ms + res.loadTime);
 	}
 
+	static getPresets() {
+		return this.ajax({
+			url: '/api/presets'
+		}).then(res => res.json);
+	}
+
 	static getCalendar() {
 		return this.ajax({
 			url: '/api/calendar'

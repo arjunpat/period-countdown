@@ -5,15 +5,57 @@ class BellTimer {
 	constructor() {
 		this.calendar = {};
 		this.schedule = [];
+		this.presets = {};
 		this.offset = 0;
+		
 
+	}
 
+	parseCalendar(calendar) {
 
+		for (let i = 0; i < calendar.length; i++) {
+			let cache = calendar[i];
+
+			if (cache.date) {
+
+				this.calendar[cache.date] = cache.content;
+
+			} else if (cache.from && cache.to) {
+
+				let date = cache.from;
+				let to = this.getNextDayDateString(cache.to);
+
+				do {
+
+					this.calendar[date] = cache.content;
+
+					date = this.getNextDayDateString(date);
+
+				} while (date !== to);
+
+			}
+		}
+
+	}
+
+	parseDay(dateString) {
+		if (this.calendar[dateString]) {
+
+			let cache = this.calendar[dateString];
+			let {type, name} = cache;
+
+			if (type && this.presets[type.toUpperCase()]) {
+				type = type.toUpperCase();
+				this.calendar[dateString].schedule = this.presets[type].schedule;
+				if (!name) this.calendar[dateString].name = this.presets[type].name;
+			}
+
+		}
 	}
 
 	calculateOffset(numOfRequests) {
 
-		if (!numOfRequests) throw "Missing arguments";
+		if (!numOfRequests) throw 'Missing arguments';
 
 		var offsets = [];
 
@@ -40,32 +82,6 @@ class BellTimer {
 
 	}
 
-	parseCalendar(calendar) {
-		for (let i = 0; i < calendar.length; i++) {
-			let cache = calendar[i];
-
-			if (cache.date) {
-
-				this.calendar[cache.date] = cache.content;
-
-			} else if (cache.from && cache.to) {
-
-				let date = cache.from;
-				let to = this.getNextDayDateString(cache.to);
-
-				do {
-
-					this.calendar[date] = cache.content;
-
-					date = this.getNextDayDateString(date);
-
-				} while (date !== to);
-
-			}
-
-		}
-	}
-
 	getCurrentTime() { return this.offset + Date.now(); }
 
 	getDateStringFromDateObject(dateObject) {
@@ -78,8 +94,7 @@ class BellTimer {
 	}
 
 	getNextDayDateString(dateString) {
-		let d = new Date(this.getDateObjectFromDateString(dateString).getTime() + 8.64e7);
-		return this.getDateStringFromDateObject(d);
+		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() + 8.64e7));
 	}
 
 }
