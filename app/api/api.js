@@ -9,13 +9,13 @@ const timingData = require('./timing-data.js');
 'GET /api/presets';
 
 
-module.exports = async (req, res, path) => {
+module.exports = (req, res, path) => new Promise((resolve, reject) => {
 
 
 	switch (path.layers[1]) {
 		case 'time':
 
-			return {
+			resolve({
 				valid: true,
 				headers: {
 					'Content-Type': 'application/json'
@@ -26,27 +26,27 @@ module.exports = async (req, res, path) => {
 						ms: Date.now()
 					}
 				})
-			}
+			});
 
 			break;
 		case 'calendar':
 
-			return {
+			resolve({
 				valid: true,
 				headers: timingData.calendar.headers,
 				content: timingData.calendar.data
-			}
+			});
 
 			break;
 		case 'schedule':
 			break;
 		case 'presets':
 
-			return {
+			resolve({
 				valid: true,
 				headers: timingData.presets.headers,
 				content: timingData.presets.data
-			}
+			});
 
 			break;
 		case 'v1':
@@ -61,7 +61,7 @@ module.exports = async (req, res, path) => {
 					postData += chunk.toString();
 
 					// TODO figure out max possible request size
-					if (postData.length > 2000) throw new Error('request_overflow');
+					if (postData.length > 2000) reject('request_overflow');
 
 				});
 
@@ -69,7 +69,7 @@ module.exports = async (req, res, path) => {
 
 					postData = JSON.parse(postData);
 
-					return v1(path.path.substring(7, path.path.length), postData);
+					resolve(v1(path.path.substring(7, path.path.length), postData));
 
 				});
 
@@ -77,7 +77,7 @@ module.exports = async (req, res, path) => {
 			}
 
 		default:
-			return { valid: false };
+			resolve({ valid: false });
 	}
 
-}
+})

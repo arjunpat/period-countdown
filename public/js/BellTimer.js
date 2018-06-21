@@ -35,7 +35,6 @@ class BellTimer {
 
 			}
 		}
-
 	}
 
 	parseDay(dateString) {
@@ -71,7 +70,7 @@ class BellTimer {
 					for (let i = 0; i < offsets.length; i++) temp += offsets[i];
 
 
-					this.offset = temp / offsets.length;
+					this.offset = Math.round(temp / offsets.length);
 					/*console.log(this.offset);
 					console.log(offsets);*/
 

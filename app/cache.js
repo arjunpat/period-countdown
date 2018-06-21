@@ -32,28 +32,30 @@ class Cache {
 		this.files = {};
 	}
 
-	async getFile(filename) {
+	getFile(filename) {
 
-		if (url_map[filename]) filename = url_map[filename];
+		return new Promise((resolve, reject) => {
+			if (url_map[filename]) filename = url_map[filename];
 
-		filename = __dirname + '/../public' + filename;
+			filename = __dirname + '/../public' + filename;
 
-		if (this.files[filename]) {
-			//console.log('file was found');
+			if (this.files[filename]) {
+				//console.log('file was found');
 
-			// if 15 min old
-			if (Date.now() - this.files[filename].lastLoad > 900000) this.addFile(filename);
+				// if 15 min old
+				if (Date.now() - this.files[filename].lastLoad > 900000) this.addFile(filename);
 
-		} else {
-			//console.log('not found');
+			} else {
+				//console.log('not found');
 
-			this.addFile(filename);
-		}
+				this.addFile(filename);
+			}
 
-		return {
-			content: this.files[filename].content,
-			headers: this.files[filename].headers
-		}
+			resolve({
+				content: this.files[filename].content,
+				headers: this.files[filename].headers
+			});
+		});
 
 	}
 
