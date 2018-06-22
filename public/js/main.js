@@ -2,13 +2,9 @@
 
 var bellTimer = new BellTimer();
 
-
-RequestManager.getPresets().then(data => {
-	bellTimer.presets = data;
-	
-	return RequestManager.getCalendar();
-}).then(data => {
-	bellTimer.parseCalendar(data);
+Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
+	bellTimer.presets = values[0];
+	bellTimer.parseCalendar(values[1]);
 });
 
 
