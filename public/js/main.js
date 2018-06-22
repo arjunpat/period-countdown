@@ -5,7 +5,7 @@ var bellTimer;
 var bellLoop = () => {
 	console.log(bellTimer.getRemainingTime());
 
-	setTimeout(bellLoop, 1e3);
+	setTimeout(bellLoop, 1000 * 10);
 }
 
 

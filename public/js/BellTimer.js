@@ -36,7 +36,7 @@ class BellTimer {
 		// calculations
 		lengthOfPeriod = this.schedule[1].f - this.schedule[0].f;
 		dist = this.schedule[1].f - now;
-		percent_completed = Math.floor(100 * (1 - (dist / lengthOfPeriod)));
+		percent_completed = 100 * (1 - (dist / lengthOfPeriod));
 		days = Math.floor(dist / 864e5); // indep calc
 		hours = Math.floor((dist % 864e5) / 36e5) + (days * 24);
 		minutes = Math.floor((dist % 36e5) / 6e4);
@@ -128,7 +128,7 @@ class BellTimer {
 				let cache = this.calendar[dateString];
 				let {type} = cache;
 
-				if (type && this.presets[type.toUpperCase()]) {
+				if (type && this.getPresetSchedule(type.toUpperCase())) {
 					type = type.toUpperCase();
 				} else {
 					type = this.getDayTypeFromDateString(dateString);
