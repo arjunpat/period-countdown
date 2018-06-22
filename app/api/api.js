@@ -38,8 +38,6 @@ module.exports = (req, res, path) => new Promise((resolve, reject) => {
 			});
 
 			break;
-		case 'schedule':
-			break;
 		case 'presets':
 
 			resolve({
