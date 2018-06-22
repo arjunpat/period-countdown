@@ -73,7 +73,7 @@ class BellTimer {
 			this.parseDay(dateString);
 
 			// the concat is not needed, could just be equal
-			// used to make sure the this.calendar is not modified later
+			// used to delete references
 			this.schedule = [].concat(this.calendar[dateString].schedule);
 
 		}
