@@ -78,7 +78,7 @@ class BellTimer {
 
 		}
 
-		let now = Date.now();
+		let now = this.getCurrentTime();
 		for (let i = 0; i < this.schedule.length - 1;) {
 			if (this.schedule[i].f < now && !(this.schedule[i + 1].f > now)) {
 				this.schedule.splice(i, 1);
