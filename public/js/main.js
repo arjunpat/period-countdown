@@ -2,17 +2,18 @@
 
 var bellTimer;
 
+var bellLoop = () => {
+	console.log(bellTimer.getRemainingTime());
+
+	setTimeout(bellLoop, 1e3);
+}
+
+
 Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
-	bellTimer = new BellTimer(values[0], values[1]);
+	let [presets, calendar] = values;
 
-
-	let bellLoop = () => {
-		//bellTimer.getTimeLeftString();
-	}
+	bellTimer = new BellTimer(presets, calendar);
 
 	bellLoop();
-	//setInterval(bellLoop, 50);
-
-
 
 });
