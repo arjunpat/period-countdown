@@ -7,13 +7,21 @@ let calendar = [
 		}
 	},*/
 	{
-		from: '6/19/2018',
-		to: '6/30/2018',
+		from: '6/1/2018',
+		to: '8/20/2018',
 		content: {
 			schedule: [],
 			name: 'BREAK!'
 		}
 	}
+	/*{
+		from: '6/21/2018',
+		to: '6/25/2018',
+		content: {
+			type: 'A',
+			name: 'BREAK!'
+		}
+	}*/
 ]
 
 let presets = {
