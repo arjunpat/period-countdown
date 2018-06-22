@@ -14,5 +14,5 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 	//setInterval(bellLoop, 50);
 
 
-	
+
 });

@@ -20,7 +20,7 @@ class BellTimer {
 		console.log(this.schedule);
 	}
 
-	getTimeRemaining() {
+	getRemainingTime() {
 
 		let now = this.getCurrentTime();
 
