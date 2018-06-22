@@ -13,6 +13,36 @@ class BellTimer {
 	}
 
 	prepareSchedule() {
+		let dateString = this.getDateStringFromDateObject(new Date());
+		this.parseDay(dateString);
+		this.stats.parsedUpTo = dateString;
+
+		this.schedule = this.calendar[dateString].schedule;
+
+		// account for days with no schedule - weekends and holidays
+		if (this.calendar[dateString].schedule.length === 0) {
+			let temp = dateString;
+
+			while (this.schedule.length === 0) {
+				temp = this.getLastDayDateString(temp);
+
+				this.parseDay(temp);
+
+				// the concat is not needed, could just be equal
+				// used to make sure the this.calendar is not modified later
+				this.schedule = [].concat(this.calendar[temp].schedule);
+
+			}
+		}
+
+		let now = Date.now();
+		for (let i = 0; i < this.schedule.length - 1;) {
+			if (this.schedule[i].f < now && !(this.schedule[i + 1].f > now)) {
+				this.schedule.splice(i, 1);
+			} else {
+				i++;
+			}
+		}
 
 	}
 
@@ -48,7 +78,7 @@ class BellTimer {
 			// TODO: check if it doesn't have a name
 			if (!this.calendar[dateString].schedule) {
 				let cache = this.calendar[dateString];
-				let {type, name} = cache;
+				let {type} = cache;
 
 				if (type && this.presets[type.toUpperCase()]) {
 					type = type.toUpperCase();
@@ -58,16 +88,16 @@ class BellTimer {
 
 				let {s, n} = this.presets[type];
 				this.calendar[dateString].schedule = s;
-				if (!name) this.calendar[dateString].name = n;
+				if (!this.calendar[dateString].name) this.calendar[dateString].name = n;
 			}
 
 		} else {
 			let type = this.getDayTypeFromDateString(dateString);
 			this.calendar[dateString] = {};
 
-			let {s: schedule, n: name} = this.presets[type];
-			this.calendar[dateString].schedule = schedule;
-			if (!name) this.calendar[dateString].name = name;
+			let {s, n} = this.presets[type];
+			this.calendar[dateString].schedule = s;
+			if (!this.calendar[dateString].name) this.calendar[dateString].name = n;
 		}
 
 
@@ -124,8 +154,8 @@ class BellTimer {
 		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() + 8.64e7));
 	}
 
-	getTodayDateString() {
-		return this.getDateStringFromDateObject(new Date());
+	getLastDayDateString(dateString) {
+		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() - 8.64e7));
 	}
 
 	getDayTypeFromDateString(dateString) {
