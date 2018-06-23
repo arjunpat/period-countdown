@@ -52,5 +52,6 @@ canvas = new Canvas(elements.mainCanvas);
 
 window.onresize = () => {
 	elements.updateScreenFontSize();
+	canvas.dimension();
 	let dimension = Math.min(window.innerHeight, window.innerWidth);
 }
