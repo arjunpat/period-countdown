@@ -1,8 +1,13 @@
 console.time('setup');
 
-var bellTimer, canvas, elements, analytics;
+var bellTimer, elements, analytics, prefManager;
 
-var bellLoop = () => {
+// instatiate classes
+elements = new Elements();
+analytics = new Analytics();
+prefManager = new PrefManager();
+
+var mainLoop = () => {
 
 	let time = bellTimer.getRemainingTime();
 	//console.log(time);
@@ -18,7 +23,7 @@ var bellLoop = () => {
 
 	// update screen
 	if (document.hasFocus()) {
-		canvas.animate(Math.floor(percent_completed) / 100);
+		elements.updateProgressBar(percent_completed);
 		elements.updateDayTypeText(day_type);
 		elements.updateCurrentPeriodText(period_name);
 		elements.updateTimeLeft(timeString);
@@ -27,7 +32,7 @@ var bellLoop = () => {
 
 
 	// do this again
-	setTimeout(bellLoop, 1000);
+	setTimeout(mainLoop, 1000);
 }
 
 // get the calendar and presets from api
@@ -36,7 +41,8 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 
 	bellTimer = new BellTimer(presets, calendar);
 	
-	bellLoop();
+	elements.updateElementsWithPreferences(prefManager.getAllPreferences()); // before first paint
+	mainLoop();
 	elements.updateScreenFontSize();
 	//elements.hidePreloader();
 
@@ -44,15 +50,10 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 	console.timeEnd('setup');
 });
 
-// instatiate classes
-elements = new Elements();
-canvas = new Canvas(elements.mainCanvas);
-analytics = new Analytics;
-
 //console.timeEnd('setup');
 
 window.onresize = () => {
 	elements.updateScreenFontSize();
-	canvas.dimension();
+	elements.dimensionCanvas();
 	let dimension = Math.min(window.innerHeight, window.innerWidth);
 }
