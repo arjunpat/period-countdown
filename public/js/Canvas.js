@@ -6,8 +6,8 @@ class Canvas {
 		this.ctx = canvas.getContext('2d');
 		this.props = {
 			colors: {
-				background: '#fccb0b',
-				completed: '#fee581'
+				background: '#000',
+				completed: '#fff'
 			},
 			decimalCompleted: 0,
 			animationLength: 2,
@@ -15,7 +15,7 @@ class Canvas {
 		}
 		this.animationInterval;
 
-		this.dimension(); // will also draw
+		this.dimension();
 	}
 
 	draw(to) {
@@ -75,7 +75,7 @@ class Canvas {
 		this.redraw();
 	}
 
-	dimension(shouldRedraw) {
+	dimension() {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
 		this.redraw();
