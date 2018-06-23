@@ -42,10 +42,6 @@ class Elements {
 		}
 	}
 
-	updateProgressBarCompletion(percentage) {
-
-	}
-
 	updateScreenFontSize() {
 		let dimension = window.innerWidth;
 		this.dayType.parentElement.style.fontSize = Math.floor(dimension / 16) + 'px';
