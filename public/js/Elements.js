@@ -44,8 +44,8 @@ class Elements {
 
 	updateScreenFontSize() {
 		let dimension = window.innerWidth;
-		this.dayType.parentElement.style.fontSize = Math.floor(dimension / 16) + 'px';
+		this.dayType.parentElement.style.fontSize = Math.min(70, Math.floor(dimension / 16)) + 'px';
 		this.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
-		this.timeLeft.style.fontSize = Math.min(230, Math.floor(dimension / (this.timeLeft.innerText.length - 3))) + 'px';
+		this.timeLeft.style.fontSize = Math.min(170, Math.floor(dimension / (this.timeLeft.innerText.length - 3))) + 'px';
 	}
 }
