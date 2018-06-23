@@ -1,6 +1,7 @@
 'use strict';
 
 class RequestManager {
+	
 	constructor() {
 
 	}
@@ -8,6 +9,7 @@ class RequestManager {
 	static ajax(params) {
 
 		if (!params.type) params.type = 'GET';
+		//params.type = params.type.toUpperCase();
 
 		let options = {
 			method: params.type
@@ -29,6 +31,18 @@ class RequestManager {
 
 			return response;
 		});
+	}
+
+	static sendError(data) {
+		// do one day
+	}
+
+	static sendAnalytics(data) {
+		return this.ajax({
+			url: '/api/v1/write/analytics',
+			type: 'POST',
+			data: JSON.stringify(data)
+		}).then(res => res.json);
 	}
 
 	static getTime() {

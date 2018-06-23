@@ -71,12 +71,15 @@ const bellData = require('./bell-data.js');
 // if creates a device and does not recieve a analytics recording in like 30 sec, delete the device b/c it is probably spam
 
 
-// only do this if already has device_id; otherwise it will record on getting device_id
+// ALWAYS send analytics
 'POST /api/v1/write/analytics';
 {
 	data: {
 		device_id: 'asJfiej2k3',
-		referer: 'https://www.google.com'
+		referer: 'https://www.google.com',
+		speed: {
+				
+		},
 		prefs: {
 			theme: 'asdf',
 			period: 4,

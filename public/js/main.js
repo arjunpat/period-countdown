@@ -1,6 +1,6 @@
 console.time('setup');
 
-var bellTimer, canvas, elements;
+var bellTimer, canvas, elements, analytics;
 
 var bellLoop = () => {
 
@@ -18,7 +18,7 @@ var bellLoop = () => {
 
 	// update screen
 	if (document.hasFocus()) {
-		elements.updateProgressBarCompletion(percent_completed);
+		canvas.animate(Math.floor(percent_completed) / 100);
 		elements.updateDayTypeText(day_type);
 		elements.updateCurrentPeriodText(period_name);
 		elements.updateTimeLeft(timeString);
@@ -47,6 +47,7 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 // instatiate classes
 elements = new Elements();
 canvas = new Canvas(elements.mainCanvas);
+analytics = new Analytics;
 
 //console.timeEnd('setup');
 

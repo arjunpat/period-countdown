@@ -10,7 +10,8 @@ class Canvas {
 				completed: '#fee581'
 			},
 			decimalCompleted: 0,
-			animationLength: 2
+			animationLength: 2,
+			decimalAnimatingTowards: 0
 		}
 		this.animationInterval;
 
@@ -35,7 +36,8 @@ class Canvas {
 
 	animate(to) {
 
-		if (to !== this.props.decimalCompleted) {
+		if (to !== this.props.decimalAnimatingTowards) {
+			this.props.decimalAnimatingTowards = to;
 			window.clearInterval(this.animationInterval); // just for fun!
 
 			let reg = this.createSineAnimationRegression(this.props.decimalCompleted, to);
@@ -49,7 +51,7 @@ class Canvas {
 
 				this.draw(reg(secondsPassed));
 
-			}, 10);
+			}, 0);
 
 		}
 

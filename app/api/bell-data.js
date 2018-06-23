@@ -223,8 +223,11 @@ var schema = {
 		{
 			time: 1526165118086,
 			user: 'ajpat1234@gmail.com',
-			device_id: 'HJnbG8jDRG'
-			// needs to be filled out
+			device_id: 'HJnbG8jDRG',
+			error: {
+				type: 'api',
+				description: 'error_sending_analytics'
+			}
 		}
 	],
 	users: [
