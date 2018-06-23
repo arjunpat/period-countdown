@@ -1,19 +1,56 @@
-"use strict";
+console.time('setup');
 
-var bellTimer;
+var bellTimer, canvas, elements;
 
 var bellLoop = () => {
-	console.log(bellTimer.getRemainingTime());
 
-	setTimeout(bellLoop, 1000 * 10);
+	let time = bellTimer.getRemainingTime();
+	//console.log(time);
+	let {percent_completed, days, hours, minutes, seconds, period_name, day_type} = time;
+
+	// make time human readable
+	if (seconds < 10) seconds = '0' + seconds;
+	if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
+	let timeString = '';
+	if (hours !== 0) timeString = `${hours}:`;
+	timeString += `${minutes}:${seconds}`;
+
+
+	// update screen
+	if (document.hasFocus()) {
+		elements.updateProgressBarCompletion(percent_completed);
+		elements.updateDayTypeText(day_type);
+		elements.updateCurrentPeriodText(period_name);
+		elements.updateTimeLeft(timeString);
+	}
+	elements.updateDocumentTitle(`${timeString} | ${period_name}`);
+
+
+	// do this again
+	setTimeout(bellLoop, 1000);
 }
 
-
+// get the calendar and presets from api
 Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 	let [presets, calendar] = values;
 
 	bellTimer = new BellTimer(presets, calendar);
-
+	
 	bellLoop();
+	elements.updateScreenFontSize();
+	//elements.hidePreloader();
 
+
+	console.timeEnd('setup');
 });
+
+// instatiate classes
+elements = new Elements();
+canvas = new Canvas(elements.mainCanvas);
+
+//console.timeEnd('setup');
+
+window.onresize = () => {
+	elements.updateScreenFontSize();
+	let dimension = Math.min(window.innerHeight, window.innerWidth);
+}
