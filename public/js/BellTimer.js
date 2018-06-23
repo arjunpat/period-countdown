@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 class BellTimer {
 
@@ -16,8 +16,8 @@ class BellTimer {
 		//this.calculateOffset(5);
 
 		console.timeEnd('bellsetup');
-		console.log(this.calendar)
-		console.log(this.schedule);
+		/*console.log(this.calendar)
+		console.log(this.schedule);*/
 	}
 
 	getRemainingTime() {
@@ -53,14 +53,15 @@ class BellTimer {
 			hours,
 			minutes,
 			seconds,
-			period_name: this.schedule[0].n
+			period_name: this.schedule[0].n,
+			day_type: this.calendar[this.getTodayDateString()].name
 		}
 
 
 	}
 
 	prepareSchedule() {
-		let dateString = this.getDateStringFromDateObject(new Date());
+		let dateString = this.getTodayDateString();
 		this.parseDay(dateString);
 		this.stats.parsedUpTo = dateString;
 
@@ -198,7 +199,7 @@ class BellTimer {
 	// helper methods
 
 	getPresetSchedule(type) {
-		return JSON.parse(this.presets)[type];
+		return JSON.parse(this.presets)[type]; // presets are stored in json to delete references
 	}
 
 	getCurrentTime() { return this.offset + Date.now(); }
@@ -224,4 +225,7 @@ class BellTimer {
 		return ['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'][this.getDateObjectFromDateString(dateString).getDay()];
 	}
 
+	getTodayDateString() {
+		return this.getDateStringFromDateObject(new Date())
+	}
 }

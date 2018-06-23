@@ -2,9 +2,42 @@
 <html>
 	<head>
 		<title>MVHS Bell Countdown</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Bell schedule countdown for MVHS.">
+		<meta name="keywords" content="countdown,bell,schedule,mvhs,school,mvla">
+
+		<meta name="viewport" content="width=device-width">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="theme-color" content="#fccb0b">
+		<link rel="manifest" href="/manifest.json">
+		<link rel="shortcut icon" href="/images/1024.png">
+
+		<link rel="apple-touch-icon" sizes="1024x1024" href="/images/1024_square.png">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Countdown">
+
+		<meta name="application-name" content="Countdown">
+
+		<link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Material+Icons" rel="stylesheet">
+
+		<link rel="stylesheet" type="text/css" href="/css/main.css">
 	</head>
 	<body>
-
+		<noscript>Please enable JavaScript for this application to work.</noscript>
+		<div id="main-canvas-container">
+			<canvas id="main-canvas"></canvas>
+			<div id="main-canvas-overlay">
+				<div style="bottom: 0; left: 0; position: fixed; padding: 50px;">
+					<h1 style="font-size: 50px; padding-left: 15px;">
+						<a href="https://bell.mvhs.club" id="day-type"></a> &#x25B8; <span id="current-period-text"></span>
+					</h1>
+					<h1 style="font-size: 230px;" id="time-left">45:30</h1>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="/js/Elements.js"></script>
+		<script type="text/javascript" src="/js/Canvas.js"></script>
 		<script type="text/javascript" src="/js/RequestManager.js"></script>
 		<script type="text/javascript" src="/js/BellTimer.js"></script>
 		<script type="text/javascript" src="/js/main.js"></script>

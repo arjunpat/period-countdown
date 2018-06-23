@@ -1,0 +1,18 @@
+{
+	"name": "MVHS Bell Countdown",
+	"short_name": "Countdown",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#fccb0b",
+	"description": "A countdown timer for MVHS's complicated schedules.",
+	"lang": "en-US",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/1024.png",
+			"sizes": "1024x1024",
+			"type": "image/png"
+		}
+	]
+}
