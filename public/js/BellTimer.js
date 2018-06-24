@@ -26,10 +26,7 @@ class BellTimer {
 
 		if (this.schedule[1].f < now) this.schedule.splice(0, 1);
 
-		// make sure we have at least 2 items in schedule
-		while (this.schedule.length < 2) {
-			this.addAnotherDayToSchedule();
-		}
+		this.makeSureTwoItemsInSchedule();
 
 		let lengthOfPeriod, dist, percent_completed, days, hours, minutes, seconds;
 
@@ -57,7 +54,6 @@ class BellTimer {
 			day_type: this.calendar[this.getTodayDateString()].name
 		}
 
-
 	}
 
 	prepareSchedule() {
@@ -79,30 +75,27 @@ class BellTimer {
 
 		}
 
+		// remove all events that have already passed
 		let now = this.getCurrentTime();
 		for (let i = 0; i < this.schedule.length - 1;) {
-			if (this.schedule[i].f < now && !(this.schedule[i + 1].f > now)) {
-				this.schedule.splice(i, 1);
-			} else {
-				i++;
-			}
+			if (this.schedule[0].f < now && !(this.schedule[1].f > now))
+				this.schedule.splice(0, 1);
+			else
+				break;
 		}
 
-		// make sure we have at least 2 items in schedule
-		while (this.schedule.length < 2) {
-			this.addAnotherDayToSchedule();
-		}
+		this.makeSureTwoItemsInSchedule()
 
 	}
 
 	parseCalendar(calendar) {
-
 		for (let i = 0; i < calendar.length; i++) {
 			let cache = calendar[i];
+			cache.content = JSON.stringify(cache.content);
 
 			if (cache.date) {
 
-				this.calendar[cache.date] = {...cache.content}; // shallow object clone
+				this.calendar[cache.date] = JSON.parse(cache.content); // TODO: find better way
 
 			} else if (cache.from && cache.to) {
 
@@ -111,7 +104,7 @@ class BellTimer {
 
 				do {
 
-					this.calendar[date] = {...cache.content};
+					this.calendar[date] = JSON.parse(cache.content);
 
 					date = this.getNextDayDateString(date);
 
@@ -126,38 +119,30 @@ class BellTimer {
 
 			// TODO: check if it doesn't have a name
 			if (!this.calendar[dateString].schedule) {
-				let cache = this.calendar[dateString];
-				let {type} = cache;
 
-				if (type && this.getPresetSchedule(type.toUpperCase())) {
-					type = type.toUpperCase();
-				} else {
-					type = this.getDayTypeFromDateString(dateString);
-				}
-
-				let {s, n} = this.getPresetSchedule(type);
+				let {s, n} = this.getPresetSchedule(this.calendar[dateString].type) || this.getPresetScheduleFromDateString(dateString);
 
 				this.calendar[dateString].schedule = s;
 				if (!this.calendar[dateString].name) this.calendar[dateString].name = n;
+			} else if (!this.calendar[dateString].name) {
+				this.calendar[dateString].name = this.getPresetScheduleFromDateString(dateString).n;
 			}
 
 		} else {
-			let type = this.getDayTypeFromDateString(dateString);
-			this.calendar[dateString] = {};
+			let {s: schedule, n: name} = this.getPresetScheduleFromDateString(dateString);
 
-			let {s, n} = this.getPresetSchedule(type);
-
-			this.calendar[dateString].schedule = s;
-			if (!this.calendar[dateString].name) this.calendar[dateString].name = n;
+			this.calendar[dateString] = {
+				schedule,
+				name
+			}
 		}
 
+		// on change of s, the calendar also changes
+		let s = this.calendar[dateString].schedule;
 
-		// on change of schedule, the calendar also changes
-		let schedule = this.calendar[dateString].schedule;
-
-		// parses the day's schedule by replacing from with epoch ms time
-		for (let i = 0; i < schedule.length; i++) {
-			schedule[i].f = Date.parse(`${dateString} ${schedule[i].f}:00`);
+		// parses the day's s by replacing from with epoch ms time
+		for (let i = 0; i < s.length; i++) {
+			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
 		}
 	}
 
@@ -169,7 +154,7 @@ class BellTimer {
 
 		for (let i = 0; i < numOfRequests; i++) {
 
-			setTimeout(() => {
+			setTimeout(() =>
 
 				RequestManager.getTime().then(time => {
 
@@ -183,9 +168,7 @@ class BellTimer {
 					/*console.log(this.offset);
 					console.log(offsets);*/
 
-				});
-
-			}, 1000 * i);
+				}), 1000 * i);
 		}
 
 	}
@@ -198,8 +181,12 @@ class BellTimer {
 
 	// helper methods
 
-	getPresetSchedule(type) {
-		return JSON.parse(this.presets)[type]; // presets are stored in json to delete references
+	makeSureTwoItemsInSchedule() { while (this.schedule.length < 2) this.addAnotherDayToSchedule(); }
+
+	getPresetSchedule(type) { return JSON.parse(this.presets)[type]; /* presets are stored in json to delete references */ }
+
+	getPresetScheduleFromDateString(dateString) {
+		return this.getPresetSchedule(['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'][this.getDateObjectFromDateString(dateString).getDay()]);
 	}
 
 	getCurrentTime() { return this.offset + Date.now(); }
@@ -221,11 +208,5 @@ class BellTimer {
 		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() - 8.64e7));
 	}
 
-	getDayTypeFromDateString(dateString) {
-		return ['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'][this.getDateObjectFromDateString(dateString).getDay()];
-	}
-
-	getTodayDateString() {
-		return this.getDateStringFromDateObject(new Date())
-	}
+	getTodayDateString() { return this.getDateStringFromDateObject(new Date()) }
 }
