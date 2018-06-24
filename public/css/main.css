@@ -32,4 +32,21 @@ a:hover {
 
 #current-period-text {
 	font-family: 'Product Sans';
+	display: inline-block;
+}
+
+
+
+/* animations */
+
+@keyframes updatePeriod {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 100%, 0);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
 }

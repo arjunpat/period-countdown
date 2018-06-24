@@ -21,10 +21,13 @@ class Elements {
 		// make time human readable
 		if (seconds < 10) seconds = '0' + seconds;
 		if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
+
 		let timeString = '';
 		if (hours !== 0) timeString = `${hours}:`;
 		timeString += `${minutes}:${seconds}`;
-		
+
+		if (typeof period_name === 'number') period_name = this.getOrdinalNum(period_name) + ' Period';
+
 		let documentTitle = `${timeString} | ${period_name}`;
 		if (this.currentValues.documentTitle !== documentTitle) {
 			document.title = documentTitle;
@@ -32,7 +35,10 @@ class Elements {
 		}
 
 		if (document.hasFocus()) {
-			this.canvas.animate(Math.floor(percent_completed) / 100);
+			if (percent_completed < 1 || percent_completed > 99)
+				this.canvas.draw(percent_completed / 100);
+			else
+				this.canvas.animate(Math.floor(percent_completed) / 100);
 
 			if (this.currentValues.dayTypeText !== day_type) {
 				this.dayType.innerText = day_type;
@@ -42,6 +48,9 @@ class Elements {
 
 			if (this.currentValues.currentPeriodText !== period_name) {
 				this.currentPeriodText.innerText = period_name;
+				// animation
+				this.currentPeriodText.style.animation = 'none';
+				setTimeout(() => this.currentPeriodText.style.animation = '.6s updatePeriod', 10);
 				this.currentValues.currentPeriodText = period_name;
 			}
 
@@ -73,4 +82,5 @@ class Elements {
 
 	dimensionCanvas() { this.canvas.dimension() }
 
+	getOrdinalNum(e) { return e + (e > 0 ? ["th", "st", "nd", "rd"][e > 3 && 21 > e || e % 10 > 3 ? 0 : e % 10] : "") }
 }

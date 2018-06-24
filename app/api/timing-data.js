@@ -1,13 +1,13 @@
 let calendar = [
 	/*{
-		date: '6/21/2018',
+		date: '6/23/2018',
 		content: {
 			type: 'A',
 			name: 'Custom Name Support'
 		}
 	},*/
 	/*{
-		from: '6/1/2018',
+		from: '6/24/2018',
 		to: '8/20/2018',
 		content: {
 			schedule: [],
@@ -29,7 +29,7 @@ let calendar = [
 			name: 'Summer Break'
 		}
 	}*/
-	/*{
+	{
 		from: '6/21/2018',
 		to: '6/25/2018',
 		content: {
@@ -37,15 +37,15 @@ let calendar = [
 			schedule: [
 				{
 					n: 'hi',
-					f: '18:30'
+					f: '1:36'
 				},
 				{
-					n: 'asf',
-					f: '19:30'
+					n: 4,
+					f: '1:45'
 				}
 			]
 		}
-	}*/
+	}
 ]
 
 let presets = {
