@@ -25,3 +25,11 @@ a:hover {
 #main-canvas-overlay {
 	width: 100%;
 }
+
+#day-type {
+	font-family: 'Product Sans';
+}
+
+#current-period-text {
+	font-family: 'Product Sans';
+}

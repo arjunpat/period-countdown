@@ -19,7 +19,7 @@ let calendar = [
 		to: '6/25/2018',
 		content: {
 			type: 'A',
-			name: 'BREAK!'
+			name: 'Summer Break'
 		}
 	}
 	/*{
