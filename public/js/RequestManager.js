@@ -34,7 +34,8 @@ class RequestManager {
 	}
 
 	static sendError(data) {
-		// do one day
+		// TODO: do this
+		console.error(data);
 	}
 
 	static sendAnalytics(data) {

@@ -27,8 +27,10 @@ class Analytics {
 			RequestManager.sendAnalytics(data).then(data => {
 				if (!data.success) {
 					RequestManager.sendError({
-						type: 'api',
-						description: 'error_sending_analytics'
+						type: 'analytics_api',
+						description: {
+							response: data
+						}
 					});
 				}
 			});
