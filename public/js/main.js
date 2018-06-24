@@ -11,12 +11,10 @@ var mainLoop = () => {
 
 	let time = bellTimer.getRemainingTime();
 
-	
-
 	elements.updateScreen(time);
 
 
-	setTimeout(mainLoop, 1000);
+	setTimeout(mainLoop, 50);
 }
 
 // get the calendar and presets from api
@@ -39,5 +37,4 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 window.onresize = () => {
 	elements.updateScreenFontSize();
 	elements.dimensionCanvas();
-	let dimension = Math.min(window.innerHeight, window.innerWidth);
 }

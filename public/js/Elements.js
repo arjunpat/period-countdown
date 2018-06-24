@@ -28,17 +28,18 @@ class Elements {
 
 		if (typeof period_name === 'number') period_name = this.getOrdinalNum(period_name) + ' Period';
 
-		let documentTitle = `${timeString} | ${period_name}`;
+		let documentTitle = `${timeString} — ${period_name}`;
 		if (this.currentValues.documentTitle !== documentTitle) {
 			document.title = documentTitle;
 			this.currentValues.documentTitle = documentTitle;
 		}
 
-		if (document.hasFocus()) {
-			if (percent_completed < 1 || percent_completed > 99)
-				this.canvas.draw(percent_completed / 100);
+		if (document.hasFocus() || true) {
+			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99))
+				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
 			else
 				this.canvas.animate(Math.floor(percent_completed) / 100);
+
 
 			if (this.currentValues.dayTypeText !== day_type) {
 				this.dayType.innerText = day_type;
@@ -49,8 +50,9 @@ class Elements {
 			if (this.currentValues.currentPeriodText !== period_name) {
 				this.currentPeriodText.innerText = period_name;
 				// animation
-				this.currentPeriodText.style.animation = 'none';
-				setTimeout(() => this.currentPeriodText.style.animation = '.6s updatePeriod', 10);
+				
+				this.currentPeriodText.style.animation = '.6s updatePeriod'
+				setTimeout(() => this.currentPeriodText.style.animation = 'none', 1e3);
 				this.currentValues.currentPeriodText = period_name;
 			}
 

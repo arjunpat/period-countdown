@@ -14,14 +14,14 @@ let calendar = [
 			name: 'BREAK!'
 		}
 	}*/
-	/*{
+	{
 		from: '6/21/2018',
 		to: '6/25/2018',
 		content: {
 			type: 'A',
 			name: 'Summer Break'
 		}
-	}*/
+	}
 	/*{
 		from: '6/21/2018',
 		to: '6/25/2018',
@@ -29,7 +29,7 @@ let calendar = [
 			name: 'Summer Break'
 		}
 	}*/
-	{
+	/*{
 		from: '6/21/2018',
 		to: '6/25/2018',
 		content: {
@@ -37,15 +37,19 @@ let calendar = [
 			schedule: [
 				{
 					n: 'hi',
-					f: '1:36'
+					f: '12:30'
 				},
 				{
 					n: 4,
-					f: '1:45'
+					f: '13:01'
+				},
+				{
+					n: 7,
+					f: '13:20'
 				}
 			]
 		}
-	}
+	}*/
 ]
 
 let presets = {
