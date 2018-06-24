@@ -13,7 +13,7 @@ class BellTimer {
 
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
-		//this.calculateOffset(5);
+		this.calculateOffset(5);
 
 		console.timeEnd('bellsetup');
 		/*console.log(this.calendar)
@@ -34,6 +34,14 @@ class BellTimer {
 		lengthOfPeriod = this.schedule[1].f - this.schedule[0].f;
 		dist = this.schedule[1].f - now;
 		percent_completed = 100 * (1 - (dist / lengthOfPeriod));
+
+		if (percent_completed < 0 || percent_completed > 100) { // if offset later figures out that this comp time is way ahead/behind
+			console.log('hello');
+			this.schedule = [];
+			this.prepareSchedule();
+			return this.getRemainingTime();
+		}
+
 		days = Math.floor(dist / 864e5); // indep calc
 		hours = Math.floor((dist % 864e5) / 36e5) + (days * 24);
 		minutes = Math.floor((dist % 36e5) / 6e4);
@@ -78,41 +86,18 @@ class BellTimer {
 		for (let i = 0; i < this.schedule.length - 1;) {
 			if (this.schedule[0].f < now && !(this.schedule[1].f > now))
 				this.schedule.splice(0, 1);
-			else
-				break;
+			else break;
 		}
 
 		this.makeSureTwoItemsInSchedule()
 
 	}
 
-	parseCalendar(calendar) {
-		for (let i = 0; i < calendar.length; i++) {
-			let cache = calendar[i];
-			cache.content = JSON.stringify(cache.content);
-
-			if (cache.date) {
-
-				this.calendar[cache.date] = JSON.parse(cache.content); // TODO: find better way
-
-			} else if (cache.from && cache.to) {
-
-				let date = cache.from;
-				let to = this.getNextDayDateString(cache.to);
-
-				do {
-
-					this.calendar[date] = JSON.parse(cache.content);
-
-					date = this.getNextDayDateString(date);
-
-				} while (date !== to);
-
-			}
-		}
-	}
-
 	parseDay(dateString) {
+		// makes sure hasn't been parsed before
+		if (this.calendar[dateString] && this.calendar[dateString].parsed) return;
+
+		// otherwise
 		if (this.calendar[dateString]) {
 
 			// TODO: check if it doesn't have a name
@@ -142,6 +127,34 @@ class BellTimer {
 		for (let i = 0; i < s.length; i++) {
 			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
 		}
+
+		this.calendar[dateString].parsed = true;
+	}
+
+	parseCalendar(calendar) {
+		for (let i = 0; i < calendar.length; i++) {
+			let cache = calendar[i];
+			cache.content = JSON.stringify(cache.content);
+
+			if (cache.date) {
+
+				this.calendar[cache.date] = JSON.parse(cache.content); // TODO: find better way
+
+			} else if (cache.from && cache.to) {
+
+				let date = cache.from;
+				let to = this.getNextDayDateString(cache.to);
+
+				do {
+
+					this.calendar[date] = JSON.parse(cache.content);
+
+					date = this.getNextDayDateString(date);
+
+				} while (date !== to);
+
+			}
+		}
 	}
 
 	calculateOffset(numOfRequests) {
@@ -162,7 +175,7 @@ class BellTimer {
 					for (let i = 0; i < offsets.length; i++) temp += offsets[i];
 
 
-					this.offset = Math.round(temp / offsets.length); // jic client doesn't like ms w/ decimal
+					this.offset = temp / offsets.length;
 					/*console.log(this.offset);
 					console.log(offsets);*/
 
@@ -187,7 +200,7 @@ class BellTimer {
 		return this.getPresetSchedule(['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'][this.getDateObjectFromDateString(dateString).getDay()]);
 	}
 
-	getCurrentTime() { return this.offset + Date.now(); }
+	getCurrentTime() { return Math.round(this.offset) + Date.now() /* jic client doesn't like ms w/ decimal */ }
 
 	getDateStringFromDateObject(dateObject) {
 		return (dateObject.getMonth() + 1) + '/' + dateObject.getDate() + '/' + dateObject.getFullYear();
@@ -206,5 +219,5 @@ class BellTimer {
 		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() - 8.64e7));
 	}
 
-	getTodayDateString() { return this.getDateStringFromDateObject(new Date()) }
+	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())) }
 }
