@@ -63,16 +63,14 @@ class BellTimer {
 
 		this.schedule = [].concat(this.calendar[dateString].schedule);
 
-		// account for days with no schedule - weekends and holidays
-		while (this.schedule.length === 0) {
+		// account for days with no schedule (weekends/holidays) & when first event of day is coming up
+		while (this.schedule.length === 0 || this.schedule[0].f > this.getCurrentTime()) {
 			dateString = this.getPreviousDayDateString(dateString);
 
 			this.parseDay(dateString);
 
-			// the concat is not needed, could just be equal
-			// used to delete references
-			this.schedule = [].concat(this.calendar[dateString].schedule);
-
+			// concat to the front
+			this.schedule = [].concat(this.calendar[dateString].schedule, this.schedule);
 		}
 
 		// remove all events that have already passed

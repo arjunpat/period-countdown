@@ -11,6 +11,8 @@ var mainLoop = () => {
 
 	let time = bellTimer.getRemainingTime();
 
+	
+
 	elements.updateScreen(time);
 
 
