@@ -16,8 +16,6 @@ class BellTimer {
 		this.calculateOffset(5);
 
 		console.timeEnd('bellsetup');
-		/*console.log(this.calendar)
-		console.log(this.schedule);*/
 	}
 
 	getRemainingTime() {
@@ -36,8 +34,6 @@ class BellTimer {
 		percent_completed = 100 * (1 - (dist / lengthOfPeriod));
 
 		if (percent_completed < 0 || percent_completed > 100) { // if offset later figures out that this comp time is way ahead/behind
-			console.log('hello');
-			this.schedule = [];
 			this.prepareSchedule();
 			return this.getRemainingTime();
 		}
@@ -65,6 +61,9 @@ class BellTimer {
 	}
 
 	prepareSchedule() {
+		this.schedule = []; // always a fresh start
+
+
 		let dateString = this.getTodayDateString();
 		this.parseDay(dateString);
 		this.stats.parsedUpTo = dateString;
