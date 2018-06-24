@@ -10,28 +10,10 @@ prefManager = new PrefManager();
 var mainLoop = () => {
 
 	let time = bellTimer.getRemainingTime();
-	//console.log(time);
-	let {percent_completed, days, hours, minutes, seconds, period_name, day_type} = time;
 
-	// make time human readable
-	if (seconds < 10) seconds = '0' + seconds;
-	if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
-	let timeString = '';
-	if (hours !== 0) timeString = `${hours}:`;
-	timeString += `${minutes}:${seconds}`;
+	elements.updateScreen(time);
 
 
-	// update screen
-	if (document.hasFocus()) {
-		elements.updateProgressBar(percent_completed);
-		elements.updateDayTypeText(day_type);
-		elements.updateCurrentPeriodText(period_name);
-		elements.updateTimeLeft(timeString);
-	}
-	elements.updateDocumentTitle(`${timeString} | ${period_name}`);
-
-
-	// do this again
 	setTimeout(mainLoop, 1000);
 }
 

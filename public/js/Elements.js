@@ -14,6 +14,45 @@ class Elements {
 
 	}
 
+	updateScreen(time) {
+
+		let {percent_completed, days, hours, minutes, seconds, period_name, day_type} = time;
+
+		// make time human readable
+		if (seconds < 10) seconds = '0' + seconds;
+		if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
+		let timeString = '';
+		if (hours !== 0) timeString = `${hours}:`;
+		timeString += `${minutes}:${seconds}`;
+		
+		let documentTitle = `${timeString} | ${period_name}`;
+		if (this.currentValues.documentTitle !== documentTitle) {
+			document.title = documentTitle;
+			this.currentValues.documentTitle = documentTitle;
+		}
+
+		if (document.hasFocus()) {
+			this.canvas.animate(Math.floor(percent_completed) / 100);
+
+			if (this.currentValues.dayTypeText !== day_type) {
+				this.dayType.innerText = day_type;
+				this.currentValues.dayTypeText = day_type;
+			}
+
+
+			if (this.currentValues.currentPeriodText !== period_name) {
+				this.currentPeriodText.innerText = period_name;
+				this.currentValues.currentPeriodText = period_name;
+			}
+
+			if (this.currentValues.timeLeftText !== timeString) {
+				this.timeLeft.innerText = timeString;
+				this.currentValues.timeLeftText = timeString;
+			}
+
+		}
+	}
+
 	updateElementsWithPreferences(values) {
 		// theme stuff
 		this.canvas.updateColors(values.theme.color.background, values.theme.color.completed);
@@ -25,34 +64,6 @@ class Elements {
 		for (let i = 0; i < elements.length; i++) elements[i].innerText = text;
 	}
 
-	updateDayTypeText(text) {
-		if (this.currentValues.dayTypeText !== text) {
-			this.dayType.innerText = text;
-			this.currentValues.dayTypeText = text;
-		}
-	}
-
-	updateCurrentPeriodText(text) {
-		if (this.currentValues.currentPeriodText !== text) {
-			this.currentPeriodText.innerText = text;
-			this.currentValues.currentPeriodText = text;
-		}
-	}
-
-	updateTimeLeft(text) {
-		if (this.currentValues.timeLeftText !== text) {
-			this.timeLeft.innerText = text;
-			this.currentValues.timeLeftText = text;
-		}
-	}
-
-	updateDocumentTitle(text) {
-		if (this.currentValues.documentTitle !== text) {
-			document.title = text;
-			this.currentValues.documentTitle = text;
-		}
-	}
-
 	updateScreenFontSize() {
 		let dimension = window.innerWidth;
 		this.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
@@ -60,7 +71,6 @@ class Elements {
 		this.timeLeft.style.fontSize = Math.min(170, dimension / (this.timeLeft.innerText.length - 3)) + 'px';
 	}
 
-	updateProgressBar(percentage) { this.canvas.animate(Math.floor(percentage) / 100) }
 	dimensionCanvas() { this.canvas.dimension() }
 
 }

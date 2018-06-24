@@ -13,7 +13,7 @@ class Canvas {
 			animationLength: 2,
 			decimalAnimatingTowards: 0
 		}
-		this.animationInterval;
+		this.animationInterval; // j to remind myself this is a thing
 
 		this.dimension();
 	}
@@ -29,7 +29,6 @@ class Canvas {
 
 		this.ctx.fillStyle = this.props.colors.completed;
 		this.ctx.fillRect(0, 0, to * w, h);
-		//this.ctx.stroke();
 
 		this.props.decimalCompleted = to;
 	}
@@ -65,9 +64,7 @@ class Canvas {
 		return x => (amp * (Math.sin(b * (x - (this.props.animationLength / 2))))) + verticleShift;
 	}
 
-	redraw() {
-		this.draw(this.props.decimalCompleted);
-	}
+	redraw() { this.draw(this.props.decimalCompleted) }
 
 	updateColors(background, completed) {
 		this.props.colors.background = background;
