@@ -11,7 +11,6 @@ const bellData = require('./bell-data.js');
 'POST /api/v1/load';
 /*{
 	data: {
-		new_load: false,
 		device_id: 'H23jfksdD'
 	}
 }
@@ -51,10 +50,9 @@ const bellData = require('./bell-data.js');
 
 
 'if device lacks id';
-'POST /api/v1/load'
+'POST /api/v1/init'
 {	
 	data: {
-		new_load: true,
 		user_agent: 'thing',
 		browser: 'Chrome',
 		platform: 'MacIntel'
@@ -69,7 +67,7 @@ const bellData = require('./bell-data.js');
 	}
 }
 // if creates a device and does not recieve a analytics recording in like 30 sec, delete the device b/c it is probably spam
-
+// make sure that non_registered stupid computers get deleted after a while of no use (like a week or so)
 
 // ALWAYS send analytics
 'POST /api/v1/write/analytics';
@@ -163,7 +161,8 @@ var generateResponse = (success, error = null, data = null) => {
 	}
 	if (!success) res.content.error = error;
 	if (data) res.content.data = data;
-	return JSON.stringify(res);
+	res.content = JSON.stringify(res.content);
+	return res;
 }
 
 const responses = {
@@ -181,18 +180,18 @@ module.exports = (path, postData) => {
 	if (!postData.data) return responses.missing_data;
 
 	switch (path) {
-		case '/load':
+		case '/init':
 
-			let {new_load, user_agent, platform, browser, device_id} = postData.data;
+			let {user_agent, platform, browser, device_id} = postData.data;
 			
-			if (new_load && user_agent && platform && browser) {
+			if (user_agent && platform && browser) {
 				// if we need to register a new device
-
+				
 				return generateResponse(true, null, {
 					device_id: bellData.createNewDevice(postData.data)
-				})
+				});
 
-			} else if (!new_load && device_id) {
+			} else if (device_id) {
 				// if the device has already been registered
 				
 				return generateResponse(true, null, bellData.getUserDataByDeviceId(device_id));
@@ -202,8 +201,8 @@ module.exports = (path, postData) => {
 			return responses.missing_data;
 
 			break;
-		case '':
-
+		case '/write/login':
+			
 			
 
 			break;

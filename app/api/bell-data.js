@@ -58,14 +58,14 @@ class BellData {
 
 	getDeviceIndexById(id) {
 
-		if (this.devices_index[id]) return this.devices_index[id];
+		if (typeof this.devices_index[id] === 'number') return this.devices_index[id];
 		return false;
 
 	}
 
 	getUserIndexByEmail(email) {
 
-		if (this.user_index[email]) return this.user_index[email];
+		if (typeof this.user_index[email] === 'number') return this.user_index[email];
 		return false;
 
 	}
@@ -128,16 +128,16 @@ class BellData {
 
 	getUserDataByDeviceId(id) {
 		
-		let index = getDeviceIndexById(id);
+		let index = this.getDeviceIndexById(id);
 
-		if (index && this.devices[index].registered_to) return getUserDataByEmail(this.devices[index].registered_to);
+		if (index && this.devices[index].registered_to) return this.getUserDataByEmail(this.devices[index].registered_to);
 
 		return false;
 	}
 
 	getUserDataByEmail(email) {
 
-		let index = getUserIndexByEmail(email);
+		let index = this.getUserIndexByEmail(email);
 
 		if (index && this.users[index] && this.users[index].email === email) {
 			let {first_name, last_name, email, profile_pic, settings} = this.users[index];
@@ -157,14 +157,14 @@ class BellData {
 
 	getUserDataByDeviceId(id) {
 
-		let index = getDeviceIndexById(id);
+		let index = this.getDeviceIndexById(id);
 
-		if (index && this.devices[index] && this.devices[index].id === id) {
+		if (typeof index === 'number' && this.devices[index] && this.devices[index].id === id) {
 
 			let cache = this.devices[index];
 
 			if (cache.registered_to) {
-				let res = getUserDataByEmail(cache.registered_to);
+				let res = this.getUserDataByEmail(cache.registered_to);
 				if (res) {
 					res.registered = true;
 					return res;
@@ -175,7 +175,7 @@ class BellData {
 
 		}
 
-		return false;
+		return { error: 'no_account_exists' };
 
 	}
 
@@ -186,7 +186,7 @@ class BellData {
 	}
 }
 
-module.exports = new BellData((process.env.NODE_ENV === 'production') ? '/home/centos/serve/data/bell_data.json' : './bell_data.json');
+module.exports = new BellData((process.env.NODE_ENV === 'production') ? '/home/centos/serve/data/bell_data.json' : './app/api/dev_data/bell_data.json');
 
 
 
