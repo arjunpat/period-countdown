@@ -16,9 +16,9 @@ class RequestManager {
 		}
 
 		if (params.type === 'POST') {
-			options.headers = new Headers({
-				'Content-Type': 'application/json'
-			});
+			options.headers = {
+				'Content-Type': 'application/json;charset=UTF-8'
+			};
 			options.body = params.data;
 		}
 
@@ -33,9 +33,51 @@ class RequestManager {
 		});
 	}
 
-	static sendError(data) {
-		// TODO: do this
-		console.error(data);
+	static init() {
+		if (window.localStorage.device_id)
+			return this.ajax({
+				url: '/api/v1/init',
+				type: 'POST',
+				data: JSON.stringify({
+					data: {
+						device_id: window.localStorage.device_id
+					}
+				})
+			}).then(res => res.json.data);
+		else {
+
+			let temp = {
+				chrome: !!window.chrome,
+				int_exp: false || !!document.documentMode,
+				edge: !this.int_exp && !!window.StyleMedia,
+				safari: /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]" })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)),
+				firefox: typeof InstallTrigger !== 'undefined',
+				opera: (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
+			}
+
+			let browser = {}
+
+			for (let val in temp)
+				if (temp.hasOwnProperty(val) && temp[val] === true)
+					browser[val] = true;
+
+			return this.ajax({
+				url: '/api/v1/init',
+				type: 'POST',
+				data: JSON.stringify({
+					data: {
+						user_agent: window.navigator.userAgent,
+						platform: window.navigator.platform,
+						browser
+					}
+				})
+			}).then(res => {
+				if (res.json.success)
+					window.localStorage.device_id = res.json.data.device_id;
+
+				return res.json.data;
+			});
+		}
 	}
 
 	static sendAnalytics(data) {
@@ -62,5 +104,10 @@ class RequestManager {
 		return this.ajax({
 			url: '/api/calendar'
 		}).then(res => res.json);
+	}
+
+	static sendError(data) {
+		// TODO: do this
+		console.error(data);
 	}
 }

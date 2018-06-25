@@ -42,6 +42,7 @@ const server = http.createServer((req, res) => {
 				success: false,
 				error: 'bad_request'
 			}));
+			console.log(err);
 		});
 
 	} else { // if is a static file

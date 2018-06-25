@@ -13,7 +13,7 @@ class BellTimer {
 
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
-		this.calculateOffset(5);
+		//this.calculateOffset(5);
 
 		console.timeEnd('bellsetup');
 	}

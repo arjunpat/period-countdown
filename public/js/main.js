@@ -31,6 +31,13 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 	//elements.hidePreloader();
 
 	console.timeEnd('setup');
+
+
+	return RequestManager.init();
+}).then(data => {
+	// now the not-as-crucial stuff
+	console.log(data);
+
 }).catch(err => {
 	//elements.showErrorScreen();
 	RequestManager.sendError({
@@ -38,7 +45,6 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 		type: 'client_page_load',
 		description: err.stack
 	});
-	console.log(err);
 });
 
 //console.timeEnd('setup');

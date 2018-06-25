@@ -11,7 +11,6 @@ const timingData = require('./timing-data.js');
 
 module.exports = (req, res, path) => new Promise((resolve, reject) => {
 
-
 	switch (path.layers[1]) {
 		case 'time':
 
@@ -65,7 +64,11 @@ module.exports = (req, res, path) => new Promise((resolve, reject) => {
 
 				req.on('end', () => {
 
-					postData = JSON.parse(postData);
+					try {
+						postData = JSON.parse(postData);
+					} catch (e) {
+						resolve({ valid: false });
+					}
 
 					resolve(v1(path.path.substring(7, path.path.length), postData));
 
