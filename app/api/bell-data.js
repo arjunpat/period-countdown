@@ -120,6 +120,18 @@ class BellData {
 
 	// edit/augment user, devices, etc.
 
+	registerDevice(id, email) {
+
+		let index = this.getDeviceIndexById(id);
+
+		if (typeof index === 'number' && this.devices[index] && this.devices[index].id === id) {
+			this.devices[index].registered_to = email;
+		}
+
+		this.writeDataAsync();
+
+	}
+
 	editUser(params) {
 
 	}
@@ -132,27 +144,17 @@ class BellData {
 
 		if (index && this.devices[index].registered_to) return this.getUserDataByEmail(this.devices[index].registered_to);
 
-		return false;
+		return { error: 'no_device_exists' };
 	}
 
 	getUserDataByEmail(email) {
 
 		let index = this.getUserIndexByEmail(email);
 
-		if (index && this.users[index] && this.users[index].email === email) {
-			let {first_name, last_name, email, profile_pic, settings} = this.users[index];
+		if (typeof index === 'number' && this.users[index] && this.users[index].email === email)
+			return this.users[index];
 
-			return {
-				first_name,
-				last_name,
-				email,
-				profile_pic,
-				settings
-			}
-
-		}
-
-		return false;
+		return { error: 'no_account_exists' };
 	}
 
 	getUserDataByDeviceId(id) {
@@ -177,6 +179,13 @@ class BellData {
 
 		return { error: 'no_account_exists' };
 
+	}
+
+	isThisMe(a, b) {
+
+		for (let val of ['profile_pic', 'email', 'first_name', 'last_name'])
+			if (a[val] !== b[val]) return false;
+		return true;
 	}
 
 	// analytics

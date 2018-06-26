@@ -53,3 +53,5 @@ window.onresize = () => {
 	elements.updateScreenFontSize();
 	elements.dimensionCanvas();
 }
+
+var googleApiDidLoad = elements.googleApiDidLoad;

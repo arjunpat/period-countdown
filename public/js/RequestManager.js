@@ -17,7 +17,7 @@ class RequestManager {
 
 		if (params.type === 'POST') {
 			options.headers = {
-				'Content-Type': 'application/json;charset=UTF-8'
+				'Content-Type': 'application/json; charset=UTF-8'
 			};
 			options.body = params.data;
 		}
@@ -43,7 +43,14 @@ class RequestManager {
 						device_id: window.localStorage.device_id
 					}
 				})
-			}).then(res => res.json.data);
+			}).then(res => {
+
+				if (res.json.data.error) {
+					window.localStorage.removeItem('device_id');
+					return this.init();
+				}
+				else return res.json.data;
+			});
 		else {
 
 			let temp = {
@@ -78,6 +85,19 @@ class RequestManager {
 				return res.json.data;
 			});
 		}
+	}
+
+	static login(account) {
+		return this.ajax({
+			url: '/api/v1/write/login',
+			type: 'POST',
+			data: JSON.stringify({
+				data: {
+					device_id: window.localStorage.device_id,
+					account
+				}
+			})
+		}).then(res => res.json.data);
 	}
 
 	static sendAnalytics(data) {

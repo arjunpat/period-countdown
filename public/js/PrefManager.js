@@ -12,7 +12,7 @@ class PrefManager {
 			this.setAllPreferences(JSON.parse(window.localStorage.prefs))
 		else {
 			// default prefs
-			this.setTheme(0);	
+			this.setTheme(0);
 		}
 	}
 
