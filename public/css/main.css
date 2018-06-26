@@ -1,3 +1,7 @@
+:root {
+	--main-yellow-color: #fccb0b;
+}
+
 /* all reset settings */
 * {
 	margin: 0;
@@ -12,6 +16,10 @@ a {
 }
 a:hover {
 	text-decoration: underline;
+}
+
+.material-icons {
+	vertical-align: middle;
 }
 
 /* canvas and canvas container */
@@ -35,7 +43,90 @@ a:hover {
 	display: inline-block;
 }
 
+#google-signin {
+	top: 0;
+	right: 0;
+	position: fixed;
+	padding: 25px;
+}
 
+#google-signin > button {
+	background: #c1432f;
+	padding: 5px;
+	border-radius: 3px;
+	border: 0;
+	outline: 0;
+	color: #fff;
+	height: 40px;
+	float: right;
+	width: 180px;
+	display: inline-block;
+	font-size: 16px;
+	transition: .2s background ease;
+	cursor: pointer;
+}
+
+#google-signin > button:hover {
+	background: #943324;
+}
+
+#settings-button {
+	bottom: 0;
+	right: 0;
+	padding: 45px;
+	position: fixed;
+}
+
+#settings-button > div {
+	background: var(--main-yellow-color);
+	border-radius: 50%;
+	padding: 18px;
+	cursor: pointer;
+	box-shadow: 0 6px 10px 0 rgba(0,0,0,0.14),0 1px 18px 0 rgba(0,0,0,0.12),0 3px 5px -1px rgba(0,0,0,0.2);
+	transition: all 0.2s ease;
+}
+
+#settings-button > div:hover {
+	box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14),0 3px 14px 2px rgba(0,0,0,0.12),0 5px 5px -3px rgba(0,0,0,0.2);
+}
+
+#settings-button > div > i {
+	color: black;
+	font-size: 40px;
+	cursor: pointer;
+	user-select: none;
+}
+
+/* tooltip css */
+[tooltip] {
+	position: relative;
+	display: inline-block;
+}
+
+[tooltip]::after {
+	content: attr(tooltip);
+	position: absolute;
+	left: 50%;
+	background: rgba(0, 0, 0, .42);
+	text-align: center;
+	color: #fff;
+	min-width: 60px;
+	border-radius: 3px;
+	font-size: 12px;
+	pointer-events: none;
+	padding: 4px 4px;
+	z-index: 5;
+	opacity: 0;
+	top: 85%;
+	margin-top: 8px;
+	transform: translateX(-50%) translateY(0%);
+	transition: opacity 150ms ease;
+}
+
+[tooltip]:hover::after,
+[tooltip]:hover::before {
+	opacity: 1
+}
 
 /* animations */
 

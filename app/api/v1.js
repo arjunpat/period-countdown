@@ -92,6 +92,8 @@ const bellData = require('./bell-data.js');
 // don't allow another analytics request for like 30 seconds
 // limit size of all requests
 
+// make sure it can handle the accidental creation of same id twice
+
 
 'POST /api/v1/write/login';
 {
@@ -112,7 +114,6 @@ const bellData = require('./bell-data.js');
 		status: 'new_user' // or returning_user
 	}
 }
-// then call /api/v1/load to actually then get the data
 
 'POST /api/v1/write/logout';
 {
@@ -202,8 +203,30 @@ module.exports = (path, postData) => {
 
 			break;
 		case '/write/login':
-			
-			
+		
+			let { device_id: id } = postData.data;
+			let {email, first_name, last_name, profile_pic} = postData.data.account;
+
+			if (!id || !email || !first_name || !last_name || !profile_pic) return responses.missing_data;
+
+			if (typeof bellData.getUserIndexByEmail(email) === 'number') { // already have an account
+
+				if (bellData.isThisMe(postData.data.account, bellData.getUserDataByEmail(email))) {
+					bellData.registerDevice(id, email);
+
+					return generateResponse(true, null, {
+						status: 'returning_user'
+					});
+				}
+			} else {
+
+				bellData.createNewUser(postData.data.account);
+				bellData.registerDevice(id, email);
+
+				return generateResponse(true, null, {
+					status: 'new_user'
+				});
+			}
 
 			break;
 		default:

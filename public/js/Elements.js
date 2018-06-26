@@ -8,10 +8,10 @@ class Elements {
 		this.dayType = document.getElementById('day-type');
 		this.currentPeriodText = document.getElementById('current-period-text');
 		this.timeLeft = document.getElementById('time-left');
-
+		this.settingsButton = document.getElementById('settings-button');
+		this.googleSignin = document.getElementById('google-signin');
 
 		this.canvas = new Canvas(this.mainCanvas);
-
 	}
 
 	updateScreen(time) {
@@ -68,6 +68,8 @@ class Elements {
 		// theme stuff
 		this.canvas.updateColors(values.theme.color.background, values.theme.color.completed);
 		this.mainCanvasOverlay.style.color = values.theme.color.text;
+		this.settingsButton.querySelector('div').style.background = values.theme.color.text;
+		this.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
 
 	}
 
@@ -80,6 +82,44 @@ class Elements {
 		this.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
 		this.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
 		this.timeLeft.style.fontSize = Math.min(170, dimension / (this.timeLeft.innerText.length - 3)) + 'px';
+	}
+
+	addGoogleApi() {
+		if (false) {
+
+		} else {
+			let script = document.createElement('script');
+			script.src = 'https://apis.google.com/js/platform.js?onload=googleApiDidLoad';
+			script.async = 'true';
+			script.defer = 'true';
+			document.body.append(script);
+
+		}
+	}
+
+	googleApiDidLoad() {
+
+		gapi.load('auth2', () => {
+			gapi.auth2.init({
+				client_id: '989074405041-k1nns8p3h7eb1s7c6e3j6ui5ohcovjso.apps.googleusercontent.com',
+				cookiepolicy: 'single_host_origin',
+				scope: 'profile email'
+			}).then(GoogleAuth => {
+				return GoogleAuth.signIn({
+					scope: 'profile email'
+				});
+			}).then(data => {
+				return RequestManager.login({
+					email: data.w3.U3,
+					first_name: data.w3.ofa,
+					last_name: data.w3.wea,
+					profile_pic: data.w3.Paa
+				});
+			}).then(data => {
+				console.log(data);
+			});
+		});
+
 	}
 
 	dimensionCanvas() { this.canvas.dimension() }

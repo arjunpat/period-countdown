@@ -28,11 +28,19 @@
 		<div id="main-canvas-container">
 			<canvas id="main-canvas"></canvas>
 			<div id="main-canvas-overlay">
-				<div style="bottom: 0; left: 0; position: fixed; padding: 50px;">
+				<div id="google-signin">
+					<button onclick="elements.addGoogleApi()">Sign in with Google</button>
+				</div>
+				<div style="bottom: 0; left: 0; position: fixed; padding: 50px; user-select: none;">
 					<h1 style="font-size: 50px; padding-left: 15px; font-family: 'Product Sans';">
 						<a href="https://bell.mvhs.club" id="day-type"></a> &#x25B8; <span id="current-period-text"></span>
 					</h1>
 					<h1 style="font-size: 230px;" id="time-left">45:30</h1>
+				</div>
+				<div id="settings-button">
+					<div tooltip="Settings">
+						<i class="material-icons">settings</i>
+					</div>
 				</div>
 			</div>
 		</div>

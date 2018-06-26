@@ -34,7 +34,10 @@ const server = http.createServer((req, res) => {
 
 			} else {
 
-				cache.getFile('/404.html').then(file => { res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content) });
+				res.end(JSON.stringify({
+					success: false,
+					error: 'bad_request'
+				}));
 
 			}
 		}).catch(err => {
