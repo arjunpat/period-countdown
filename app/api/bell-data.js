@@ -168,7 +168,6 @@ class BellData {
 			if (cache.registered_to) {
 				let res = this.getUserDataByEmail(cache.registered_to);
 				if (res) {
-					res.registered = true;
 					return res;
 				}
 			}

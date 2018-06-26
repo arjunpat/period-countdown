@@ -150,8 +150,6 @@ const bellData = require('./bell-data.js');
 }*/
 
 
-
-
 var generateResponse = (success, error = null, data = null) => {
 	let res = {
 		valid: true,
@@ -195,7 +193,18 @@ module.exports = (path, postData) => {
 			} else if (device_id) {
 				// if the device has already been registered
 				
-				return generateResponse(true, null, bellData.getUserDataByDeviceId(device_id));
+				let dataToSend;
+
+				let {email, profile_pic, first_name, last_name, setting, error} = bellData.getUserDataByDeviceId(device_id);
+
+				if (error)
+					dataToSend = { error };
+				else if (email && profile_pic)
+					dataToSend = {email, profile_pic, first_name, last_name};
+				else
+					dataToSend = { registered: false };
+
+				return generateResponse(true, null, dataToSend);
 
 			}
 
@@ -203,7 +212,7 @@ module.exports = (path, postData) => {
 
 			break;
 		case '/write/login':
-		
+
 			let { device_id: id } = postData.data;
 			let {email, first_name, last_name, profile_pic} = postData.data.account;
 

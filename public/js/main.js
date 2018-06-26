@@ -1,13 +1,13 @@
 console.time('setup');
 
-var bellTimer, elements, analytics, prefManager;
+let bellTimer, elements, analytics, prefManager;
 
 // instatiate classes
 elements = new Elements();
 analytics = new Analytics();
 prefManager = new PrefManager();
 
-var mainLoop = () => {
+let mainLoop = () => {
 
 	let time = bellTimer.getRemainingTime();
 
@@ -32,7 +32,6 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 
 	console.timeEnd('setup');
 
-
 	return RequestManager.init();
 }).then(data => {
 	// now the not-as-crucial stuff
@@ -54,4 +53,4 @@ window.onresize = () => {
 	elements.dimensionCanvas();
 }
 
-var googleApiDidLoad = elements.googleApiDidLoad;
+let googleApiDidLoad = elements.googleApiDidLoad;
