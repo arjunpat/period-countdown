@@ -1,13 +1,13 @@
 console.time('setup');
 
-let bellTimer, elements, analytics, prefManager;
+var bellTimer, elements, analytics, prefManager;
 
 // instatiate classes
 elements = new Elements();
 analytics = new Analytics();
 prefManager = new PrefManager();
 
-let mainLoop = () => {
+var mainLoop = () => {
 
 	let time = bellTimer.getRemainingTime();
 
@@ -53,4 +53,34 @@ window.onresize = () => {
 	elements.dimensionCanvas();
 }
 
-let googleApiDidLoad = elements.googleApiDidLoad;
+var googleApiDidLoad = () => {
+
+	gapi.load('auth2', () => {
+		gapi.auth2.init({
+			client_id: '989074405041-k1nns8p3h7eb1s7c6e3j6ui5ohcovjso.apps.googleusercontent.com',
+			cookiepolicy: 'single_host_origin',
+			scope: 'profile email'
+		}).then(GoogleAuth => {
+			return GoogleAuth.signIn({
+				scope: 'profile email'
+			});
+		}).then(data => {
+			let account = {
+				email: data.w3.U3,
+				first_name: data.w3.ofa,
+				last_name: data.w3.wea,
+				profile_pic: data.w3.Paa
+			}
+			window.localStorage.account = JSON.stringify(account);
+			return RequestManager.login(account);
+		}).then(data => {
+			if (data.success) {
+				
+			} else {
+				window.alert('Our servers are having a bad day. Please try again another time.');
+			}
+		}).catch(e => {
+		});
+	});
+
+}
