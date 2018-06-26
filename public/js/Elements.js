@@ -85,41 +85,16 @@ class Elements {
 	}
 
 	addGoogleApi() {
-		if (false) {
 
-		} else {
+		try {
+			if (gapi) this.googleApiDidLoad()
+		} catch (e) {
 			let script = document.createElement('script');
 			script.src = 'https://apis.google.com/js/platform.js?onload=googleApiDidLoad';
 			script.async = 'true';
 			script.defer = 'true';
 			document.body.append(script);
-
 		}
-	}
-
-	googleApiDidLoad() {
-
-		gapi.load('auth2', () => {
-			gapi.auth2.init({
-				client_id: '989074405041-k1nns8p3h7eb1s7c6e3j6ui5ohcovjso.apps.googleusercontent.com',
-				cookiepolicy: 'single_host_origin',
-				scope: 'profile email'
-			}).then(GoogleAuth => {
-				return GoogleAuth.signIn({
-					scope: 'profile email'
-				});
-			}).then(data => {
-				return RequestManager.login({
-					email: data.w3.U3,
-					first_name: data.w3.ofa,
-					last_name: data.w3.wea,
-					profile_pic: data.w3.Paa
-				});
-			}).then(data => {
-				console.log(data);
-			});
-		});
-
 	}
 
 	dimensionCanvas() { this.canvas.dimension() }
