@@ -64,7 +64,13 @@ var render = {
 			console.timeEnd('index');
 	},
 	settings: () => {
+
+		console.time('settings');
+
+		document.title = 'Settings - Bell Countdown';
 		elements.switchTo('settings');
+
+		console.timeEnd('settings');
 	}
 }
 
@@ -79,6 +85,8 @@ var load = (path, shouldPushHistory = false) => {
 }
 
 load(window.location.pathname, false);
+
+
 
 
 // has to be global for google

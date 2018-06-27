@@ -39,7 +39,7 @@ class Elements {
 		if (document.hasFocus() || true) {
 			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99))
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
-			else if (!this.canvas.animationInterval)
+			else if (!this.canvas.animationInterval || Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 2)
 				this.canvas.animate(Math.floor(percent_completed) / 100);
 
 
@@ -90,7 +90,7 @@ class Elements {
 				setTimeout(() => { screens[i].style.opacity = '1'; }, 20);
 			} else {
 				screens[i].style.opacity = '0';
-				setTimeout(() => { screens[i].style.display = 'none'; }, 1e3);
+				setTimeout(() => { screens[i].style.display = 'none'; }, 250);
 			}
 		}
 	}

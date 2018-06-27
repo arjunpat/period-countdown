@@ -13,7 +13,7 @@ class BellTimer {
 
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
-		//this.calculateOffset(5);
+		this.calculateOffset(5);
 
 		console.timeEnd('bell-setup-time');
 	}
@@ -47,6 +47,8 @@ class BellTimer {
 		hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + (days * 24),
 		minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
 		seconds = Math.floor((distance % (1000 * 60)) / 1000);*/
+
+		if (Math.random() <= 0.0001) this.calculateOffset(5);
 
 		return {
 			percent_completed,
@@ -168,6 +170,7 @@ class BellTimer {
 
 	calculateOffset(numOfRequests) {
 
+		console.log('[BellTimer] Calculating offset at ' + (new Date).toString());
 		if (!numOfRequests) throw 'Missing arguments';
 
 		var offsets = [];
