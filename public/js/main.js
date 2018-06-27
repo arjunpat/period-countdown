@@ -64,7 +64,13 @@ var render = {
 			console.timeEnd('index');
 	},
 	settings: () => {
+
+		console.time('settings');
+
 		elements.switchTo('settings');
+		document.title = 'Settings - Bell Countdown';
+
+		console.timeEnd('settings');
 	}
 }
 
