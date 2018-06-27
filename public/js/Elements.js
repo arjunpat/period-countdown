@@ -3,6 +3,7 @@
 class Elements {
 	constructor() {
 		this.currentValues = {};
+		this.root = document.getElementById('root');
 		this.mainCanvas = document.getElementById('main-canvas');
 		this.mainCanvasOverlay = document.getElementById('main-canvas-overlay');
 		this.dayType = document.getElementById('day-type');
@@ -10,13 +11,14 @@ class Elements {
 		this.timeLeft = document.getElementById('time-left');
 		this.settingsButton = document.getElementById('settings-button');
 		this.googleSignin = document.getElementById('google-signin');
+		this.googleSignin.querySelector('button').onclick = this.addGoogleApi;
 
 		this.canvas = new Canvas(this.mainCanvas);
 	}
 
 	updateScreen(time) {
 
-		let {percent_completed, days, hours, minutes, seconds, period_name, day_type} = time;
+		let {percent_completed, days, hours, minutes, seconds, period_name, day_type, period_length} = time;
 
 		// make time human readable
 		if (seconds < 10) seconds = '0' + seconds;
@@ -37,7 +39,7 @@ class Elements {
 		if (document.hasFocus() || true) {
 			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99))
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
-			else
+			else if (!this.canvas.animationInterval)
 				this.canvas.animate(Math.floor(percent_completed) / 100);
 
 
@@ -77,6 +79,20 @@ class Elements {
 			this.googleSignin.querySelector('div > img').style.display = 'block';
 		}
 
+	}
+
+	switchTo(screen) {
+		let screens = this.root.children;
+
+		for (let i = 0; i < screens.length; i++) {
+			if (screens[i].id === screen) {
+				screens[i].style.display = 'block';
+				setTimeout(() => { screens[i].style.opacity = '1'; }, 20);
+			} else {
+				screens[i].style.opacity = '0';
+				setTimeout(() => { screens[i].style.display = 'none'; }, 1e3);
+			}
+		}
 	}
 
 	updateTextOfElementsArray(elements, text) {

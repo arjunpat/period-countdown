@@ -1,63 +1,87 @@
-console.time('setup');
-
-var bellTimer, elements, analytics, prefManager;
-
 // instatiate classes
-elements = new Elements();
-analytics = new Analytics();
-prefManager = new PrefManager();
-
-var mainLoop = () => {
-
-	let time = bellTimer.getRemainingTime();
-
-	time.period_name = prefManager.getPeriodName(time.period_name) || time.period_name;
-
-	elements.updateScreen(time);
+var bellTimer, elements = new Elements(), analytics = new Analytics, prefManager = new PrefManager;
 
 
-	setTimeout(mainLoop, 50);
-}
+var render = {
+	index: () => {
+		console.time('index');
 
-// get the calendar and presets from api
-Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
-	let [presets, calendar] = values;
+		elements.switchTo('index');
 
-	bellTimer = new BellTimer(presets, calendar);
-	
-	elements.updateElementsWithPreferences(prefManager.getAllPreferences()); // before first paint
-	mainLoop();
-	elements.updateScreenFontSize();
-	//elements.hidePreloader();
+		var mainLoop = () => {
 
-	return RequestManager.init();
-}).then(data => {
+			if (window.location.pathname === '/') {
 
-	if (data.email) {
-		prefManager.setGoogleAccount(data);
-		elements.updateElementsWithPreferences(prefManager.getAllPreferences());
+				let time = bellTimer.getRemainingTime();
+
+				time.period_name = prefManager.getPeriodName(time.period_name) || time.period_name;
+
+				elements.updateScreen(time);
+
+			}
+
+			setTimeout(mainLoop, 50);
+		}
+
+		if (!bellTimer) {
+			// get the calendar and presets from api
+			Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
+				let [presets, calendar] = values;
+
+				bellTimer = new BellTimer(presets, calendar);
+				
+				elements.updateElementsWithPreferences(prefManager.getAllPreferences()); // before first paint
+				mainLoop();
+				elements.updateScreenFontSize();
+				//elements.hidePreloader();
+
+				return RequestManager.init();
+			}).then(data => {
+
+				if (data.email) {
+					prefManager.setGoogleAccount(data);
+					elements.updateElementsWithPreferences(prefManager.getAllPreferences());
+				}
+
+				console.log(data);
+
+				console.timeEnd('index');
+
+			}).catch(err => {
+				//elements.showErrorScreen();
+				RequestManager.sendError({
+					where: 'browser',
+					type: 'client_page_load',
+					description: err.stack
+				});
+			});
+
+			window.onresize = () => {
+				elements.updateScreenFontSize();
+				elements.dimensionCanvas();
+			}
+		} else
+			console.timeEnd('index');
+	},
+	settings: () => {
+		elements.switchTo('settings');
 	}
-
-	console.log(data);
-
-	console.timeEnd('setup');
-
-}).catch(err => {
-	//elements.showErrorScreen();
-	RequestManager.sendError({
-		where: 'browser',
-		type: 'client_page_load',
-		description: err.stack
-	});
-});
-
-//console.timeEnd('setup');
-
-window.onresize = () => {
-	elements.updateScreenFontSize();
-	elements.dimensionCanvas();
 }
 
+var load = (path, shouldPushHistory = false) => {
+
+	if (shouldPushHistory) window.history.pushState({}, '', path);
+
+	if (path === '/')
+		render.index();
+	else if (path === '/settings')
+		render.settings();
+}
+
+load(window.location.pathname, false);
+
+
+// has to be global for google
 var googleApiDidLoad = () => {
 
 	gapi.load('auth2', () => {
