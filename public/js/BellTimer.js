@@ -9,13 +9,13 @@ class BellTimer {
 		this.offset = 0;
 		this.stats = {}
 
-		console.time('bellsetup');
+		console.time('bell-setup-time');
 
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
 		//this.calculateOffset(5);
 
-		console.timeEnd('bellsetup');
+		console.timeEnd('bell-setup-time');
 	}
 
 	getRemainingTime() {
@@ -26,12 +26,12 @@ class BellTimer {
 
 		this.makeSureTwoItemsInSchedule();
 
-		let lengthOfPeriod, dist, percent_completed, days, hours, minutes, seconds;
+		let period_length, dist, percent_completed, days, hours, minutes, seconds;
 
 		// calculations
-		lengthOfPeriod = this.schedule[1].f - this.schedule[0].f;
+		period_length = this.schedule[1].f - this.schedule[0].f;
 		dist = this.schedule[1].f - now;
-		percent_completed = 100 * (1 - (dist / lengthOfPeriod));
+		percent_completed = 100 * (1 - (dist / period_length));
 
 		if (percent_completed < 0 || percent_completed > 100) { // if offset later figures out that this comp time is way ahead/behind
 			this.prepareSchedule();
@@ -55,7 +55,8 @@ class BellTimer {
 			minutes,
 			seconds,
 			period_name: this.schedule[0].n,
-			day_type: this.calendar[this.getTodayDateString()].name
+			day_type: this.calendar[this.getTodayDateString()].name,
+			period_length
 		}
 
 	}
@@ -125,6 +126,15 @@ class BellTimer {
 		// parses the day's s by replacing from with epoch ms time
 		for (let i = 0; i < s.length; i++) {
 			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
+
+			// test if this is a period
+			if (typeof s[i].n === 'number') {
+				s.splice(i, 0, {
+					n: 'Passing',
+					f: s[i].f - 300000 // 5 minute passing period
+				});
+				i++; // so it doesn't try to parse itself
+			}
 		}
 
 		this.calendar[dateString].parsed = true;
@@ -206,8 +216,7 @@ class BellTimer {
 	}
 
 	getDateObjectFromDateString(dateString) {
-		let a = dateString.split('/');
-		return new Date(a[2], parseInt(a[0]) - 1, a[1], 0, 0, 0, 0);
+		return new Date(dateString);
 	}
 
 	getNextDayDateString(dateString) {

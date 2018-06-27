@@ -3,6 +3,7 @@ const fs = require('fs');
 
 const url_map = {
 	'/': '/index.html',
+	'/settings': '/index.html',
 	'/favicon.ico': '/images/1024.png'
 }
 
