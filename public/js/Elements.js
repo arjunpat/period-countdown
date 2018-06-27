@@ -71,6 +71,12 @@ class Elements {
 		this.settingsButton.querySelector('div').style.background = values.theme.color.text;
 		this.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
 
+		if (values.google_account.first_name) {
+			this.googleSignin.querySelector('button').style.display = 'none';
+			this.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
+			this.googleSignin.querySelector('div > img').style.display = 'block';
+		}
+
 	}
 
 	updateTextOfElementsArray(elements, text) {

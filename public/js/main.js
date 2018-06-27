@@ -30,12 +30,17 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 	elements.updateScreenFontSize();
 	//elements.hidePreloader();
 
-	console.timeEnd('setup');
-
 	return RequestManager.init();
 }).then(data => {
-	// now the not-as-crucial stuff
+
+	if (data.email) {
+		prefManager.setGoogleAccount(data);
+		elements.updateElementsWithPreferences(prefManager.getAllPreferences());
+	}
+
 	console.log(data);
+
+	console.timeEnd('setup');
 
 }).catch(err => {
 	//elements.showErrorScreen();
@@ -71,15 +76,18 @@ var googleApiDidLoad = () => {
 				last_name: data.w3.wea,
 				profile_pic: data.w3.Paa
 			}
-			window.localStorage.account = JSON.stringify(account);
+			prefManager.setGoogleAccount(account);
 			return RequestManager.login(account);
 		}).then(data => {
-			if (data.success) {
-				
+			if (data.status) {
+				elements.updateElementsWithPreferences(prefManager.getAllPreferences());
 			} else {
 				window.alert('Our servers are having a bad day. Please try again another time.');
 			}
 		}).catch(e => {
+			if (e.error === 'popup_blocked_by_browser') {
+				window.alert('It looks like your browser blocked Google from displaying their sign in screen. Please allow pop-ups and try again.')
+			}
 		});
 	});
 

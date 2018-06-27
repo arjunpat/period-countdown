@@ -29,7 +29,7 @@ let calendar = [
 			name: 'Summer Break'
 		}
 	}*/
-	{
+	/*{
 		from: '6/21/2018',
 		to: '6/25/2018',
 		content: {
@@ -49,7 +49,7 @@ let calendar = [
 				}
 			]
 		}
-	}
+	}*/
 ]
 
 let presets = {
