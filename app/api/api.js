@@ -52,7 +52,7 @@ module.exports = (req, res, path) => new Promise((resolve, reject) => {
 			if (req.method = 'POST') {
 
 				// wait for post data
-				var postData = '';
+				let postData = '';
 
 				req.on('data', chunk => {
 					postData += chunk.toString();
