@@ -1,0 +1,56 @@
+#not-found {
+	padding: 10px;
+	border-left: solid 20px #fccb0b;
+	background: #f6f6f6;
+	height: 100%;
+	animation: colorChangeNotFound 10s infinite;
+}
+
+#not-found h1,
+#not-found h2,
+#not-found h3,
+#not-found h4,
+#not-found h5,
+#not-found h6,
+#not-found p {
+	padding: 3px 0 3px 0;
+}
+
+#not-found a {
+	animation: colorChangeNotFound 10s infinite;
+	border-bottom: 2px solid black;
+	border-radius: 2px;
+	font-weight: bold;
+	transition: all 0.2s;
+}
+
+#not-found a:hover {
+	text-decoration: none;
+	font-size: 20px;
+	border-width: 4px;
+}
+
+#not-found code {
+	font-family: monospace;
+	background: #d9d9d9;
+	padding: 5px;
+	border-radius: 4px;
+}
+
+@keyframes colorChangeNotFound {
+	0% {
+		border-color: #d62d20;
+	}
+	25% {
+		border-color: #0057e7;
+	}
+	50% {
+		border-color: #008744;
+	}
+	75% {
+		border-color: #ffa700;
+	}
+	100% {
+		border-color: red;
+	}
+}

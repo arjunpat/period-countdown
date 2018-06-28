@@ -48,7 +48,8 @@ class BellTimer {
 		minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
 		seconds = Math.floor((distance % (1000 * 60)) / 1000);*/
 
-		if (Math.random() <= 0.0001) this.calculateOffset(5);
+
+		if (window.performance.now() % 900000 < 50) this.calculateOffset(5); // calc every 15 min
 
 		return {
 			percent_completed,

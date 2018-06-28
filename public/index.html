@@ -22,6 +22,9 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Material+Icons|Product+Sans" rel="stylesheet">
 
 		<link rel="stylesheet" type="text/css" href="/css/main.css">
+		<link rel="stylesheet" type="text/css" href="/css/index.css">
+		<link rel="stylesheet" type="text/css" href="/css/not-found.css">
+		<link rel="stylesheet" type="text/css" href="/css/settings.css">
 	</head>
 	<body>
 		<div id="root">
@@ -45,11 +48,19 @@
 							</div>
 						</div>
 					</div>
-				</div>	
+				</div>
 			</div>
-			<div id="settings" style="opacity: 0;">
+			<div id="settings">
 				hello! it works
 				<p onclick="load('/', true)">back</p>
+			</div>
+			<div id="not-found">
+				<div style="max-width: 750px; margin: 0 auto; margin-top: 25px;">
+					<h1 style="font-size: 75px; padding-bottom: 12px; font-weight: bold;">404. That’s an error.</h1>
+					<h2 style="font-size: 35px;">The server literally just can't even.</h2>
+					<h3><span id="location-uri">This link</span> is either outdated, inaccurate, or the server is just not having it today.</h3>
+					<p>Click <a href="javascript:void(0)" onclick="load('/', true)">here</a> to go back to the main site.</p>
+				</div>
 			</div>
 		</div>
 		<script type="text/javascript">console.time('parse-time')</script>
