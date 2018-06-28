@@ -6,21 +6,21 @@ class Utils {
 
 	mergeObjects(object1, object2) {
 
-		for (var key in object2) 
+		for (let key in object2) 
 			if (object2.hasOwnProperty(key))
 				object1[key] = object2[key];
 		return object1;
 	}
 
 	updateObjectWithValues(main, augment) {
-		for (var key in main)
+		for (let key in main)
 			if (main.hasOwnProperty(key) && augment.hasOwnProperty(key))
 				main[key] = augment[key];
 		return main;
 	}
 
 	areObjectStringsShorterThan(arr, length) {
-		for (var key in arr)
+		for (let key in arr)
 			if (arr.hasOwnProperty(key) && arr[key].length >= length)
 				return false;
 		return true;
@@ -35,13 +35,13 @@ class Utils {
 
 	parseURL(url) {
 
-		var indexOfSearch = url.indexOf('?')
+		let indexOfSearch = url.indexOf('?')
 		if (indexOfSearch === -1) indexOfSearch = url.length;
 
-		var path = url.substring(0, indexOfSearch);
-		var search = url.substring(indexOfSearch + 1, url.length);
+		let path = url.substring(0, indexOfSearch);
+		let search = url.substring(indexOfSearch + 1, url.length);
 		
-		var layers = path.split('/').filter((val) => {
+		let layers = path.split('/').filter((val) => {
 			return val !== '';
 		});
 
@@ -53,9 +53,9 @@ class Utils {
 	}
 
 	generateRandomID(length) {
-		var id = '';
+		let id = '';
 
-		for (var i = 0; i < length; i++)
+		for (let i = 0; i < length; i++)
 			id += this.alphaNumerics[Math.floor(Math.random() * 62)];
 
 		return id;

@@ -63,12 +63,14 @@ class Cache {
 	addFile(filename) {
 		//console.log('file added');
 
-		var reg = filename.match(/[^\\]*\.(\w+)$/);
+		let reg = filename.match(/[^\\]*\.(\w+)$/);
 
-		var encoding = 'utf8';
-		var stats = fs.statSync(filename);
+		let encoding = 'utf8';
+		let stats = fs.statSync(filename);
 
-		if (reg[1]) var headers = header_presets[reg[1]];
+		let headers;
+
+		if (reg[1]) headers = header_presets[reg[1]];
 		if (reg[1] === 'png') encoding = undefined;
 		headers.Date = new Date(stats.mtime).toString();
 
