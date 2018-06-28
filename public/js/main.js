@@ -71,6 +71,14 @@ var render = {
 		elements.switchTo('settings');
 
 		console.timeEnd('settings');
+	},
+	notFound: () => {
+		console.time('notFound');
+
+		document.title = 'Not Found - Bell Countdown';
+		elements.switchTo('not-found');
+
+		console.timeEnd('notFound');
 	}
 }
 
@@ -82,12 +90,17 @@ var load = (path, shouldPushHistory = false) => {
 		render.index();
 	else if (path === '/settings')
 		render.settings();
+	else
+		render.notFound();
 }
 
+// inital page render
 load(window.location.pathname, false);
 
-
-
+// makes sure that back and forwards buttons work
+window.onpopstate = () => {
+	load(window.location.pathname, false);
+}
 
 // has to be global for google
 var googleApiDidLoad = () => {
