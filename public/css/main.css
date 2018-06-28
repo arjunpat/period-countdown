@@ -25,7 +25,7 @@ a:hover {
 /* root stuff */
 
 #root > div {
-	transition: opacity 150ms ease;
+	transition: opacity 200ms ease;
 }
 
 /* canvas and canvas container */
