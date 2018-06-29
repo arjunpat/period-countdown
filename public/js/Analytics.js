@@ -7,13 +7,17 @@ class Analytics {
 
 	async a() { // checks data values and sends if all are there
 
+		if (this.sent) return;
+
 		let data;
 		if (this.pathname === '/' && this.device_id && this.theme && this.period && this.period_name) { // index page
 
+			this.sent = true;
 			await this.sleep(5);
 			let speedInfo = window.performance.timing;
 			data = {
 				device_id: this.device_id,
+				pathname: this.pathname,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 					response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -31,15 +35,16 @@ class Analytics {
 			if (this.period !== this.period_name) data.prefs.period_name = this.period_name;
 		} else if (this.pathname && this.device_id && this.theme) {
 
+			this.sent = true;
 			await this.sleep(5);
 			let speedInfo = window.performance.timing;
 			data = {
 				device_id: this.device_id,
+				pathname: this.pathname,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 					response_time: speedInfo.responseEnd - speedInfo.requestStart,
 					dom_complete: speedInfo.domComplete - speedInfo.domLoading,
-					request_length: speedInfo.requestStart - speedInfo.responseEnd,
 	        		dns: speedInfo.domainLookupEnd - speedInfo.domainLookupStart,
 	        		ttfb: speedInfo.responseStart - speedInfo.navigationStart,
 	        		tti: speedInfo.domInteractive - speedInfo.domLoading
@@ -56,7 +61,6 @@ class Analytics {
 
 		RequestManager.sendAnalytics(data).then(data => {
 			if (data.success) {
-				this.sent = true;
 				console.log('[Analytics] analytics data sent!');
 			}
 		});
