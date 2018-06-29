@@ -8,15 +8,22 @@ var render = {
 
 		elements.switchTo('index');
 
+		let firstRun = true;
 		var mainLoop = () => {
 
 			if (window.location.pathname === '/') {
 
 				let time = bellTimer.getRemainingTime();
 
-				time.period_name = prefManager.getPeriodName(time.period_name) || time.period_name;
+				time.period_name = prefManager.getPeriodName(time.period) || time.period;
 
 				elements.updateScreen(time);
+
+				if (firstRun) {
+					analytics.setPeriod(time.period);
+					analytics.setPeriodName(time.period_name)
+					firstRun = false;
+				}
 
 			}
 
@@ -24,7 +31,7 @@ var render = {
 		}
 
 		if (!bellTimer) {
-			// get the calendar and presets from api
+			// startup the actually timer; only happens when u actually go to the index page
 			Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 				let [presets, calendar] = values;
 
@@ -34,17 +41,7 @@ var render = {
 				mainLoop();
 				elements.updateScreenFontSize();
 				//elements.hidePreloader();
-
-				return RequestManager.init();
-			}).then(data => {
-
-				if (data.email) {
-					prefManager.setGoogleAccount(data);
-					elements.updateElementsWithPreferences(prefManager.getAllPreferences());
-				}
-
-				console.log(data);
-
+			
 				console.timeEnd('index');
 
 			}).catch(err => {
@@ -94,13 +91,50 @@ var load = (path, shouldPushHistory = false) => {
 		render.notFound();
 }
 
+
+
+
+
+
 // inital page render
 load(window.location.pathname, false);
+
+RequestManager.init().then(data => {
+
+	if (data.email) {
+		prefManager.setGoogleAccount(data);
+		elements.updateElementsWithPreferences(prefManager.getAllPreferences());
+		analytics.setRegisteredTo(data.email);
+	}
+
+	if (window.localStorage.device_id) {
+		analytics.setDeviceId(window.localStorage.device_id);
+		analytics.setTheme(prefManager.getThemeName());
+	} else
+		throw "Device id was not established";
+
+	console.log(data);
+
+}).catch(err => {
+	RequestManager.sendError({
+		where: 'browser',
+		type: 'client_page_load',
+		description: err.stack
+	});
+});
 
 // makes sure that back and forwards buttons work
 window.onpopstate = () => {
 	load(window.location.pathname, false);
 }
+
+// sends analytics
+analytics.setPathname(window.location.pathname);
+
+
+
+
+
 
 // has to be global for google
 var googleApiDidLoad = () => {

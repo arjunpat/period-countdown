@@ -76,5 +76,6 @@ class PrefManager {
 		this.save();
 	}
 
+	getThemeName() { return this.theme.name }
 
 }

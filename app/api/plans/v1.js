@@ -78,7 +78,8 @@
 			theme: 'asdf',
 			period: 4,
 			period_name: 'history'
-		}
+		},
+		pathname: '/settings'
 	}
 }
 'response';
