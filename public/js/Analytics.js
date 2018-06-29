@@ -11,12 +11,31 @@ class Analytics {
 		let data = {
 			device_id: this.device_id,
 			speed: {
-				dom_interactive: speedInfo.domInteractive - speedInfo.connectStart,
-				dom_complete: speedInfo.connectStart - speedInfo.domComplete,
-				request_length: speedInfo.requestStart - speedInfo.responseEnd
+				page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
+				response_time: speedInfo.responseEnd - speedInfo.requestStart,
+				dom_complete: speedInfo.domComplete - speedInfo.domLoading,
+				request_length: speedInfo.requestStart - speedInfo.responseEnd,
+        		dns: speedInfo.domainLookupEnd - speedInfo.domainLookupStart,
 			},
 			referer: window.document.referrer
 		}
+
+		page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
+
+        //responseTime
+        responseTime: speedInfo.responseEnd - speedInfo.requestStart,
+
+        //page render time
+        domComplete: speedInfo.domComplete - speedInfo.domLoading,
+
+        //dns lookup
+        dns: speedInfo.domainLookupEnd - speedInfo.domainLookupStart,
+
+        //time to first byte
+        ttfb: speedInfo.responseStart - speedInfo.navigationStart,
+
+        //time to interactive
+        tti: speedInfo.domInteractive - speedInfo.domLoading
 
 		if (this.pathname === '/' && this.device_id && this.theme && this.period && this.period_name) { // index page
 			data.prefs = {
