@@ -90,7 +90,7 @@ class Elements {
 				setTimeout(() => { screens[i].style.opacity = '1'; }, 20);
 			} else {
 				screens[i].style.opacity = '0';
-				setTimeout(() => { screens[i].style.display = 'none'; }, 250);
+				setTimeout(() => { screens[i].style.display = 'none'; }, 200);
 			}
 		}
 	}

@@ -57,7 +57,7 @@ class BellTimer {
 			hours,
 			minutes,
 			seconds,
-			period_name: this.schedule[0].n,
+			period: this.schedule[0].n,
 			day_type: this.calendar[this.getTodayDateString()].name,
 			period_length
 		}
