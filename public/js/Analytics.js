@@ -12,12 +12,12 @@ class Analytics {
 		let data;
 		if (this.pathname === '/' && this.device_id && this.theme && this.period && this.period_name) { // index page
 
-			this.sent = true;
-			await this.sleep(5);
+			await this.sleep();
 			let speedInfo = window.performance.timing;
 			data = {
 				device_id: this.device_id,
 				pathname: this.pathname,
+				referer: window.document.referrer,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 					response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -26,7 +26,6 @@ class Analytics {
 					ttfb: speedInfo.responseStart - speedInfo.navigationStart,
 					tti: speedInfo.domInteractive - speedInfo.domLoading
 				},
-				referer: window.document.referrer,
 				prefs: {
 					theme: this.theme,
 					period: this.period
@@ -35,12 +34,12 @@ class Analytics {
 			if (this.period !== this.period_name) data.prefs.period_name = this.period_name;
 		} else if (this.pathname && this.device_id && this.theme) {
 
-			this.sent = true;
-			await this.sleep(5);
+			await this.sleep();
 			let speedInfo = window.performance.timing;
 			data = {
 				device_id: this.device_id,
 				pathname: this.pathname,
+				referer: window.document.referrer,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 					response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -51,8 +50,7 @@ class Analytics {
 				},
 				prefs: {
 					theme: this.theme
-				},
-				referer: window.document.referrer
+				}
 			}
 
 		} else return;
@@ -98,6 +96,7 @@ class Analytics {
 	}
 
 	sleep(seconds) {
+		this.sent = true;
 		return new Promise((resolve, reject) => {
 			setTimeout(() => resolve(), seconds * 1e3);
 		});

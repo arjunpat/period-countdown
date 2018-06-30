@@ -9,13 +9,13 @@ class BellTimer {
 		this.offset = 0;
 		this.stats = {}
 
-		console.time('bell-setup-time');
+		Logger.time('BellTimer', 'setup');
 
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
 		this.calculateOffset(5);
 
-		console.timeEnd('bell-setup-time');
+		Logger.timeEnd('BellTimer', 'setup');
 	}
 
 	getRemainingTime() {
@@ -170,9 +170,9 @@ class BellTimer {
 	}
 
 	calculateOffset(numOfRequests) {
+		if (!numOfRequests) throw new TypeError('invalid arguments');
 
-		console.log('[BellTimer] Calculating offset at ' + (new Date).toString());
-		if (!numOfRequests) throw 'Missing arguments';
+		Logger.log('BellTimer', 'calculating offset');
 
 		var offsets = [];
 

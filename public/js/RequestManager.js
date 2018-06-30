@@ -1,10 +1,6 @@
 'use strict';
 
 class RequestManager {
-	
-	constructor() {
-
-	}
 
 	static ajax(params) {
 
