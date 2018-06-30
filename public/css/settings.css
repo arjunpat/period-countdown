@@ -25,15 +25,17 @@
 }
 
 #settings #close-button:hover {
-	background: #e2e0e0;
+	background: #e4e4e4;
+	color: #8c8c8c;
 }
 
 #settings #close-button:active {
-	background: #d6d4d4;
+	background: #bdbdbd;
+	color: #636262;
 }
 
 #settings .underlineAnimation {
-	background-image: linear-gradient(120deg, #fccb0b 0%, #fc900bad 100%);
+	background-image: linear-gradient(120deg, #fccb0b 0%, #fc590bad 100%);
 	background-repeat: no-repeat;
 	background-size: 100% 20px;
 	background-position: 0 86%;
