@@ -3,21 +3,8 @@
 class Elements {
 	constructor() {
 
-		// TODO organize by screen
 		this.currentValues = {};
 		this.root = document.getElementById('root');
-		/*this.mainCanvas = document.getElementById('main-canvas');
-		this.mainCanvasOverlay = document.getElementById('main-canvas-overlay');
-		this.dayType = document.getElementById('day-type');
-		this.currentPeriodText = document.getElementById('current-period-text');
-		this.timeLeft = document.getElementById('time-left');
-		this.settingsButton = document.getElementById('settings-button');
-		this.googleSignin = document.getElementById('google-signin');
-		this.googleSignin.querySelector('button').onclick = this.addGoogleApi;*/
-
-		this.settings = {
-			title: document.querySelector('#settings #title')
-		}
 
 		this.index = {
 			mainCanvas: document.getElementById('main-canvas'),
@@ -28,6 +15,11 @@ class Elements {
 			settingsButton: document.getElementById('settings-button'),
 			googleSignin: document.getElementById('google-signin')
 		}
+		this.settings = {
+			title: document.querySelector('#settings #title'),
+			changesSaved: document.getElementById('changes-saved')
+		}
+
 		this.index.googleSignin.querySelector('button').onclick = this.addGoogleApi;
 
 		this.canvas = new Canvas(this.index.mainCanvas);
@@ -134,6 +126,11 @@ class Elements {
 			script.defer = 'true';
 			document.body.append(script);
 		}
+	}
+
+	settingChangesSaving() {
+		this.settings.changesSaved.classList.add('changes-saving');
+		this.settings.changesSaved.querySelector('span').innerText = 'Saving...';
 	}
 
 	dimensionCanvas() { this.canvas.dimension() }

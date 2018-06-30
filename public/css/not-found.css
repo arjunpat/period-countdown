@@ -17,7 +17,7 @@
 }
 
 #not-found a {
-	animation: colorChangeNotFound 10s infinite;
+	animation: colorChange 10s infinite;
 	border-bottom: 2px solid black;
 	border-radius: 2px;
 	font-weight: bold;
@@ -37,20 +37,3 @@
 	border-radius: 4px;
 }
 
-@keyframes colorChangeNotFound {
-	0% {
-		border-color: #d62d20;
-	}
-	25% {
-		border-color: #0057e7;
-	}
-	50% {
-		border-color: #008744;
-	}
-	75% {
-		border-color: #ffa700;
-	}
-	100% {
-		border-color: red;
-	}
-}

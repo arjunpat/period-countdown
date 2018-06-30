@@ -13,9 +13,12 @@
 a {
 	color: inherit;
 	text-decoration: none;
+	border-bottom: 3px solid var(--main-yellow-color);
+	transition: padding .2s ease;
+	cursor: pointer;
 }
 a:hover {
-	text-decoration: underline;
+	padding-bottom: 3px;
 }
 
 html {
@@ -24,6 +27,15 @@ html {
 
 body {
 	height: 100%;
+}
+
+input,
+button,
+select,
+textarea {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
 }
 
 .material-icons {
@@ -70,7 +82,7 @@ body {
 
 [tooltip]:hover::after,
 [tooltip]:hover::before {
-	opacity: 1
+	opacity: 1;
 }
 
 /* animations */
@@ -80,9 +92,96 @@ body {
 		opacity: 0;
 		transform: translate3d(0, 100%, 0);
 	}
-
 	to {
 		opacity: 1;
 		transform: translate3d(0, 0, 0);
 	}
+}
+
+@keyframes colorChange {
+	0% {
+		border-color: #d62d20;
+	}
+	25% {
+		border-color: #0057e7;
+	}
+	50% {
+		border-color: #008744;
+	}
+	75% {
+		border-color: #ffa700;
+	}
+	100% {
+		border-color: red;
+	}
+}
+
+
+/* material form */
+
+.material-form {
+	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
+}
+.material-form div {
+	position: relative;
+}
+.material-input-group {
+	margin: auto;
+	margin-bottom: 60px;
+}
+.material-form input, .material-form textarea {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	height: 35px;
+	font-size: 16px;
+	border: none;
+	border-bottom: 1px solid #d9d9d9;
+	background-color: transparent;
+	border-radius: 0;
+}
+.material-form input:focus, .material-form textarea:focus {
+	outline: none;
+	border-width: 2px;
+	border-color: #4285f4;
+	transition: all .2s ease-out;
+}
+.has-value:valid + label {
+	top: -15px;
+	color: #757575;
+	font-size: 12px;
+}
+.material-form-control:focus + label {
+	top: -15px;
+	color: #4285f4;
+	font-size: 12px;
+}
+.material-form-control + label {
+	position: absolute;
+	top: 10px;
+	left: 3px;
+	font-size: 16px;
+	color: #999999;
+	transition: all .2s ease-out;
+	z-index: 2;
+	cursor: text;
+}
+.material-form-button {
+	background-color: #4285f4;
+	color: white;
+	font-size: 14px;
+	text-transform: uppercase;
+	font-weight: 500;
+	border: none;
+	height: 36px;
+	padding: 0 16px;
+	border-radius: 2px;
+	box-shadow:0 1px 3px #999999;
+	outline: none;
+	font-family: 'Roboto', sans-serif;
+}
+
+.material-form-button:disabled {
+	background: #a6a6a6;
 }
