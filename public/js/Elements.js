@@ -13,6 +13,10 @@ class Elements {
 		this.googleSignin = document.getElementById('google-signin');
 		this.googleSignin.querySelector('button').onclick = this.addGoogleApi;
 
+		this.settings = {
+			title: document.querySelector('#settings #title')
+		}
+
 		this.canvas = new Canvas(this.mainCanvas);
 	}
 

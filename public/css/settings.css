@@ -1,0 +1,56 @@
+#settings {
+	padding: 40px;
+}
+
+#settings #title {
+	font-size: 82px;
+	color: black;
+	padding: 4px;
+	font-weight: bold;
+	display: inline-block;
+}
+
+#settings #close-button {
+	color: #949494;
+	display: inline-block;
+	float: right;
+	cursor: pointer;
+	padding: 8px;
+    border-radius: 50%;
+    transition: all 0.1s ease;
+}
+
+#settings #close-button > i {
+	font-size: 52px;
+}
+
+#settings #close-button:hover {
+	background: #e2e0e0;
+}
+
+#settings #close-button:active {
+	background: #d6d4d4;
+}
+
+#settings .underlineAnimation {
+	background-image: linear-gradient(120deg, #fccb0b 0%, #fc900bad 100%);
+	background-repeat: no-repeat;
+	background-size: 100% 20px;
+	background-position: 0 86%;
+	animation: settingsUnderlineAnimate 1.2s cubic-bezier(0.67, 0.24, 0.22, 0.96);
+}
+
+@keyframes settingsUnderlineAnimate {
+	0% {
+		background-size: 0 0;
+	}
+	50% {
+		background-size: 100% 100%;
+	}
+	85% {
+		background-size: 100% 100%;
+	}
+	100% {
+		background-size: 100% 20px;
+	}
+}
