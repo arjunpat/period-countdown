@@ -39,17 +39,20 @@
 	background-repeat: no-repeat;
 	background-size: 100% 20px;
 	background-position: 0 86%;
-	animation: settingsUnderlineAnimate 1.2s cubic-bezier(0.67, 0.24, 0.22, 0.96);
+	animation: settingsUnderlineAnimate 2s cubic-bezier(0.67, 0.24, 0.22, 0.96);
 }
 
 @keyframes settingsUnderlineAnimate {
 	0% {
 		background-size: 0 0;
 	}
-	50% {
+	30% {
+		background-size: 0 0;
+	}
+	60% {
 		background-size: 100% 100%;
 	}
-	85% {
+	90% {
 		background-size: 100% 100%;
 	}
 	100% {

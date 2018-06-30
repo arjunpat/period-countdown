@@ -2,22 +2,35 @@
 
 class Elements {
 	constructor() {
+
+		// TODO organize by screen
 		this.currentValues = {};
 		this.root = document.getElementById('root');
-		this.mainCanvas = document.getElementById('main-canvas');
+		/*this.mainCanvas = document.getElementById('main-canvas');
 		this.mainCanvasOverlay = document.getElementById('main-canvas-overlay');
 		this.dayType = document.getElementById('day-type');
 		this.currentPeriodText = document.getElementById('current-period-text');
 		this.timeLeft = document.getElementById('time-left');
 		this.settingsButton = document.getElementById('settings-button');
 		this.googleSignin = document.getElementById('google-signin');
-		this.googleSignin.querySelector('button').onclick = this.addGoogleApi;
+		this.googleSignin.querySelector('button').onclick = this.addGoogleApi;*/
 
 		this.settings = {
 			title: document.querySelector('#settings #title')
 		}
 
-		this.canvas = new Canvas(this.mainCanvas);
+		this.index = {
+			mainCanvas: document.getElementById('main-canvas'),
+			mainCanvasOverlay: document.getElementById('main-canvas-overlay'),
+			dayType: document.getElementById('day-type'),
+			currentPeriodText: document.getElementById('current-period-text'),
+			timeLeft: document.getElementById('time-left'),
+			settingsButton: document.getElementById('settings-button'),
+			googleSignin: document.getElementById('google-signin')
+		}
+		this.index.googleSignin.querySelector('button').onclick = this.addGoogleApi;
+
+		this.canvas = new Canvas(this.index.mainCanvas);
 	}
 
 	updateScreen(time) {
@@ -48,22 +61,22 @@ class Elements {
 
 
 			if (this.currentValues.dayTypeText !== day_type) {
-				this.dayType.innerText = day_type;
+				this.index.dayType.innerText = day_type;
 				this.currentValues.dayTypeText = day_type;
 			}
 
 
 			if (this.currentValues.currentPeriodText !== period_name) {
-				this.currentPeriodText.innerText = period_name;
+				this.index.currentPeriodText.innerText = period_name;
 				// animation
 				
-				this.currentPeriodText.style.animation = '.6s updatePeriod'
-				setTimeout(() => this.currentPeriodText.style.animation = 'none', 1e3);
+				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
+				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
 				this.currentValues.currentPeriodText = period_name;
 			}
 
 			if (this.currentValues.timeLeftText !== timeString) {
-				this.timeLeft.innerText = timeString;
+				this.index.timeLeft.innerText = timeString;
 				this.currentValues.timeLeftText = timeString;
 			}
 
@@ -73,14 +86,14 @@ class Elements {
 	updateElementsWithPreferences(values) {
 		// theme stuff
 		this.canvas.updateColors(values.theme.color.background, values.theme.color.completed);
-		this.mainCanvasOverlay.style.color = values.theme.color.text;
-		this.settingsButton.querySelector('div').style.background = values.theme.color.text;
-		this.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
+		this.index.mainCanvasOverlay.style.color = values.theme.color.text;
+		this.index.settingsButton.querySelector('div').style.background = values.theme.color.text;
+		this.index.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
 
 		if (values.google_account.first_name) {
-			this.googleSignin.querySelector('button').style.display = 'none';
-			this.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
-			this.googleSignin.querySelector('div > img').style.display = 'block';
+			this.index.googleSignin.querySelector('button').style.display = 'none';
+			this.index.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
+			this.index.googleSignin.querySelector('div > img').style.display = 'block';
 		}
 
 	}
@@ -99,15 +112,15 @@ class Elements {
 		}
 	}
 
-	updateTextOfElementsArray(elements, text) {
-		for (let i = 0; i < elements.length; i++) elements[i].innerText = text;
-	}
-
 	updateScreenFontSize() {
 		let dimension = window.innerWidth;
-		this.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
-		this.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
-		this.timeLeft.style.fontSize = Math.min(170, dimension / (this.timeLeft.innerText.length - 3)) + 'px';
+		this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
+		this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
+		this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
+
+		if (dimension > 1000) {
+			document.body.style.overflow = 'hidden'; // locks screen
+		}
 	}
 
 	addGoogleApi() {
