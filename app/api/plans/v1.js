@@ -20,14 +20,14 @@
 		profile_pic: 'htasdf',
 		settings: {
 			period_names: {
-				period_0: 'Nothing',
-				period_1: '', // default name
-				period_2: 'Journalism',
-				period_3: 'Physical Education',
-				period_4: 'Bio',
-				period_5: 'History',
-				period_6: 'Spanish',
-				period_7: 'Survey Comp/Lit'
+				0: 'Nothing',
+				1: '', // default name
+				2: 'Journalism',
+				3: 'Physical Education',
+				4: 'Bio',
+				5: 'History',
+				6: 'Spanish',
+				7: 'Survey Comp/Lit'
 			},
 			theme: [
 				'default', 'default_reverse' // last being most recent

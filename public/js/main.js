@@ -64,11 +64,34 @@ var render = {
 
 		Logger.time('main', 'settings');
 
+		// webpage display
 		document.title = 'Settings - Bell Countdown';
 		elements.switchTo('settings');
 
+		// animation
 		elements.settings.title.classList.remove('underlineAnimation');
 		setTimeout(() => elements.settings.title.classList.add('underlineAnimation'), 20);
+
+		// form stuff
+		if (elements.settings.inputs[0].onkeyup === null)
+			for (let element of elements.settings.inputs) {
+				let period_num = element.id.substring(6, 7);
+				element.onkeyup = () => {
+					if (prefManager.setPeriodName(period_num, element.value))
+						Logger.log('main', 'period names saved');
+					else
+						Logger.log('main', 'period names not saved')
+				}
+				element.onblur = () => {
+					if (element.value.length > 0)
+						element.classList.add('has-value');
+					else
+						element.classList.remove('has-value');
+					element.onkeyup();
+				}
+				let name = prefManager.getPeriodName(period_num);
+				if (name) element.value = name, element.onblur();
+			}
 
 		Logger.timeEnd('main', 'settings');
 	},

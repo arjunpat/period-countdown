@@ -3,7 +3,7 @@
 }
 
 #settings #title {
-	font-size: 82px;
+	font: 88px 'Product Sans';
 	color: black;
 	padding: 4px;
 	font-weight: bold;
@@ -37,6 +37,7 @@
 
 #settings .underlineAnimation {
 	background-image: linear-gradient(120deg, #fccb0b 0%, #fc590bad 100%);
+	/*background-image: linear-gradient(120deg, #fccb0b 0%, #fccb0b 100%);*/
 	background-repeat: no-repeat;
 	background-size: 100% 20px;
 	background-position: 0 86%;
@@ -52,6 +53,7 @@
 	}
 	60%, 90% {
 		background-size: 100% 100%;
+
 	}
 	100% {
 		background-size: 100% 20px;

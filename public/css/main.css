@@ -78,6 +78,7 @@ textarea {
 	margin-top: 8px;
 	transform: translateX(-50%) translateY(0%);
 	transition: opacity 150ms ease;
+	transition-delay: 250ms;
 }
 
 [tooltip]:hover::after,

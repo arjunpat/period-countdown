@@ -17,7 +17,14 @@ class Elements {
 		}
 		this.settings = {
 			title: document.querySelector('#settings #title'),
-			changesSaved: document.getElementById('changes-saved')
+			changesSaved: document.getElementById('changes-saved'),
+			chooseSettings: document.getElementById('choose-settings'),
+			inputs: document.querySelectorAll('#choose-settings input')
+		}
+		this.modal = {
+			title: document.getElementById('modal-title'),
+			body: document.getElementById('modal-body'),
+			footer: document.getElementById('modal-footer')
 		}
 
 		this.index.googleSignin.querySelector('button').onclick = this.addGoogleApi;
