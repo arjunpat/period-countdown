@@ -6,7 +6,7 @@ class PrefManager {
 		this.theme = {
 			color: {}
 		}
-		this.period_names = {}
+		this.period_names = {};
 		this.google_account = {}
 
 		if (window.localStorage.prefs)
@@ -55,8 +55,14 @@ class PrefManager {
 	// period stuff
 
 	setPeriodName(num, name) {
-		if (name && name.length < 15 && name.length > 0) {
-			this.period_names[`period_${num}`] = name;
+		if (num >= 0 && num <= 7 && typeof name === 'string') {
+			if (name.length < 15 && name.length > 0)
+				this.period_names[num] = name;
+			else if (name.length === 0)
+				this.period_names[num] = undefined;
+			else
+				return false;
+			
 			this.save();
 			return true;
 		}
@@ -64,7 +70,7 @@ class PrefManager {
 	}
 
 	getPeriodName(num) {
-		return this.period_names[`period_${num}`];
+		return this.period_names[num];
 	}
 
 	setTheme(num) {
