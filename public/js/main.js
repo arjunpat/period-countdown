@@ -93,6 +93,10 @@ var render = {
 				if (name) element.value = name, element.onblur();
 			}
 
+		elements.fillPeriodNameInputs(prefManager.getAllPreferences());
+
+
+
 		Logger.timeEnd('main', 'settings');
 	},
 	notFound: () => {
@@ -163,6 +167,8 @@ console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padd
 
 
 
+
+
 // has to be global for google
 var googleApiDidLoad = () => {
 
@@ -184,12 +190,16 @@ var googleApiDidLoad = () => {
 			}
 			prefManager.setGoogleAccount(account);
 			return RequestManager.login(account);
-		}).then(data => {
-			if (data.status) {
-				elements.updateElementsWithPreferences(prefManager.getAllPreferences());
+		}).then(res => {
+			if (res.data.status === 'returning_user') {
+				prefManager.setGoogleAccount(res.data.user_data);
+			} else if (res.data.status === 'new_user') {
+
 			} else {
 				window.alert('Our servers are having a bad day. Please try again another time.');
 			}
+			
+			elements.updateElementsWithPreferences(prefManager.getAllPreferences());
 		}).catch(e => {
 			if (e.error === 'popup_blocked_by_browser') {
 				window.alert('It looks like your browser blocked Google from displaying their sign in screen. Please allow pop-ups and try again.')

@@ -4,7 +4,7 @@
 // on load
 
 'if device has id';
-'POST /api/v1/load';
+'POST /api/v1/init';
 {
 	data: {
 		device_id: 'H23jfksdD'
@@ -72,7 +72,7 @@
 		device_id: 'asJfiej2k3',
 		referer: 'https://www.google.com',
 		speed: {
-				
+			
 		},
 		prefs: {
 			theme: 'asdf',
@@ -122,11 +122,14 @@
 // you can keep the device in the database
 
 
-'POST /api/v1/update/period_names'
+// write something that automatically checks for preference updates (PrefManager) on client
+
+'POST /api/v1/update/period_name'
 {
 	a: 'ajpat1234@gmail.com',
 	data: {
-		period_0: 'hello' // updateObjectWithValues
+		period_num: 0,
+		name: 'hello' // has to be <= 20
 	}
 }
 

@@ -93,7 +93,7 @@ class RequestManager {
 					account
 				}
 			})
-		}).then(res => res.json.data);
+		}).then(res => res.json);
 	}
 
 	static sendAnalytics(data) {
@@ -101,6 +101,21 @@ class RequestManager {
 			url: '/api/v1/write/analytics',
 			type: 'POST',
 			data: JSON.stringify(data)
+		}).then(res => res.json);
+	}
+
+	static setPeriodName(a, period_num, name) {
+
+		return this.ajax({
+			url: '/api/v1/update/period_name',
+			type: 'POST',
+			data: JSON.stringify({
+				a,
+				data: {
+					period_num,
+					name
+				}
+			})
 		}).then(res => res.json);
 	}
 

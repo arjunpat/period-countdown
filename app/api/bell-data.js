@@ -42,7 +42,9 @@ class BellData {
 	}
 
 	writeDataAsync() {
-		fs.writeFile(this.filename, this.getPreparedData(), err => {});
+		fs.writeFile(this.filename, this.getPreparedData(), err => {
+			if (err) throw err;
+		});
 	}
 
 	getPreparedData() {
@@ -90,7 +92,7 @@ class BellData {
 		// adds this id to the index
 		this.user_index[email] = this.users.length - 1;
 
-		this.writeDataAsync();
+		this.writeDataSync();
 
 	}
 
@@ -113,7 +115,7 @@ class BellData {
 		// adds this id to the index
 		this.devices_index[id] = this.devices.length - 1;
 
-		this.writeDataAsync();
+		this.writeDataSync();
 
 		return id;
 	}
@@ -128,11 +130,28 @@ class BellData {
 			this.devices[index].registered_to = email;
 		}
 
-		this.writeDataAsync();
+		this.writeDataSync();
 
 	}
 
-	editUser(params) {
+	updatePeriodName(auth, period_num, name) {
+		let index = this.getUserIndexByEmail(auth);
+
+		if (typeof index === 'number' && this.users[index] && this.users[index].email === auth) {
+
+			let user = this.users[index];
+
+			user.settings.period_names = user.settings.period_names || {};
+
+			user.settings.period_names[period_num] = name;
+
+			this.writeDataSync();
+
+			return {};
+
+		}
+
+		return { error: 'no_user_exists' };
 
 	}
 
@@ -154,7 +173,7 @@ class BellData {
 		if (typeof index === 'number' && this.users[index] && this.users[index].email === email)
 			return this.users[index];
 
-		return { error: 'no_account_exists' };
+		return { error: 'no_user_exists' };
 	}
 
 	getUserDataByDeviceId(id) {
@@ -176,7 +195,7 @@ class BellData {
 
 		}
 
-		return { error: 'no_account_exists' };
+		return { error: 'no_user_exists' };
 
 	}
 

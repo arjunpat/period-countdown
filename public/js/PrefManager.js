@@ -46,6 +46,8 @@ class PrefManager {
 		}
 
 		if (values.settings) {
+			if (values.settings.period_names)
+				this.period_names = values.settings.period_names;
 			// do other loading stuff here
 		}
 
@@ -55,15 +57,26 @@ class PrefManager {
 	// period stuff
 
 	setPeriodName(num, name) {
-		if (num >= 0 && num <= 7 && typeof name === 'string') {
-			if (name.length < 15 && name.length > 0)
+		if (typeof num === 'string')
+			num = parseInt(num);
+
+		if (num >= 0 && num <= 7 && typeof name === 'string' && this.google_account && this.period_names[num] !== name) {
+
+			if (name.length <= 20 && name.length > 0)
 				this.period_names[num] = name;
 			else if (name.length === 0)
 				this.period_names[num] = undefined;
 			else
 				return false;
 			
-			this.save();
+			RequestManager.setPeriodName(this.google_account.email, num, name).then(data => {
+				if (data.success) {
+					this.save();
+				} else {
+					// tell user it is not saving
+				}
+			});
+
 			return true;
 		}
 		return false;

@@ -18,6 +18,7 @@ var generateResponse = (success, error = null, data = null) => {
 const responses = {
 	success: generateResponse(true),
 	missing_data: generateResponse(false, 'missing_data'),
+	bad_data: generateResponse(false, 'bad_data'),
 	authorization: generateResponse(false, 'missing_authorization'),
 	bad_path: generateResponse(false, 'bad_path')
 }
@@ -67,15 +68,25 @@ module.exports = (path, postData) => {
 			let { device_id: id } = postData.data;
 			let {email, first_name, last_name, profile_pic} = postData.data.account;
 
-			if (!id || !email || !first_name || !last_name || !profile_pic) return responses.missing_data;
+			if (!id || !email || !first_name || !last_name || !profile_pic)
+				return responses.missing_data;
 
 			if (typeof bellData.getUserIndexByEmail(email) === 'number') { // already have an account
 
-				if (bellData.isThisMe(postData.data.account, bellData.getUserDataByEmail(email))) {
+				let emailUserData = bellData.getUserDataByEmail(email);
+
+				if (bellData.isThisMe(postData.data.account, emailUserData)) {
 					bellData.registerDevice(id, email);
 
 					return generateResponse(true, null, {
-						status: 'returning_user'
+						status: 'returning_user',
+						user_data: {
+							email,
+							first_name,
+							last_name,
+							profile_pic,
+							settings: emailUserData.settings
+						}
 					});
 				}
 			} else {
@@ -87,6 +98,27 @@ module.exports = (path, postData) => {
 					status: 'new_user'
 				});
 			}
+
+			break;
+		case '/update/period_name':
+			let {a: auth} = postData;
+			let {period_num, name} = postData.data;
+
+			if (!auth || typeof period_num !== 'number' || typeof name !== 'string')
+				return responses.missing_data;
+
+			if (period_num > 7 || period_num < 0 || name.length > 20 || name.length < 0)
+				return responses.bad_data;
+
+			if (name.length === 0)
+				name = undefined;
+
+			let res = bellData.updatePeriodName(auth, period_num, name);
+
+			if (res.error)
+				return generateResponse(false, res.error);
+			else
+				return generateResponse(true);
 
 			break;
 		default:
