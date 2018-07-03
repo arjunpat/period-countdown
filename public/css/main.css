@@ -169,8 +169,8 @@ textarea {
 	cursor: text;
 }
 .material-form-button {
-	background-color: #4285f4;
-	color: white;
+	background-color: /*#4285f4*/var(--main-yellow-color);
+	color: /*#fff*/#000;
 	font-size: 14px;
 	text-transform: uppercase;
 	font-weight: 500;
@@ -181,6 +181,7 @@ textarea {
 	box-shadow:0 1px 3px #999999;
 	outline: none;
 	font-family: 'Roboto', sans-serif;
+	cursor: pointer;
 }
 
 .material-form-button:disabled {

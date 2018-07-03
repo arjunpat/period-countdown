@@ -22,7 +22,7 @@ module.exports = (req, res, path) => new Promise((resolve, reject) => {
 				content: JSON.stringify({
 					success: true,
 					data: {
-						ms: Date.now() - (1000 * 60 * 60 * 5)
+						ms: Date.now() - (1000 * 60 * 60 * 10)
 					}
 				})
 			});

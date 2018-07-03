@@ -56,30 +56,29 @@ class PrefManager {
 
 	// period stuff
 
-	setPeriodName(num, name) {
-		if (typeof num === 'string')
-			num = parseInt(num);
+	setPeriodNames(values) {
+		for (let num in values) {
+			let name = values[num];
 
-		if (num >= 0 && num <= 7 && typeof name === 'string' && this.google_account && this.period_names[num] !== name) {
+			if (typeof num === 'string')
+				num = parseInt(num);
 
-			if (name.length <= 20 && name.length > 0)
-				this.period_names[num] = name;
-			else if (name.length === 0)
-				this.period_names[num] = undefined;
-			else
-				return false;
-			
-			RequestManager.setPeriodName(this.google_account.email, num, name).then(data => {
-				if (data.success) {
-					this.save();
-				} else {
-					// tell user it is not saving
-				}
-			});
+			if (num >= 0 && num <= 7 && typeof name === 'string' && this.google_account && this.period_names[num] !== name) {
 
-			return true;
+				if (name.length <= 20 && name.length > 0)
+					this.period_names[num] = name;
+				else if (name.length === 0)
+					this.period_names[num] = undefined;
+			}
 		}
-		return false;
+
+		RequestManager.updatePeriodNames(this.google_account.email, this.period_names).then(data => {
+			if (data.success) {
+				this.save();
+			} else {
+				// tell user it is not saving
+			}
+		});
 	}
 
 	getPeriodName(num) {

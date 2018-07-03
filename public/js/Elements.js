@@ -19,15 +19,16 @@ class Elements {
 			title: document.querySelector('#settings #title'),
 			changesSaved: document.getElementById('changes-saved'),
 			chooseSettings: document.getElementById('choose-settings'),
-			inputs: document.querySelectorAll('#choose-settings input')
+			inputs: document.querySelectorAll('#choose-settings input'),
+			saveSettingsButton: document.getElementById('save-settings-button'),
+			closeButton: document.getElementById('settings-close'),
+			saved: true
 		}
 		this.modal = {
 			title: document.getElementById('modal-title'),
 			body: document.getElementById('modal-body'),
 			footer: document.getElementById('modal-footer')
 		}
-
-		this.index.googleSignin.querySelector('button').onclick = this.addGoogleApi;
 
 		this.canvas = new Canvas(this.index.mainCanvas);
 	}
@@ -103,8 +104,10 @@ class Elements {
 	fillPeriodNameInputs(period_names) {
 		for (let element of this.settings.inputs) {
 			let num = element.id.substring(6, 7);
-			if (period_names[num])
+			if (period_names[num]) {
 				element.value = period_names[num];
+				element.classList.add('has-value');
+			}
 		}
 	}
 
@@ -127,6 +130,8 @@ class Elements {
 		this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
 		this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
 		this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
+		this.index.settingsButton.style.padding = Math.min(45, dimension / 18) + 'px';
+		this.index.settingsButton.querySelector('div').style.padding = Math.min(18, dimension / 28) + 'px';
 
 		if (dimension > 1000) {
 			document.body.style.overflow = 'hidden'; // locks screen
@@ -134,21 +139,25 @@ class Elements {
 	}
 
 	addGoogleApi() {
-
-		try {
-			if (gapi) this.googleApiDidLoad()
-		} catch (e) {
-			let script = document.createElement('script');
-			script.src = 'https://apis.google.com/js/platform.js?onload=googleApiDidLoad';
-			script.async = 'true';
-			script.defer = 'true';
-			document.body.append(script);
-		}
+		let script = document.createElement('script');
+		script.src = 'https://apis.google.com/js/platform.js?onload=googleApiDidLoad';
+		script.async = 'true';
+		script.defer = 'true';
+		document.body.append(script);
 	}
 
-	settingChangesSaving() {
-		this.settings.changesSaved.classList.add('changes-saving');
-		this.settings.changesSaved.querySelector('span').innerText = 'Saving...';
+	settingChangesNotSaved() {
+		this.settings.saved = false;
+		this.settings.changesSaved.style.background = '#ff4141';
+		this.settings.changesSaved.querySelector('span').style.color = '#000';
+		this.settings.changesSaved.querySelector('span').innerHTML = 'Your changes have <span style="font-weight: bold;">not</span> been saved';
+	}
+
+	settingChangesSaved() {
+		this.settings.saved = true;
+		this.settings.changesSaved.style.background = '';
+		this.settings.changesSaved.querySelector('span').style.color = '';
+		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
 	}
 
 	dimensionCanvas() { this.canvas.dimension() }

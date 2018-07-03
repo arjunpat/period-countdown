@@ -21,7 +21,10 @@ class RequestManager {
 		let startTime = Date.now();
 
 		return fetch(params.url, options).then(async response => {
-			response.json = await response.json();
+			if (!params.response_type)
+				response.json = await response.json();
+			else if (params.response_type === 'text')
+				response.text = await response.text();
 
 			response.loadTime = Date.now() - startTime;
 
@@ -104,17 +107,14 @@ class RequestManager {
 		}).then(res => res.json);
 	}
 
-	static setPeriodName(a, period_num, name) {
+	static updatePeriodNames(a, values) {
 
 		return this.ajax({
-			url: '/api/v1/update/period_name',
+			url: '/api/v1/update/period_names',
 			type: 'POST',
 			data: JSON.stringify({
 				a,
-				data: {
-					period_num,
-					name
-				}
+				data: values
 			})
 		}).then(res => res.json);
 	}

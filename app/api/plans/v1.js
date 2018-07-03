@@ -124,12 +124,12 @@
 
 // write something that automatically checks for preference updates (PrefManager) on client
 
-'POST /api/v1/update/period_name'
+'POST /api/v1/update/period_names'
 {
 	a: 'ajpat1234@gmail.com',
 	data: {
-		period_num: 0,
-		name: 'hello' // has to be <= 20
+		0: 'hello', // has to be <= 20
+		2: 'wassup'
 	}
 }
 

@@ -14,6 +14,7 @@ class BellTimer {
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
 		this.calculateOffset(5);
+		setInterval(this.calculateOffset, 900000); // every 15 minutes
 
 		Logger.timeEnd('BellTimer', 'setup');
 	}
@@ -47,9 +48,6 @@ class BellTimer {
 		hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + (days * 24),
 		minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
 		seconds = Math.floor((distance % (1000 * 60)) / 1000);*/
-
-
-		if (window.performance.now() > 899900 && window.performance.now() % 900000 < 50) this.calculateOffset(5); // calc every 15 min
 
 		return {
 			percent_completed,
@@ -170,7 +168,7 @@ class BellTimer {
 	}
 
 	calculateOffset(numOfRequests) {
-		if (!numOfRequests) throw new TypeError('invalid arguments');
+		if (!numOfRequests) numOfRequests = 5;
 
 		Logger.log('BellTimer', 'calculating offset');
 
