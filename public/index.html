@@ -38,10 +38,10 @@
 							<div tooltip="Profile options"><img></div>
 						</div>
 						<div style="bottom: 0; left: 0; position: fixed; padding: 50px; user-select: none;">
-							<h1 style="font-size: 50px; padding-left: 15px; font-family: 'Product Sans';">
+							<span style="font-size: 50px; padding-left: 15px; font-family: 'Product Sans';">
 								<span href="https://bell.mvhs.club" id="day-type"></span> &#x25B8; <span id="current-period-text"></span>
-							</h1>
-							<h1 style="font-size: 230px;" id="time-left"></h1>
+							</span>
+							<span style="font-size: 230px;" id="time-left"></span>
 						</div>
 						<div id="settings-button">
 							<div tooltip="Settings" onclick="load('/settings', true)">
@@ -53,7 +53,7 @@
 			</div>
 			<div id="settings">
 				<span id="title">Your Settings</span>
-				<div id="close-button" tooltip="Close" onclick="load('/', true)"><i class="material-icons">close</i></div>
+				<div id="settings-close" tooltip="Close"><i class="material-icons">close</i></div>
 				<br>
 				<div id="changes-saved">
 					<span>All changes saved in the cloud</span>
@@ -98,25 +98,13 @@
 								</div>
 							</div>
 							<div class="third">
-								<div class="material-input-group">
-									<input type="text" id="period4_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period4_name">Period 4</label>
-								</div>
-								<div class="material-input-group">
-									<input type="text" id="period5_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period5_name">Period 5</label>
-								</div>
-								<div class="material-input-group">
-									<input type="text" id="period6_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period6_name">Period 6</label>
-								</div>
-								<div class="material-input-group">
-									<input type="text" id="period7_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period7_name">Period 7</label>
-								</div>
+								
 							</div>
 						</div>
 					</form>
+				</div>
+				<div>
+					<button id="save-settings-button" class="material-form-button" style="width: 160px; transition: 0.4s ease all;">Save my settings</button>
 				</div>
 			</div>
 			<div id="not-found">

@@ -24,7 +24,7 @@ var Logger = {
 		if (Logger.timings[from + action]) {
 			let time = window.performance.now() - Logger.timings[from + action].start;
 
-			Logger.writeOut(Logger.timings[from + action].from, `${action} took ${time}ms`);
+			Logger.writeOut(Logger.timings[from + action].from, `${action} took ${time.toFixed(8)}ms`);
 
 			Logger.timings[from + action] = undefined;
 		} else

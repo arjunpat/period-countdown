@@ -100,20 +100,18 @@ module.exports = (path, postData) => {
 			}
 
 			break;
-		case '/update/period_name':
-			let {a: auth} = postData;
-			let {period_num, name} = postData.data;
+		case '/update/period_names':
+			let {a: auth, data} = postData;
 
-			if (!auth || typeof period_num !== 'number' || typeof name !== 'string')
+			if (!auth || !data)
 				return responses.missing_data;
 
-			if (period_num > 7 || period_num < 0 || name.length > 20 || name.length < 0)
-				return responses.bad_data;
+			let valuesToEnter = {};
+			for (let i = 0; i <= 7; i++)
+				if (data[i] && typeof data[i] === 'string' && data[i].length <= 20)
+					valuesToEnter[i] = data[i];
 
-			if (name.length === 0)
-				name = undefined;
-
-			let res = bellData.updatePeriodName(auth, period_num, name);
+			let res = bellData.updatePeriodNames(auth, valuesToEnter);
 
 			if (res.error)
 				return generateResponse(false, res.error);

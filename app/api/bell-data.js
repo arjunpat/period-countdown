@@ -134,16 +134,14 @@ class BellData {
 
 	}
 
-	updatePeriodName(auth, period_num, name) {
+	updatePeriodNames(auth, values) {
 		let index = this.getUserIndexByEmail(auth);
 
 		if (typeof index === 'number' && this.users[index] && this.users[index].email === auth) {
 
 			let user = this.users[index];
 
-			user.settings.period_names = user.settings.period_names || {};
-
-			user.settings.period_names[period_num] = name;
+			user.settings.period_names = values;
 
 			this.writeDataSync();
 
