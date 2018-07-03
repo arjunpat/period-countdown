@@ -46,12 +46,13 @@ var schema = {
 			profile_pic: 'https://lh4.googleusercontent.com/-qrlLVeQgbJk/AAAAAAAAAAI/AAAAAAAAAAA/eDsCbPDRjOc/s96-c/photo.jpg',
 			settings: {
 				period_names: {
-					period_0: 'Nothing',
-					period_2: 'Journalism',
-					period_3: 'Physical Education',
-					period_4: 'Bio',
-					period_6: 'Spanish',
-					period_7: 'Survey Comp/Lit'
+					0: 'Nothing',
+					2: 'Journalism',
+					3: 'Physical Education',
+					4: 'Bio',
+					5: undefined,
+					6: 'Spanish',
+					7: 'Survey Comp/Lit'
 				},
 				theme: [
 					'default', 'default_reverse' // last being most recent, delete when too long

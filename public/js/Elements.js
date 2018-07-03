@@ -95,6 +95,17 @@ class Elements {
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
 		}
 
+		if (values.period_names)
+			this.fillPeriodNameInputs(values.period_names);
+
+	}
+
+	fillPeriodNameInputs(period_names) {
+		for (let element of this.settings.inputs) {
+			let num = element.id.substring(6, 7);
+			if (period_names[num])
+				element.value = period_names[num];
+		}
 	}
 
 	switchTo(screen) {
