@@ -72,8 +72,7 @@ var render = {
 
 			document.querySelector('#modal .modal-profile-options > button').onclick = () => {
 				gapi.auth2.getAuthInstance().signOut().then(data => {
-					prefManager.clearAll();
-					RequestManager.clearAll();
+					Storage.clearAll();
 					window.location.reload();
 				});
 			}
@@ -186,8 +185,8 @@ RequestManager.init().then(data => {
 	} else
 		elements.addGoogleApi();
 
-	if (window.localStorage.device_id) {
-		analytics.setDeviceId(window.localStorage.device_id);
+	if (Storage.deviceIdExists()) {
+		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeName());
 	} else
 		throw "Device id was not established";
@@ -245,12 +244,15 @@ var googleApiDidLoad = () => {
 						prefManager.setGoogleAccount(res.data.user_data);
 						elements.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
-
+						// OTHER CASE
 					} else {
+						// OTHER CASE
 						window.alert('Our servers are having a bad day. Please try again another time.');
 					}
 					
 					elements.updateElementsWithPreferences(prefManager.getAllPreferences());
+				}).catch(err => {
+					// OTHER CASE
 				});
 			}
 

@@ -58,7 +58,7 @@ class BellData {
 
 	// helper methods
 
-	getDeviceIndexById(id) {
+	getDeviceIndexByDeviceId(id) {
 
 		if (typeof this.devices_index[id] === 'number') return this.devices_index[id];
 		return false;
@@ -70,6 +70,18 @@ class BellData {
 		if (typeof this.user_index[email] === 'number') return this.user_index[email];
 		return false;
 
+	}
+
+	getUserIndexByDeviceId(id) {
+		let index = this.getDeviceIndexByDeviceId(id);
+
+		if (index !== false && this.devices[index] && this.devices[index].registered_to) {
+			index = this.getUserIndexByEmail(this.devices[index].registered_to);
+			if (index !== false && this.users[index])
+				return index;
+		}
+
+		return false;
 	}
 
 	// create user, devices, etc.
@@ -124,20 +136,19 @@ class BellData {
 
 	registerDevice(id, email) {
 
-		let index = this.getDeviceIndexById(id);
+		let index = this.getDeviceIndexByDeviceId(id);
 
-		if (typeof index === 'number' && this.devices[index] && this.devices[index].id === id) {
+		if (index !== false && this.devices[index] && this.devices[index].id === id)
 			this.devices[index].registered_to = email;
-		}
 
 		this.writeDataSync();
 
 	}
 
-	updatePeriodNames(auth, values) {
-		let index = this.getUserIndexByEmail(auth);
+	updatePeriodNames(device_id, values) {
+		let index = this.getUserIndexByDeviceId(device_id);
 
-		if (typeof index === 'number' && this.users[index] && this.users[index].email === auth) {
+		if (index !== false && this.users[index]) {
 
 			let user = this.users[index];
 
@@ -146,7 +157,6 @@ class BellData {
 			this.writeDataSync();
 
 			return {};
-
 		}
 
 		return { error: 'no_user_exists' };
@@ -156,7 +166,7 @@ class BellData {
 	updateUser(vals) {
 		let index = this.getUserIndexByEmail(vals.email);
 
-		if (typeof index === 'number' && this.users[index]) {
+		if (index !== false && this.users[index]) {
 			let user = this.users[index];
 
 			user.first_name = vals.first_name;
@@ -169,20 +179,11 @@ class BellData {
 
 	// get user, devices, etc.
 
-	getUserDataByDeviceId(id) {
-		
-		let index = this.getDeviceIndexById(id);
-
-		if (index && this.devices[index].registered_to) return this.getUserDataByEmail(this.devices[index].registered_to);
-
-		return { error: 'no_device_exists' };
-	}
-
 	getUserDataByEmail(email) {
 
 		let index = this.getUserIndexByEmail(email);
 
-		if (typeof index === 'number' && this.users[index] && this.users[index].email === email)
+		if (index !== false && this.users[index] && this.users[index].email === email)
 			return this.users[index];
 
 		return { error: 'no_user_exists' };
@@ -190,17 +191,15 @@ class BellData {
 
 	getUserDataByDeviceId(id) {
 
-		let index = this.getDeviceIndexById(id);
+		let index = this.getDeviceIndexByDeviceId(id);
 
-		if (typeof index === 'number' && this.devices[index] && this.devices[index].id === id) {
+		if (index !== false && this.devices[index] && this.devices[index].id === id) {
 
 			let cache = this.devices[index];
 
 			if (cache.registered_to) {
 				let res = this.getUserDataByEmail(cache.registered_to);
-				if (res) {
-					return res;
-				}
+				if (res) return res;
 			}
 
 			return { registered: false }

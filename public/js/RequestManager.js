@@ -33,14 +33,13 @@ class RequestManager {
 	}
 
 	static init() {
-		if (window.localStorage.device_id)
+		if (Storage.deviceIdExists())
 			return this.ajax({
 				url: '/api/v1/init',
 				type: 'POST',
 				data: JSON.stringify({
-					data: {
-						device_id: window.localStorage.device_id
-					}
+					device_id: Storage.getDeviceId(),
+					data: {}
 				})
 			}).then(res => {
 
@@ -79,7 +78,7 @@ class RequestManager {
 				})
 			}).then(res => {
 				if (res.json.success)
-					window.localStorage.device_id = res.json.data.device_id;
+					Storage.setDeviceId(res.json.data.device_id);
 
 				return res.json.data;
 			});
@@ -91,10 +90,8 @@ class RequestManager {
 			url: '/api/v1/write/login',
 			type: 'POST',
 			data: JSON.stringify({
-				data: {
-					device_id: window.localStorage.device_id,
-					account
-				}
+				device_id: Storage.getDeviceId(),
+				data: account
 			})
 		}).then(res => res.json);
 	}
@@ -103,17 +100,20 @@ class RequestManager {
 		return this.ajax({
 			url: '/api/v1/write/analytics',
 			type: 'POST',
-			data: JSON.stringify(data)
+			data: JSON.stringify({
+				device_id: Storage.getDeviceId(),
+				data: data
+			})
 		}).then(res => res.json);
 	}
 
-	static updatePeriodNames(a, values) {
+	static updatePeriodNames(values) {
 
 		return this.ajax({
 			url: '/api/v1/update/period_names',
 			type: 'POST',
 			data: JSON.stringify({
-				a,
+				device_id: Storage.getDeviceId(),
 				data: values
 			})
 		}).then(res => res.json);
@@ -140,9 +140,5 @@ class RequestManager {
 	static sendError(data) {
 		// TODO: do this
 		console.error(data);
-	}
-
-	static clearAll() {
-		window.localStorage.removeItem('device_id');
 	}
 }
