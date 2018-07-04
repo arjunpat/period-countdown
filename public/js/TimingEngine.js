@@ -1,22 +1,22 @@
 'use strict';
 
-class BellTimer {
+class TimingEngine {
 
 	constructor(presets, calendar) {
+		Logger.time('TimingEngine', 'setup');
+		
 		this.calendar = {};
 		this.schedule = [];
 		this.presets = JSON.stringify(presets);
 		this.offset = 0;
 		this.stats = {}
 
-		Logger.time('BellTimer', 'setup');
-
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
-		this.calculateOffset(5);
+		this.calculateOffset();
 		setInterval(this.calculateOffset, 900000); // every 15 minutes
 
-		Logger.timeEnd('BellTimer', 'setup');
+		Logger.timeEnd('TimingEngine', 'setup');
 	}
 
 	getRemainingTime() {
@@ -101,7 +101,7 @@ class BellTimer {
 		// otherwise
 		if (this.calendar[dateString]) {
 
-			// TODO: check if it doesn't have a name
+
 			if (!this.calendar[dateString].schedule) {
 
 				let {s, n} = this.getPresetSchedule(this.calendar[dateString].type) || this.getPresetScheduleFromDateString(dateString);
@@ -123,7 +123,7 @@ class BellTimer {
 
 		// on change of s, the calendar also changes
 		let s = this.calendar[dateString].schedule;
-
+	
 		// parses the day's s by replacing from with epoch ms time
 		for (let i = 0; i < s.length; i++) {
 			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
@@ -167,10 +167,9 @@ class BellTimer {
 		}
 	}
 
-	calculateOffset(numOfRequests) {
-		if (!numOfRequests) numOfRequests = 5;
+	calculateOffset(numOfRequests = 5) {
 
-		Logger.log('BellTimer', 'calculating offset');
+		Logger.log('TimingEngine', 'calculating offset');
 
 		var offsets = [];
 
@@ -187,10 +186,9 @@ class BellTimer {
 
 
 					this.offset = temp / offsets.length;
-					/*console.log(this.offset);
-					console.log(offsets);*/
 
-				}), 1000 * i);
+				}
+			), 1000 * i);
 		}
 
 	}

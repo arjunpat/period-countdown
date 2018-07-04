@@ -1,5 +1,5 @@
 // instatiate classes
-var bellTimer, elements = new Elements(), analytics = new Analytics, prefManager = new PrefManager;
+var timingEngine, elements = new Elements(), analytics = new Analytics, prefManager = new PrefManager;
 
 
 var render = {
@@ -13,7 +13,7 @@ var render = {
 
 			if (window.location.pathname === '/') {
 
-				let time = bellTimer.getRemainingTime();
+				let time = timingEngine.getRemainingTime();
 
 				time.period_name = prefManager.getPeriodName(time.period) || time.period;
 
@@ -21,7 +21,7 @@ var render = {
 
 				if (firstRun) {
 					analytics.setPeriod(time.period);
-					analytics.setPeriodName(time.period_name)
+					analytics.setPeriodName(time.period_name);
 					firstRun = false;
 				}
 
@@ -30,12 +30,12 @@ var render = {
 			setTimeout(mainLoop, 50);
 		}
 
-		if (!bellTimer) {
+		if (!timingEngine) {
 			// startup the actually timer; only happens when u actually go to the index page
 			Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 				let [presets, calendar] = values;
 
-				bellTimer = new BellTimer(presets, calendar);
+				timingEngine = new TimingEngine(presets, calendar);
 				
 				elements.updateElementsWithPreferences(prefManager.getAllPreferences()); // before first paint
 				mainLoop();
