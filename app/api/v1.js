@@ -30,10 +30,12 @@ module.exports = (path, postData) => {
 
 	if (!postData.data) return responses.missing_data;
 
+	let device_id = postData.device_id;
+
 	switch (path) {
 		case '/init':
 
-			let {user_agent, platform, browser, device_id} = postData.data;
+			let {user_agent, platform, browser} = postData.data;
 			
 			if (user_agent && platform && browser) {
 				// if we need to register a new device
@@ -65,20 +67,19 @@ module.exports = (path, postData) => {
 			break;
 		case '/write/login':
 
-			let { device_id: id } = postData.data;
-			let {email, first_name, last_name, profile_pic} = postData.data.account;
+			let {email, first_name, last_name, profile_pic} = postData.data;
 
-			if (!id || !email || !first_name || !last_name || !profile_pic)
+			if (!device_id || !email || !first_name || !last_name || !profile_pic)
 				return responses.missing_data;
 
 			if (typeof bellData.getUserIndexByEmail(email) === 'number') { // already have an account
 
 				let emailUserData = bellData.getUserDataByEmail(email);
 
-				if (!bellData.isThisMe(postData.data.account, emailUserData))
-					bellData.updateUser(postData.data.account);
+				if (!bellData.isThisMe(postData.data, emailUserData))
+					bellData.updateUser(postData.data);
 
-				bellData.registerDevice(id, email);
+				bellData.registerDevice(device_id, email);
 
 				return generateResponse(true, null, {
 					status: 'returning_user',
@@ -92,8 +93,8 @@ module.exports = (path, postData) => {
 				});
 			} else {
 
-				bellData.createNewUser(postData.data.account);
-				bellData.registerDevice(id, email);
+				bellData.createNewUser(postData.data);
+				bellData.registerDevice(device_id, email);
 
 				return generateResponse(true, null, {
 					status: 'new_user'
@@ -101,10 +102,15 @@ module.exports = (path, postData) => {
 			}
 
 			break;
-		case '/update/period_names':
-			let {a: auth, data} = postData;
+		case '/write/analytics':
 
-			if (!auth || !data)
+			return generateResponse(true);
+
+			break;
+		case '/update/period_names':
+			let {data} = postData;
+
+			if (!device_id || !data)
 				return responses.missing_data;
 
 			let valuesToEnter = {};
@@ -112,7 +118,7 @@ module.exports = (path, postData) => {
 				if (data[i] && typeof data[i] === 'string' && data[i].length <= 20)
 					valuesToEnter[i] = data[i];
 
-			let res = bellData.updatePeriodNames(auth, valuesToEnter);
+			let res = bellData.updatePeriodNames(device_id, valuesToEnter);
 
 			if (res.error)
 				return generateResponse(false, res.error);

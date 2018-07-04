@@ -15,7 +15,6 @@ class Analytics {
 			await this.sleep();
 			let speedInfo = window.performance.timing;
 			data = {
-				device_id: this.device_id,
 				pathname: this.pathname,
 				referer: window.document.referrer,
 				speed: {
@@ -37,7 +36,6 @@ class Analytics {
 			await this.sleep();
 			let speedInfo = window.performance.timing;
 			data = {
-				device_id: this.device_id,
 				pathname: this.pathname,
 				referer: window.document.referrer,
 				speed: {
@@ -59,7 +57,7 @@ class Analytics {
 
 		RequestManager.sendAnalytics(data).then(data => {
 			if (data.success) {
-				console.log('[Analytics] analytics data sent!');
+				Logger.log('Analytics', 'analytics data sent!');
 			}
 		});
 

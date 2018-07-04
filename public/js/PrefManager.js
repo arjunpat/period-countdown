@@ -5,12 +5,10 @@ class PrefManager {
 	constructor() {
 		this.initVars();
 
-		if (window.localStorage.prefs)
-			this.setAllPreferences(JSON.parse(window.localStorage.prefs))
-		else {
-			// default prefs
+		if (Storage.prefsExist())
+			this.setAllPreferences(Storage.getPrefs());
+		else // default prefs
 			this.setTheme(1);
-		}
 	}
 
 	initVars() {
@@ -38,7 +36,7 @@ class PrefManager {
 	}
 
 	save() {
-		window.localStorage.prefs = JSON.stringify(this.getAllPreferences());
+		Storage.setPrefs(this.getAllPreferences());
 	}
 
 	// settage and gettage of settings
@@ -79,7 +77,7 @@ class PrefManager {
 			}
 		}
 
-		RequestManager.updatePeriodNames(this.google_account.email, this.period_names).then(data => {
+		RequestManager.updatePeriodNames(this.period_names).then(data => {
 			if (data.success) {
 				this.save();
 			} else {
@@ -105,11 +103,6 @@ class PrefManager {
 
 	isLoggedIn() {
 		return !!this.google_account.signed_in;
-	}
-
-	clearAll() {
-		this.initVars();
-		window.localStorage.removeItem('prefs');
 	}
 
 }
