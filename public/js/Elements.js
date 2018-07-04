@@ -25,6 +25,7 @@ class Elements {
 			saved: true
 		}
 		this.modal = {
+			open: false,
 			title: document.getElementById('modal-title'),
 			body: document.getElementById('modal-body'),
 			footer: document.getElementById('modal-footer')
@@ -97,7 +98,6 @@ class Elements {
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
 
 			this.settings.saveSettingsButton.disabled = '';
-			this.settings.saveSettingsButton.parentElement.querySelector('a').style.display = 'none';
 
 		}
 
@@ -168,18 +168,18 @@ class Elements {
 		modalStyle.display = 'block';
 		setTimeout(() => {
 			modalStyle.opacity = '1';
-			modalStyle.transform = 'translateY(0) scaleY(1)';
-			modalStyle.height = 'auto';
+			modalStyle.transform = 'translateY(0)';
 		}, 20);
+		this.modal.open = true;
 	}
 
 	closeModal() {
 		document.querySelector('#root #modal').style.opacity = '0';
 		setTimeout(() => {
 			document.querySelector('#root #modal').style.display = 'none';
-			document.querySelector('#root #modal').style.transform = 'translateY(-500px) scaleY(0)';
-			document.querySelector('#root #modal').style.height = '0';
+			document.querySelector('#root #modal').style.transform = 'translateY(-500px)';
 		}, 400);
+		elements.modal.open = false; // TODO pls no reference like this! fix
 	}
 
 	addGoogleApi() {

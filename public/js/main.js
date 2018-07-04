@@ -20,6 +20,7 @@ var render = {
 				elements.updateScreen(time);
 
 				if (firstRun) {
+					window.onresize();
 					analytics.setPeriod(time.period);
 					analytics.setPeriodName(time.period_name);
 					firstRun = false;
@@ -57,8 +58,28 @@ var render = {
 				elements.updateScreenFontSize();
 				elements.dimensionCanvas();
 			}
+
+			elements.index.settingsButton.querySelector('div').onclick = () => {
+				load('/settings', true);
+
+				if (!prefManager.isLoggedIn())
+					setTimeout(() => elements.showModal('log-in-first'), 2000);
+			}
+
+			elements.index.googleSignin.querySelector('div').onclick = () => {
+				elements.showModal('modal-profile-options');
+			}
+
+			document.querySelector('#modal .modal-profile-options > button').onclick = () => {
+				gapi.auth2.getAuthInstance().signOut().then(data => {
+					prefManager.clearAll();
+					RequestManager.clearAll();
+					window.location.reload();
+				});
+			}
 		} else
 			Logger.timeEnd('main', 'index');
+
 	},
 	settings: () => {
 
@@ -119,11 +140,6 @@ var render = {
 				if (!elements.settings.saved)
 					elements.settings.saveSettingsButton.click();
 				load('/', true);
-			}
-
-		if (elements.settings.saveSettingsButton.parentElement.querySelector('a').onclick === null)
-			elements.settings.saveSettingsButton.parentElement.querySelector('a').onclick = () => {
-				elements.showModal('why-cannot-save-settings');
 			}
 
 		elements.fillPeriodNameInputs(prefManager.getAllPreferences().period_names);
@@ -210,7 +226,9 @@ var googleApiDidLoad = () => {
 			cookiepolicy: 'single_host_origin',
 			scope: 'profile email'
 		}).then(GoogleAuth => {
-			GoogleAuth.attachClickHandler(elements.index.googleSignin.querySelector('button'), {}, user => {
+			var gSuccess = user => {
+				if (elements.modal.open) elements.closeModal();
+
 				let data = user.getBasicProfile();
 
 				let account = {
@@ -225,6 +243,7 @@ var googleApiDidLoad = () => {
 				RequestManager.login(account).then(res => {
 					if (res.data.status === 'returning_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
+						elements.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
 
 					} else {
@@ -232,9 +251,15 @@ var googleApiDidLoad = () => {
 					}
 					
 					elements.updateElementsWithPreferences(prefManager.getAllPreferences());
-				})
+				});
+			}
 
-			}, () => {});
+			var gFail = () => {
+				window.alert('There was a problem signing you in. Please try again later.');
+			}
+
+			GoogleAuth.attachClickHandler(elements.index.googleSignin.querySelector('button'), {}, gSuccess, gFail);
+			GoogleAuth.attachClickHandler(document.querySelector('.log-in-first a'), {}, gSuccess, gFail);
 		});
 	});
 

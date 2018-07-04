@@ -3,7 +3,7 @@
 	border-left: solid 20px #fccb0b;
 	background: #f6f6f6;
 	height: 100%;
-	animation: colorChangeNotFound 10s infinite;
+	animation: colorChange 10s infinite;
 }
 
 #not-found h1,
@@ -36,4 +36,3 @@
 	padding: 5px;
 	border-radius: 4px;
 }
-
