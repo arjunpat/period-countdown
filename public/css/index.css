@@ -12,11 +12,17 @@
 
 #index #day-type {
 	font-family: 'Product Sans';
+	display: block;
 }
 
 #index #current-period-text {
 	font-family: 'Product Sans';
 	display: inline-block;
+	display: block;
+}
+
+#index #time-left {
+	font-size: 230px;
 }
 
 #index #google-signin {
