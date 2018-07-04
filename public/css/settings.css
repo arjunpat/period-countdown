@@ -94,3 +94,9 @@
 	margin: 0 1.5%;
 	display: inline-block;
 }
+
+
+#settings #save-settings-button {
+	width: 160px;
+	transition: 0.4s ease all;
+}

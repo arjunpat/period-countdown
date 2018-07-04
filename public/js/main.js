@@ -121,6 +121,11 @@ var render = {
 				load('/', true);
 			}
 
+		if (elements.settings.saveSettingsButton.parentElement.querySelector('a').onclick === null)
+			elements.settings.saveSettingsButton.parentElement.querySelector('a').onclick = () => {
+				elements.showModal('why-cannot-save-settings');
+			}
+
 		elements.fillPeriodNameInputs(prefManager.getAllPreferences().period_names);
 
 
