@@ -1,0 +1,5 @@
+# remove dev_data from repo
+dev_data/
+
+# get out! .DS_Store
+.DS_Store
