@@ -45,10 +45,10 @@ class RequestManager {
 			}).then(res => {
 
 				if (res.json.data.error) {
-					window.localStorage.removeItem('device_id');
+					this.clearAll();
 					return this.init();
-				}
-				else return res.json.data;
+				} else return res.json.data;
+				
 			});
 		else {
 
@@ -140,5 +140,9 @@ class RequestManager {
 	static sendError(data) {
 		// TODO: do this
 		console.error(data);
+	}
+
+	static clearAll() {
+		window.localStorage.removeItem('device_id');
 	}
 }

@@ -153,6 +153,20 @@ class BellData {
 
 	}
 
+	updateUser(vals) {
+		let index = this.getUserIndexByEmail(vals.email);
+
+		if (typeof index === 'number' && this.users[index]) {
+			let user = this.users[index];
+
+			user.first_name = vals.first_name;
+			user.last_name = vals.last_name;
+			user.profile_pic = vals.profile_pic;
+
+			this.writeDataSync();
+		}
+	}
+
 	// get user, devices, etc.
 
 	getUserDataByDeviceId(id) {

@@ -44,7 +44,7 @@
 							<span id="time-left"></span>
 						</div>
 						<div id="settings-button">
-							<div tooltip="Settings" onclick="load('/settings', true)">
+							<div tooltip="Settings">
 								<i class="material-icons">settings</i>
 							</div>
 						</div>
@@ -105,29 +105,32 @@
 				</div>
 				<div>
 					<button id="save-settings-button" class="material-form-button" disabled>Save my settings</button>
-					<a>Why can't I save my settings?</a>
 				</div>
 			</div>
 			<div id="not-found">
 				<div style="max-width: 750px; margin: 0 auto; margin-top: 25px;">
-					<h1 style="font-size: 75px; padding-bottom: 12px; font-weight: bold;">404. That&#39;s an error.</h1>
-					<h2 style="font-size: 35px;">The server literally just can't even.</h2>
+					<h1 style="font-size: 75px; padding-bottom: 12px; font-weight: bold;">404. That&#8217;s an error.</h1>
+					<h2 style="font-size: 35px;">The server literally just can&#8217;t even.</h2>
 					<h3><span id="location-uri">This link</span> is either outdated, inaccurate, or the server is just not having it today.</h3>
-					<p>Click <a href="javascript:void(0)" onclick="load('/', true)">here</a> to go back to the main site.</p>
+					<p>Click <a onclick="load('/', true)">here</a> to go back to the main site.</p>
 				</div>
 			</div>
 			<div id="modal">
 				<div id="modal-title">
-					<span class="why-cannot-save-settings">Can&#39;t save settings?</span>
+					<span class="log-in-first">Please, log in</span>
+					<span class="modal-profile-options">Profile Options</span>
 				</div>
 				<div id="modal-body">
-					<div class="why-cannot-save-settings">
-						In order to save settings, you must log into your Google account.
-						After logging in, your preferences will be automatically saved to the cloud. When you later sign onto another device, all your settings will transfer.
+					<div class="log-in-first">
+						In order to save your settings, you must first log into your Google account.<br><br>
+						<a>Click here</a> to log in with your Google Account.
+					</div>
+					<div class="modal-profile-options">
+						<button>Logout</button>
 					</div>
 				</div>
 				<div id="modal-footer">
-					<a href="javascript:void(0)">Close</a>
+					<a>Close</a>
 				</div>
 			</div>
 		</div>

@@ -75,20 +75,21 @@ module.exports = (path, postData) => {
 
 				let emailUserData = bellData.getUserDataByEmail(email);
 
-				if (bellData.isThisMe(postData.data.account, emailUserData)) {
-					bellData.registerDevice(id, email);
+				if (!bellData.isThisMe(postData.data.account, emailUserData))
+					bellData.updateUser(postData.data.account);
 
-					return generateResponse(true, null, {
-						status: 'returning_user',
-						user_data: {
-							email,
-							first_name,
-							last_name,
-							profile_pic,
-							settings: emailUserData.settings
-						}
-					});
-				}
+				bellData.registerDevice(id, email);
+
+				return generateResponse(true, null, {
+					status: 'returning_user',
+					user_data: {
+						email,
+						first_name,
+						last_name,
+						profile_pic,
+						settings: emailUserData.settings
+					}
+				});
 			} else {
 
 				bellData.createNewUser(postData.data.account);

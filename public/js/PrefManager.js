@@ -3,19 +3,23 @@
 class PrefManager {
 	
 	constructor() {
-		this.theme = {
-			color: {}
-		}
-		this.period_names = {};
-		this.google_account = {
-			signed_in: false
-		}
+		this.initVars();
 
 		if (window.localStorage.prefs)
 			this.setAllPreferences(JSON.parse(window.localStorage.prefs))
 		else {
 			// default prefs
 			this.setTheme(1);
+		}
+	}
+
+	initVars() {
+		this.theme = {
+			color: {}
+		}
+		this.period_names = {};
+		this.google_account = {
+			signed_in: false
 		}
 	}
 
@@ -99,8 +103,13 @@ class PrefManager {
 
 	getThemeName() { return this.theme.name }
 
-	signedInToGoogle() {
+	isLoggedIn() {
 		return !!this.google_account.signed_in;
+	}
+
+	clearAll() {
+		this.initVars();
+		window.localStorage.removeItem('prefs');
 	}
 
 }
