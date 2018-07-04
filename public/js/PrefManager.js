@@ -7,7 +7,9 @@ class PrefManager {
 			color: {}
 		}
 		this.period_names = {};
-		this.google_account = {}
+		this.google_account = {
+			signed_in: false
+		}
 
 		if (window.localStorage.prefs)
 			this.setAllPreferences(JSON.parse(window.localStorage.prefs))
@@ -42,7 +44,8 @@ class PrefManager {
 			first_name: values.first_name,
 			last_name: values.last_name,
 			profile_pic: values.profile_pic,
-			email: values.email
+			email: values.email,
+			signed_in: true
 		}
 
 		if (values.settings) {
@@ -95,5 +98,9 @@ class PrefManager {
 	}
 
 	getThemeName() { return this.theme.name }
+
+	signedInToGoogle() {
+		return !!this.google_account.signed_in;
+	}
 
 }

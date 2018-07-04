@@ -9,9 +9,11 @@
 	left: 50%;
 	top: 50%;
 	margin: -200px 0 0 -175px;
-	transition: opacity .4s ease;
+	transition: opacity .4s ease, transform .8s ease !important;
+	height: 0px;
 	border-radius: 8px;
 	overflow: hidden;
+	transform: translateY(-500px) scaleY(0);
 }
 
 #modal #modal-title {
@@ -24,7 +26,7 @@
 }
 
 #modal #modal-body {
-	padding: 12px;
+	padding: 12px 12px 24px;
 }
 
 #modal #modal-footer {

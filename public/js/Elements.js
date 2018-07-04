@@ -31,6 +31,7 @@ class Elements {
 		}
 
 		this.canvas = new Canvas(this.index.mainCanvas);
+		this.modal.footer.querySelector('a').onclick = this.closeModal;
 	}
 
 	updateScreen(time) {
@@ -90,10 +91,14 @@ class Elements {
 		this.index.settingsButton.querySelector('div').style.background = values.theme.color.text;
 		this.index.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
 
-		if (values.google_account.first_name) {
+		if (values.google_account.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
 			this.index.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
+
+			this.settings.saveSettingsButton.disabled = '';
+			this.settings.saveSettingsButton.parentElement.querySelector('a').style.display = 'none';
+
 		}
 
 		if (values.period_names)
@@ -136,6 +141,45 @@ class Elements {
 		if (dimension > 1000) {
 			document.body.style.overflow = 'hidden'; // locks screen
 		}
+	}
+
+	showModal(screen) {
+		let screens = this.modal.body.children;
+
+		for (let i = 0; i < screens.length; i++) {
+			if (screens[i].classList.contains(screen)) {
+				screens[i].style.display = 'block';
+			} else {
+				screens[i].style.display = 'none';
+			}
+		}
+
+		let titles = this.modal.title.children;
+
+		for (let i = 0; i < titles.length; i++) {
+			if (titles[i].classList.contains(screen)) {
+				titles[i].style.display = 'block';
+			} else {
+				titles[i].style.display = 'none';
+			}
+		}
+
+		let modalStyle = this.root.querySelector('#modal').style;
+		modalStyle.display = 'block';
+		setTimeout(() => {
+			modalStyle.opacity = '1';
+			modalStyle.transform = 'translateY(0) scaleY(1)';
+			modalStyle.height = 'auto';
+		}, 20);
+	}
+
+	closeModal() {
+		document.querySelector('#root #modal').style.opacity = '0';
+		setTimeout(() => {
+			document.querySelector('#root #modal').style.display = 'none';
+			document.querySelector('#root #modal').style.transform = 'translateY(-500px) scaleY(0)';
+			document.querySelector('#root #modal').style.height = '0';
+		}, 400);
 	}
 
 	addGoogleApi() {
