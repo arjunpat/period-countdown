@@ -24,7 +24,7 @@ const responses = {
 }
 
 
-module.exports = (path, postData) => {
+module.exports = async (path, postData) => {
 	
 	// TODO: limit size of any entry into the userData
 
@@ -39,9 +39,17 @@ module.exports = (path, postData) => {
 			
 			if (user_agent && platform && browser) {
 				// if we need to register a new device
-				
+
+				if (typeof browser === 'object') {
+					let keys = Object.keys(browser);
+					if (keys.length === 0)
+						postData.data.browser = 'unknown';
+					else
+						postData.data.browser = Object.keys(browser)[0];
+				}
+
 				return generateResponse(true, null, {
-					device_id: bellData.createNewDevice(postData.data)
+					device_id: await bellData.createNewDevice(postData.data)
 				});
 
 			} else if (device_id) {
@@ -49,14 +57,14 @@ module.exports = (path, postData) => {
 				
 				let dataToSend;
 
-				let {email, profile_pic, first_name, last_name, settings, error} = bellData.getUserDataByDeviceId(device_id);
+				let {email, profile_pic, first_name, last_name, settings, error} = await bellData.getUserByDeviceId(device_id);
 
 				if (error)
 					dataToSend = { error };
 				else if (email && profile_pic)
 					dataToSend = {email, profile_pic, first_name, last_name, settings};
 				else
-					dataToSend = { registered: false };
+					throw "Can't get user from device id";
 
 				return generateResponse(true, null, dataToSend);
 
@@ -72,14 +80,14 @@ module.exports = (path, postData) => {
 			if (!device_id || !email || !first_name || !last_name || !profile_pic)
 				return responses.missing_data;
 
-			if (typeof bellData.getUserIndexByEmail(email) === 'number') { // already have an account
+			let emailUserData = await bellData.getUserByEmail(email);
 
-				let emailUserData = bellData.getUserDataByEmail(email);
+			if (emailUserData !== false) { // already have an account
 
 				if (!bellData.isThisMe(postData.data, emailUserData))
-					bellData.updateUser(postData.data);
+					await bellData.updateUser(postData.data);
 
-				bellData.registerDevice(device_id, email);
+				await bellData.registerDevice(device_id, email);
 
 				return generateResponse(true, null, {
 					status: 'returning_user',
@@ -93,13 +101,32 @@ module.exports = (path, postData) => {
 				});
 			} else {
 
-				bellData.createNewUser(postData.data);
-				bellData.registerDevice(device_id, email);
+				await bellData.createNewUser(postData.data);
+				await bellData.registerDevice(device_id, email);
 
 				return generateResponse(true, null, {
 					status: 'new_user'
 				});
 			}
+
+			break;
+		case '/write/logout':
+
+			if (!device_id)
+				return responses.missing_data;
+
+			let deviceInfo = await bellData.getDeviceByDeviceId(device_id);
+
+			if (deviceInfo.registered_to) {
+
+				await bellData.unregister(device_id, deviceInfo.registered_to);
+
+				return generateResponse(true);
+
+			} else
+				return responses.bad_data;
+
+
 
 			break;
 		case '/write/analytics':
@@ -118,7 +145,7 @@ module.exports = (path, postData) => {
 				if (data[i] && typeof data[i] === 'string' && data[i].length <= 20)
 					valuesToEnter[i] = data[i];
 
-			let res = bellData.updatePeriodNames(device_id, valuesToEnter);
+			let res = await bellData.updatePeriodNames(device_id, valuesToEnter);
 
 			if (res.error)
 				return generateResponse(false, res.error);
