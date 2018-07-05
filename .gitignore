@@ -3,3 +3,6 @@ dev_data/
 
 # get out! .DS_Store
 .DS_Store
+
+# no node_modules!
+node_modules/

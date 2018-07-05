@@ -25,5 +25,7 @@
 		"url": "https://github.com/arjunpat/bell-countdown/issues"
 	},
 	"homepage": "https://github.com/arjunpat/bell-countdown#readme",
-	"dependencies": {}
+	"dependencies": {
+		"mysql": "^2.15.0"
+	}
 }

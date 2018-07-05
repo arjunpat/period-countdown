@@ -67,12 +67,13 @@ var render = {
 			}
 
 			elements.index.googleSignin.querySelector('div').onclick = () => {
+				elements.addGoogleApi();
 				elements.showModal('modal-profile-options');
 			}
 
 			document.querySelector('#modal .modal-profile-options > button').onclick = () => {
-				gapi.auth2.getAuthInstance().signOut().then(data => {
-					Storage.clearAll();
+				Promise.all([gapi.auth2.getAuthInstance().signOut(), RequestManager.logout()]).then(values => {
+					Storage.clearAllExceptDeviceId();
 					window.location.reload();
 				});
 			}

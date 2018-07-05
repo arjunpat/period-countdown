@@ -4,7 +4,7 @@ var schema = {
 		{
 			new_load: true,
 			device_id: 'HJnbG8jDRG',
-			date: 1526165118086,
+			time: 1526165118086,
 			prefs: {
 				theme: 'asdf',
 				period: 4,
