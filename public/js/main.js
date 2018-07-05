@@ -186,6 +186,11 @@ RequestManager.init().then(data => {
 	} else
 		elements.addGoogleApi();
 
+	if (data.device_id)
+		analytics.setNewLoad(true);
+	else
+		analytics.setNewLoad(false);
+
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeName());
