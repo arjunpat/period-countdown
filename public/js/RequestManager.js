@@ -43,8 +43,8 @@ class RequestManager {
 				})
 			}).then(res => {
 
-				if (res.json.data.error) {
-					this.clearAll();
+				if (res.json.data.error === 'no_user_exists') {
+					Storage.clearAll();
 					return this.init();
 				} else return res.json.data;
 				
@@ -92,6 +92,17 @@ class RequestManager {
 			data: JSON.stringify({
 				device_id: Storage.getDeviceId(),
 				data: account
+			})
+		}).then(res => res.json);
+	}
+
+	static logout() {
+		return this.ajax({
+			url: '/api/v1/write/logout',
+			type: 'POST',
+			data: JSON.stringify({
+				device_id: Storage.getDeviceId(),
+				data: {}
 			})
 		}).then(res => res.json);
 	}

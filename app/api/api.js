@@ -70,7 +70,7 @@ module.exports = (req, res, path) => new Promise((resolve, reject) => {
 						resolve({ valid: false });
 					}
 
-					resolve(v1(path.path.substring(7, path.path.length), postData));
+					v1(path.path.substring(7, path.path.length), postData).then(data => resolve(data)).catch(err => reject(err));
 
 				});
 

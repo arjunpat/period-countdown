@@ -32,8 +32,12 @@ class Storage {
 		return !!window.localStorage.prefs;
 	}
 
-	static clearAll() {
+	static clearAllExceptDeviceId() {
 		window.localStorage.removeItem('prefs');
+	}
+
+	static clearAll() {
+		this.clearAllExceptDeviceId();
 		window.localStorage.removeItem('device_id');
 	}
 
