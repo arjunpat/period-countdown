@@ -121,7 +121,7 @@ module.exports = async (path, postData) => {
 
 				await bellData.unregister(device_id, deviceInfo.registered_to);
 
-				return generateResponse(true);
+				return responses.success;
 
 			} else
 				return responses.bad_data;
@@ -131,7 +131,15 @@ module.exports = async (path, postData) => {
 			break;
 		case '/write/analytics':
 
-			return generateResponse(true);
+			let {pathname, prefs, referer, speed, new_load} = postData.data;
+
+			if (!device_id || !pathname || !prefs || typeof referer !== 'string' || !speed || typeof new_load !== 'boolean')
+				return responses.missing_data;
+
+			bellData.recordHit(device_id, postData.data);
+
+
+			return responses.success;
 
 			break;
 		case '/update/period_names':
@@ -150,7 +158,7 @@ module.exports = async (path, postData) => {
 			if (res.error)
 				return generateResponse(false, res.error);
 			else
-				return generateResponse(true);
+				return responses.success;
 
 			break;
 		default:

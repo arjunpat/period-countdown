@@ -10,13 +10,14 @@ class Analytics {
 		if (this.sent) return;
 
 		let data;
-		if (this.pathname === '/' && this.device_id && this.theme && this.period && this.period_name) { // index page
+		if (this.pathname === '/' && this.device_id && this.theme && this.period && this.period_name && typeof this.new_load === 'boolean') { // index page
 
 			await this.sleep();
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
 				referer: window.document.referrer,
+				new_load: this.new_load,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 					response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -31,13 +32,14 @@ class Analytics {
 				}
 			}
 			if (this.period !== this.period_name) data.prefs.period_name = this.period_name;
-		} else if (this.pathname && this.device_id && this.theme) {
+		} else if (this.pathname && this.device_id && this.theme && typeof this.new_load === 'boolean') {
 
 			await this.sleep();
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
 				referer: window.document.referrer,
+				new_load: this.new_load,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 					response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -61,6 +63,11 @@ class Analytics {
 			}
 		});
 
+	}
+
+	setNewLoad(x) {
+		this.new_load = x;
+		this.a();
 	}
 
 	setDeviceId(x) {
