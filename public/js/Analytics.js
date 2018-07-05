@@ -16,7 +16,7 @@ class Analytics {
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
-				referer: window.document.referrer,
+				referrer: window.document.referrer,
 				new_load: this.new_load,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
@@ -38,7 +38,7 @@ class Analytics {
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
-				referer: window.document.referrer,
+				referrer: window.document.referrer,
 				new_load: this.new_load,
 				speed: {
 					page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
