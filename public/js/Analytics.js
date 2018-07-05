@@ -10,9 +10,10 @@ class Analytics {
 		if (this.sent) return;
 
 		let data;
-		if (this.pathname === '/' && this.device_id && this.theme && this.period && this.period_name && typeof this.new_load === 'boolean') { // index page
+		if (this.pathname === '/' && this.device_id && this.theme && typeof this.period === 'number' && this.period_name && typeof this.new_load === 'boolean') { // index page
 
-			await this.sleep();
+			while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0) await this.sleep(1);
+			await this.sleep(1);
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
@@ -34,7 +35,8 @@ class Analytics {
 			if (this.period !== this.period_name) data.prefs.period_name = this.period_name;
 		} else if (this.pathname && this.device_id && this.theme && typeof this.new_load === 'boolean') {
 
-			await this.sleep();
+			while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0) await this.sleep(1);
+			await this.sleep(1);
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
@@ -81,6 +83,7 @@ class Analytics {
 	}
 
 	setPeriod(x) {
+		if (x === 'Free') x = -1;
 		this.period = x;
 		this.a();
 	}

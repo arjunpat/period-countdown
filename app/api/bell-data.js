@@ -116,13 +116,23 @@ class BellData {
 	}
 
 
-	createNewHit(a) {
+	async createNewHit(a) {
 
-		return this.query(
+		await this.query(
 			'INSERT INTO hits (device_id, time, pathname, referrer, new_load, period, prefs, theme, speed, tti, ttfb, user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			[a.device_id, a.time, a.pathname, a.referrer, a.new_load, a.period, a.prefs, a.theme, a.speed, a.tti, a.ttfb, a.user]
 		);
 
+		await this.query(
+			'UPDATE devices SET last_view_time = ? WHERE device_id = ?',
+			[a.time, a.device_id]
+		);
+
+		if (a.user)
+			await this.query(
+				'UPDATE users SET last_view_time = ? WHERE email = ?',
+				[a.time, a.user]
+			);
 	}
 
 	// edit/augment user, devices, etc.

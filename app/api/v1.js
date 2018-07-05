@@ -142,7 +142,7 @@ module.exports = async (path, postData) => {
 				pathname,
 				referrer,
 				new_load,
-				period: prefs.period || -1,
+				period: prefs.period || null,
 				prefs: prefs,
 				theme: prefs.theme,
 				speed: speed,
@@ -160,8 +160,11 @@ module.exports = async (path, postData) => {
 			values.speed = JSON.stringify(values.speed);
 
 			for (let key in values)
-				if (key !== 'user' && typeof values[key] !== 'string' && typeof values[key] !== 'number' && typeof values[key] !== 'boolean')
+				if (key !== 'user' && key !== 'period' && typeof values[key] !== 'string' && typeof values[key] !== 'number' && typeof values[key] !== 'boolean')
 					return responses.bad_data;
+
+			if (typeof values.period === 'string' || (values.pathname === '/' && typeof values.period !== 'number'))
+				return responses.bad_data;
 
 			await bellData.createNewHit(values);
 
