@@ -22,7 +22,7 @@ const api = require('./app/api/api.js');
 const server = http.createServer((req, res) => {
 
 	let path = utils.parseURL(req.url);
-	console.log(path);
+	//console.log(path);
 
 	if (path.layers[0] === 'api') {
 		

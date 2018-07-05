@@ -131,13 +131,39 @@ module.exports = async (path, postData) => {
 			break;
 		case '/write/analytics':
 
-			let {pathname, prefs, referer, speed, new_load} = postData.data;
+			let {pathname, prefs, referrer, speed, new_load, registered_to} = postData.data;
 
-			if (!device_id || !pathname || !prefs || typeof referer !== 'string' || !speed || typeof new_load !== 'boolean')
+			if (!device_id || !pathname || !prefs || typeof referrer !== 'string' || !speed || typeof new_load !== 'boolean')
 				return responses.missing_data;
 
-			bellData.recordHit(device_id, postData.data);
+			let values = {
+				device_id,
+				time: Date.now(),
+				pathname,
+				referrer,
+				new_load,
+				period: prefs.period || -1,
+				prefs: prefs,
+				theme: prefs.theme,
+				speed: speed,
+				tti: speed.tti,
+				ttfb: speed.ttfb,
+				user: registered_to || null
+			}
 
+			delete values.prefs.theme;
+			delete values.prefs.period;
+			delete values.speed.tti;
+			delete values.speed.ttfb;
+
+			values.prefs = JSON.stringify(values.prefs);
+			values.speed = JSON.stringify(values.speed);
+
+			for (let key in values)
+				if (key !== 'user' && typeof values[key] !== 'string' && typeof values[key] !== 'number' && typeof values[key] !== 'boolean')
+					return responses.bad_data;
+
+			await bellData.createNewHit(values);
 
 			return responses.success;
 

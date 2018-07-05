@@ -115,6 +115,16 @@ class BellData {
 		return device_id;
 	}
 
+
+	createNewHit(a) {
+
+		return this.query(
+			'INSERT INTO hits (device_id, time, pathname, referrer, new_load, period, prefs, theme, speed, tti, ttfb, user) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+			[a.device_id, a.time, a.pathname, a.referrer, a.new_load, a.period, a.prefs, a.theme, a.speed, a.tti, a.ttfb, a.user]
+		);
+
+	}
+
 	// edit/augment user, devices, etc.
 
 	async registerDevice(device_id, email) {
@@ -171,12 +181,6 @@ class BellData {
 			'UPDATE users SET first_name = ?, last_name = ?, profile_pic = ? WHERE email = ?',
 			[vals.first_name, vals.last_name, vals.profile_pic, vals.email]
 		);
-	}
-
-	// analytics
-
-	recordHit(params) {
-
 	}
 }
 
