@@ -124,10 +124,8 @@ textarea {
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
 }
-.material-form div {
-	position: relative;
-}
 .material-input-group {
+	position: relative;
 	margin: auto;
 	margin-bottom: 60px;
 }
@@ -141,6 +139,9 @@ textarea {
 	border-bottom: 1px solid #d9d9d9;
 	background-color: transparent;
 	border-radius: 0;
+}
+.material-form input:disabled, .material-form input:disabled + label {
+	cursor: not-allowed;
 }
 .material-form input:focus, .material-form textarea:focus {
 	outline: none;
@@ -167,6 +168,7 @@ textarea {
 	transition: all .2s ease-out;
 	z-index: 2;
 	cursor: text;
+	user-select: none;
 }
 .material-form-button {
 	background-color: /*#4285f4*/var(--main-yellow-color);
@@ -186,4 +188,24 @@ textarea {
 
 .material-form-button:disabled {
 	background: #a6a6a6;
+	cursor: not-allowed;
+}
+
+.material-form select {
+	display: block;
+	background: #eaeaea;
+	color: #000;
+	border: none;
+	border-radius: 0;
+	padding: 2px 15px 2px 10px;
+	cursor: pointer;
+	margin: 0;
+	width: 250px;
+	height: 30px;
+	font-size: 16px;
+	outline: none;
+}
+
+.material-form select:disabled {
+	cursor: not-allowed;
 }
