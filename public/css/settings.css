@@ -64,7 +64,7 @@
 /* actual settings config css */
 
 #settings #changes-saved {
-	margin-top: 50px;
+	margin-top: 30px;
 	margin-left: 1.5%;
 	padding: 8px;
 	background: #e0e0e0;
@@ -72,6 +72,7 @@
 	border-radius: 4px;
 	transition: all 0.6s ease;
 	user-select: none;
+	min-width: 235px;
 }
 
 #settings #changes-saved > span {
@@ -81,22 +82,53 @@
 }
 
 #settings #choose-settings {
-	margin-top: 50px;
+	margin: 40px 0;
 }
 
 #settings .container {
 	width: 100%;
 	margin: 0 auto;
+	display: flex;
 }
 
 #settings .third {
-	width: 30%;
-	margin: 0 1.5%;
-	display: inline-block;
+	padding: 0 1.5%;
+	flex: 1;
 }
 
+#settings .theme-example {
+	margin: 20px 0;
+	font-size: 20px;
+	background: #ccc;
+	padding: 6px;
+	border-radius: 4px;
+	border: 2px solid black;
+	user-select: none;
+	transition: all 0.3s ease;
+}
 
-#settings #save-settings-button {
-	width: 160px;
-	transition: 0.4s ease all;
+#settings #theme-selector {
+	width: 200px;
+	font-size: 20px;
+}
+
+@media (max-width: 750px) {
+	#settings .container {
+		flex-direction: column;
+	}
+	#settings {
+		padding: 15px;
+	}
+	#settings #title {
+		font-size: 70px;
+	}
+}
+
+@media (min-width: 750px) {
+	#settings .third:nth-child(3) {
+		border-left: 2px solid #ccc;
+	}
+	#settings .third:nth-child(2) {
+		margin-top: 71px;
+	}
 }

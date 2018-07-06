@@ -20,8 +20,9 @@ class Elements {
 			changesSaved: document.getElementById('changes-saved'),
 			chooseSettings: document.getElementById('choose-settings'),
 			inputs: document.querySelectorAll('#choose-settings input'),
-			saveSettingsButton: document.getElementById('save-settings-button'),
 			closeButton: document.getElementById('settings-close'),
+			themeSelector: document.getElementById('theme-selector'),
+			themeExamples: document.getElementsByClassName('theme-example'),
 			saved: true
 		}
 		this.modal = {
@@ -85,35 +86,43 @@ class Elements {
 		}
 	}
 
-	updateElementsWithPreferences(values) {
+	applyPreferencesToElements(values) {
 		// theme stuff
 		this.canvas.updateColors(values.theme.color.background, values.theme.color.completed);
 		this.index.mainCanvasOverlay.style.color = values.theme.color.text;
 		this.index.settingsButton.querySelector('div').style.background = values.theme.color.text;
 		this.index.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
 
+		this.settings.themeExamples[0].style.background = values.theme.color.completed;
+		this.settings.themeExamples[1].style.background = values.theme.color.background;
+		this.settings.themeExamples[0].style.color = values.theme.color.text;
+		this.settings.themeExamples[1].style.color = values.theme.color.text;
+		this.settings.themeSelector.value = values.theme.name;
+
 		if (values.google_account.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
 			this.index.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
 
-			this.settings.saveSettingsButton.disabled = '';
+			this.settings.themeSelector.disabled = '';
+			this.settings.changesSaved.querySelector('span').innerText = 'All changes saved in the cloud';
 
-		}
-
-		if (values.period_names)
-			this.fillPeriodNameInputs(values.period_names);
-
-	}
-
-	fillPeriodNameInputs(period_names) {
-		for (let element of this.settings.inputs) {
-			let num = element.id.substring(6, 7);
-			if (period_names[num]) {
-				element.value = period_names[num];
-				element.classList.add('has-value');
+			for (let element of this.settings.inputs) {
+				element.disabled = '';
 			}
 		}
+
+		let period_names = values.period_names;
+
+		if (period_names)
+			for (let element of this.settings.inputs) {
+				let num = element.id.substring(6, 7);
+				if (period_names[num]) {
+					element.value = period_names[num];
+					element.classList.add('has-value');
+				}
+			}
+
 	}
 
 	switchTo(screen) {
@@ -192,9 +201,9 @@ class Elements {
 
 	settingChangesNotSaved() {
 		this.settings.saved = false;
-		this.settings.changesSaved.style.background = '#ff4141';
-		this.settings.changesSaved.querySelector('span').style.color = '#000';
-		this.settings.changesSaved.querySelector('span').innerHTML = 'Your changes have <span style="font-weight: bold;">not</span> been saved';
+		this.settings.changesSaved.style.background = '#464646';
+		this.settings.changesSaved.querySelector('span').style.color = '#fff';
+		this.settings.changesSaved.querySelector('span').innerHTML = 'Saving changes...';
 	}
 
 	settingChangesSaved() {
@@ -202,6 +211,10 @@ class Elements {
 		this.settings.changesSaved.style.background = '';
 		this.settings.changesSaved.querySelector('span').style.color = '';
 		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
+	}
+
+	setThemeExampleColors(text, overlay, background) {
+
 	}
 
 	dimensionCanvas() { this.canvas.dimension() }

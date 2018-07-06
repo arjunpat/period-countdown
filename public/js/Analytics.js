@@ -13,7 +13,6 @@ class Analytics {
 		if (this.pathname === '/' && this.device_id && this.theme && typeof this.period === 'number' && this.period_name && typeof this.new_load === 'boolean') { // index page
 
 			while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0) await this.sleep(1);
-			await this.sleep(1);
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,
@@ -36,7 +35,6 @@ class Analytics {
 		} else if (this.pathname && this.device_id && this.theme && typeof this.new_load === 'boolean') {
 
 			while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0) await this.sleep(1);
-			await this.sleep(1);
 			let speedInfo = window.performance.timing;
 			data = {
 				pathname: this.pathname,

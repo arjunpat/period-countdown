@@ -5,6 +5,13 @@ class PrefManager {
 	constructor() {
 		this.initVars();
 
+		this.theme_options = {
+			completed: ['#fee581','#262626','#d9d9d9','#1a1a1a','#1a1a1a'],
+			background: ['#fccb0b','#000000','#fff','#000','#000'],
+			text: ['#000','#fccb0b','#000','#7cfc00','#ff3b9e'],
+			name: ['MVHS Light','MVHS Dark','Grey','Alien Green','Purple']
+		}
+
 		if (Storage.prefsExist())
 			this.setAllPreferences(Storage.getPrefs());
 		else // default prefs
@@ -30,13 +37,18 @@ class PrefManager {
 	}
 
 	setAllPreferences(values) {
-		this.theme = values.theme;
+		this.setTheme(values.theme);
 		this.period_names = values.period_names;
-		this.google_account = values;
+		this.google_account = values.google_account;
 	}
 
 	save() {
-		Storage.setPrefs(this.getAllPreferences());
+
+		Storage.setPrefs({
+			theme: this.theme.num,
+			period_names: this.period_names,
+			google_account: this.google_account
+		});
 	}
 
 	// settage and gettage of settings
@@ -68,21 +80,21 @@ class PrefManager {
 			if (typeof num === 'string')
 				num = parseInt(num);
 
-			if (num >= 0 && num <= 7 && typeof name === 'string' && this.google_account && this.period_names[num] !== name) {
+			if (num >= 0 && num <= 7 && typeof name === 'string' && this.isLoggedIn() && this.getPeriodName(num) !== name) {
 
 				if (name.length <= 20 && name.length > 0)
 					this.period_names[num] = name;
 				else if (name.length === 0)
-					this.period_names[num] = undefined;
+					delete this.period_names[num];
 			}
 		}
 
-		RequestManager.updatePeriodNames(this.period_names).then(data => {
+		return RequestManager.updatePeriodNames(this.period_names).then(data => {
 			if (data.success) {
 				this.save();
-			} else {
-				// tell user it is not saving
+				return true;
 			}
+			return false;
 		});
 	}
 
@@ -92,11 +104,15 @@ class PrefManager {
 
 	setTheme(num) {
 		this.theme.num = num;
-		this.theme.color.completed = ['#262626','#fee581','#d9d9d9','#1a1a1a','#1a1a1a'][num];
-		this.theme.color.background = ['#000000', '#fccb0b','#fff','#000','#000'][num];
-		this.theme.color.text = ['#fccb0b','#000','#000','#7cfc00','#c23d80'][num];
-		this.theme.name = ['MVHS Dark','MVHS Light','White','Alien Green','Purple'][num];
+		this.theme.color.completed = this.theme_options.completed[num];
+		this.theme.color.background = this.theme_options.background[num];
+		this.theme.color.text = this.theme_options.text[num];
+		this.theme.name = this.theme_options.name[num];
 		this.save();
+	}
+
+	setThemeByName(name) {
+		this.setTheme(this.theme_options.name.indexOf(name));
 	}
 
 	getThemeName() { return this.theme.name }
