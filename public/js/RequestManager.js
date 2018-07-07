@@ -130,6 +130,17 @@ class RequestManager {
 		}).then(res => res.json);
 	}
 
+	static updateTheme(new_theme) {
+		return this.ajax({
+			url: '/api/v1/update/theme',
+			type: 'POST',
+			data: JSON.stringify({
+				device_id: Storage.getDeviceId(),
+				data: { new_theme }
+			})
+		}).then(res => res.json);
+	}
+
 	static getTime() {
 		return this.ajax({
 			url: '/api/time'

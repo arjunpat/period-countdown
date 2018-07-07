@@ -180,10 +180,64 @@ class BellData {
 
 		user.settings.period_names = values;
 
+		let now = Date.now();
+		let arr = user.stats;
+
+		// if last period update was within the last 5 minutes, save stat as one
+		if (typeof arr.updated_period_names === 'object') {
+			if (arr.updated_period_names.length > 8)
+				for (let i = 1; i < arr.updated_period_names.length; i++)
+					arr.updated_period_names.splice(i, 1);
+
+			for (let i = arr.updated_period_names.length - 1; i >= 0; i--)
+				if (now - 300000 < arr.updated_period_names[i])
+					arr.updated_period_names.splice(i, 1);
+				else
+					break;
+		} else
+			arr.updated_period_names = [];
+
+		arr.updated_period_names.push(now);
+
+
 		await this.setObjectToUser('settings', user.email, user.settings);
+		await this.setObjectToUser('stats', user.email, user.stats);
 
 		return {};
 
+	}
+
+	async updateTheme(device_id, theme) {
+
+		let user = await this.getUserByDeviceId(device_id);
+
+		if (user.error) return { error: user.error };
+
+		user.settings.theme = theme;
+
+		let now = Date.now();
+		let arr = user.stats;
+
+		// if last theme update was within the last 5 minutes, save stat as one
+		if (typeof arr.updated_theme === 'object') {
+			if (arr.updated_theme.length > 8)
+				for (let i = 1; i < arr.updated_theme.length; i++)
+					arr.updated_theme.splice(i, 1);
+
+			for (let i = arr.updated_theme.length - 1; i >= 0; i--)
+				if (now - 300000 < arr.updated_theme[i])
+					arr.updated_theme.splice(i, 1);
+				else
+					break;
+		} else
+			arr.updated_theme = [];
+
+		arr.updated_theme.push(now);
+
+		await this.setObjectToUser('settings', user.email, user.settings);
+		await this.setObjectToUser('stats', user.email, user.stats);
+
+		return {};
 	}
 
 	updateUser(vals) {

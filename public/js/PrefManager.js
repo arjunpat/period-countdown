@@ -15,7 +15,7 @@ class PrefManager {
 		if (Storage.prefsExist())
 			this.setAllPreferences(Storage.getPrefs());
 		else // default prefs
-			this.setTheme(1);
+			this.setTheme(0);
 	}
 
 	initVars() {
@@ -108,11 +108,21 @@ class PrefManager {
 		this.theme.color.background = this.theme_options.background[num];
 		this.theme.color.text = this.theme_options.text[num];
 		this.theme.name = this.theme_options.name[num];
-		this.save();
+
+		if (this.isLoggedIn())
+			return RequestManager.updateTheme(this.theme.name).then(data => {
+				if (data.success) {
+					this.save();
+					return true;
+				}
+				return false;
+			});
+		else
+			this.save();
 	}
 
 	setThemeByName(name) {
-		this.setTheme(this.theme_options.name.indexOf(name));
+		return this.setTheme(this.theme_options.name.indexOf(name));
 	}
 
 	getThemeName() { return this.theme.name }

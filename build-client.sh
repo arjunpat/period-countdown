@@ -1,4 +1,4 @@
-# dist/client/js cannot exist! delete before running
+# client-dist/js cannot exist! delete before running
 
 
 # javascript ---------------------------

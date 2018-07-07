@@ -31,11 +31,12 @@ module.exports = async (path, postData) => {
 	if (!postData.data) return responses.missing_data;
 
 	let device_id = postData.device_id;
+	let data = postData.data;
 
 	switch (path) {
 		case '/init':
 
-			let {user_agent, platform, browser} = postData.data;
+			let {user_agent, platform, browser} = data;
 			
 			if (user_agent && platform && browser) {
 				// if we need to register a new device
@@ -43,13 +44,13 @@ module.exports = async (path, postData) => {
 				if (typeof browser === 'object') {
 					let keys = Object.keys(browser);
 					if (keys.length === 0)
-						postData.data.browser = 'unknown';
+						data.browser = 'unknown';
 					else
-						postData.data.browser = Object.keys(browser)[0];
+						data.browser = Object.keys(browser)[0];
 				}
 
 				return generateResponse(true, null, {
-					device_id: await bellData.createNewDevice(postData.data)
+					device_id: await bellData.createNewDevice(data)
 				});
 
 			} else if (device_id) {
@@ -75,7 +76,7 @@ module.exports = async (path, postData) => {
 			break;
 		case '/write/login':
 
-			let {email, first_name, last_name, profile_pic} = postData.data;
+			let {email, first_name, last_name, profile_pic} = data;
 
 			if (!device_id || !email || !first_name || !last_name || !profile_pic)
 				return responses.missing_data;
@@ -84,8 +85,8 @@ module.exports = async (path, postData) => {
 
 			if (emailUserData !== false) { // already have an account
 
-				if (!bellData.isThisMe(postData.data, emailUserData))
-					await bellData.updateUser(postData.data);
+				if (!bellData.isThisMe(data, emailUserData))
+					await bellData.updateUser(data);
 
 				await bellData.registerDevice(device_id, email);
 
@@ -101,7 +102,7 @@ module.exports = async (path, postData) => {
 				});
 			} else {
 
-				await bellData.createNewUser(postData.data);
+				await bellData.createNewUser(data);
 				await bellData.registerDevice(device_id, email);
 
 				return generateResponse(true, null, {
@@ -127,11 +128,10 @@ module.exports = async (path, postData) => {
 				return responses.bad_data;
 
 
-
 			break;
 		case '/write/analytics':
 
-			let {pathname, prefs, referrer, speed, new_load, registered_to} = postData.data;
+			let {pathname, prefs, referrer, speed, new_load, registered_to} = data;
 
 			if (!device_id || !pathname || !prefs || typeof referrer !== 'string' || !speed || typeof new_load !== 'boolean')
 				return responses.missing_data;
@@ -172,7 +172,6 @@ module.exports = async (path, postData) => {
 
 			break;
 		case '/update/period_names':
-			let {data} = postData;
 
 			if (!device_id || !data)
 				return responses.missing_data;
@@ -185,6 +184,22 @@ module.exports = async (path, postData) => {
 			let res = await bellData.updatePeriodNames(device_id, valuesToEnter);
 
 			if (res.error)
+				return generateResponse(false, res.error);
+			else
+				return responses.success;
+
+			break;
+		case '/update/theme':
+
+			if (!device_id || !data)
+				return responses.missing_data;
+
+			if (typeof data.new_theme !== 'string' || data.new_theme.length > 20)
+				return responses.bad_data;
+
+			let val = await bellData.updateTheme(device_id, data.new_theme);
+
+			if (val.error)
 				return generateResponse(false, res.error);
 			else
 				return responses.success;

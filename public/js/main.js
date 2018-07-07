@@ -142,10 +142,12 @@ render.settings = () => {
 		elements.settings.themeSelector.onchange = () => {
 			let val = elements.settings.themeSelector.value;
 
-			prefManager.setThemeByName(val);
-
-			elements.applyPreferencesToElements(prefManager.getAllPreferences());
-
+			prefManager.setThemeByName(val).then(success => {
+				if (success)
+					elements.applyPreferencesToElements(prefManager.getAllPreferences());
+				else
+					window.alert('We are having trouble saving your theme change. Try again later.'); // TODO give some error!
+			});
 		}
 	}
 
