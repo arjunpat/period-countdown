@@ -6,3 +6,6 @@ dev_data/
 
 # no node_modules!
 node_modules/
+
+# no need for this
+dist/
