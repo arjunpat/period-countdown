@@ -54,16 +54,12 @@ var schema = {
 					6: 'Spanish',
 					7: 'Survey Comp/Lit'
 				},
-				theme: [
-					'default', 'default_reverse' // last being most recent, delete when too long
-				]
+				theme: 'MVHS Light'
 			},
 			devices: {
 				'HJnbG8jDRG': 1526165118086 // date added to this profile
 			},
 			stats: {
-				created: 1526165118086,
-				viewed_last: 1526165118086,
 				updated_period_names: [1526165118086, 1526165189886]
 			}
 		}
