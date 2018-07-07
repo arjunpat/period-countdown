@@ -8,4 +8,4 @@ dev_data/
 node_modules/
 
 # no need for this
-dist/
+client-dist/
