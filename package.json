@@ -5,7 +5,8 @@
 	"main": "server.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"monitor": "nodemon server.js"
+		"monitor": "nodemon server.js",
+		"build-client": "./build-client.sh"
 	},
 	"repository": {
 		"type": "git",
