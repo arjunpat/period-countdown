@@ -6,7 +6,7 @@ class PrefManager {
 		this.initVars();
 
 		this.theme_options = {
-			completed: ['#fee581','#262626','#d9d9d9','#1a1a1a','#1a1a1a'],
+			completed: ['#fee581','#262626','#d9d9d9','#262626','#262626'],
 			background: ['#fccb0b','#000000','#fff','#000','#000'],
 			text: ['#000','#fccb0b','#000','#7cfc00','#ff3b9e'],
 			name: ['MVHS Light','MVHS Dark','Grey','Alien Green','Purple']
@@ -115,14 +115,21 @@ class PrefManager {
 				}
 				return false;
 			});
-		else
+		else {
+			this.theme.num = num;
+			this.theme.color.completed = this.theme_options.completed[num];
+			this.theme.color.background = this.theme_options.background[num];
+			this.theme.color.text = this.theme_options.text[num];
+			this.theme.name = this.theme_options.name[num];
 			this.save();
+		}
 	}
 
 	setThemeByName(name) {
 		let val = this.theme_options.name.indexOf(name);
-		if (val)
+		if (val > -1)
 			return this.setTheme(val);
+		throw new Error(`${name} is not in array`);
 	}
 
 	getPeriodName(num) { return this.period_names[num] }

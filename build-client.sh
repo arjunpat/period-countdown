@@ -5,11 +5,12 @@
 mkdir -p client-dist/js
 
 for filename in public/js/*; do
-	if [ $filename != "public/js/main.js" ] && [ $filename != "public/js/polyfills.js" ]; then
+	if [ $filename != "public/js/main.js" ] && [ $filename != "public/js/render.js" ]; then
 		cat $filename >> client-dist/js/bundle.js
 	fi
 done
 
+cat public/js/render.js >> client-dist/js/bundle.js
 cat public/js/main.js >> client-dist/js/bundle.js
 
 

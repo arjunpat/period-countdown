@@ -56,7 +56,7 @@ class Elements {
 			this.currentValues.documentTitle = documentTitle;
 		}
 
-		if (document.hasFocus() || true) {
+		if (document.hasFocus()) {
 			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99))
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
 			else if (!this.canvas.animationInterval || Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 2)
@@ -139,7 +139,7 @@ class Elements {
 		}
 	}
 
-	updateScreenFontSize() {
+	updateScreenDimensions() {
 		let dimension = window.innerWidth;
 		this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
 		this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
@@ -147,9 +147,8 @@ class Elements {
 		this.index.settingsButton.style.padding = Math.min(45, dimension / 18) + 'px';
 		this.index.settingsButton.querySelector('div').style.padding = Math.min(18, dimension / 28) + 'px';
 
-		if (dimension > 1000) {
+		if (window.innerHeight > 765 && dimension > 1000)
 			document.body.style.overflow = 'hidden'; // locks screen
-		}
 	}
 
 	showModal(screen) {
@@ -211,10 +210,6 @@ class Elements {
 		this.settings.changesSaved.style.background = '';
 		this.settings.changesSaved.querySelector('span').style.color = '';
 		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
-	}
-
-	setThemeExampleColors(text, overlay, background) {
-
 	}
 
 	dimensionCanvas() { this.canvas.dimension() }

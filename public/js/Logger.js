@@ -3,40 +3,40 @@
 var Logger = {
 	timings: {},
 	log_level: 1,
-	log: (from, what) => {
+	log(from, what) {
 		if (!from || !what) throw TypeError('invalid arguments');
-		Logger.writeOut(from, what);
+		this.writeOut(from, what);
 	},
-	time: (from, action) => {
+	time(from, action) {
 		if (!from || !action) throw new TypeError('invalid arguments');
 
-		if (Logger.timings[from + action])
+		if (this.timings[from + action])
 			throw "Timing already exists";
 		
-		Logger.timings[from + action] = {
+		this.timings[from + action] = {
 			start: window.performance.now(),
 			from
 		}
 	},
-	timeEnd: (from, action) =>  {
+	timeEnd(from, action) {
 		if (!from || !action) throw new TypeError('invalid arguments');
 
-		if (Logger.timings[from + action]) {
-			let time = window.performance.now() - Logger.timings[from + action].start;
+		if (this.timings[from + action]) {
+			let time = window.performance.now() - this.timings[from + action].start;
 
-			Logger.writeOut(Logger.timings[from + action].from, `${action} took ${time.toFixed(8)}ms`);
+			this.writeOut(this.timings[from + action].from, `${action} took ${time.toFixed(8)}ms`);
 
-			Logger.timings[from + action] = undefined;
+			this.timings[from + action] = undefined;
 		} else
 			throw "Timing does not exist";
 	},
-	writeOut: (from, text) => {
+	writeOut(from, text) {
 
-		if (Logger.log_level === 1)
-			console.log(`%c${Logger.getTimeSincePageLoad()} %c[${from}] %c${text}`, 'color: grey', 'color: black; font-weight: bold;', 'color: blue');
+		if (this.log_level === 1)
+			console.log(`%c${this.getTimeSincePageLoad()} %c[${from}] %c${text}`, 'color: grey', 'color: black; font-weight: bold;', 'color: blue');
 
 	},
-	getTimeSincePageLoad: () => {
+	getTimeSincePageLoad() {
 		let now = window.performance.now();
 
 		let hours = Math.floor(now / (1e3 * 60 * 60));
@@ -53,7 +53,7 @@ var Logger = {
 
 		return hours + minutes + seconds;
 	},
-	setLogLevel: (num) => {
-		Logger.log_level = num;
+	setLogLevel(num) {
+		this.log_level = num;
 	}
 }
