@@ -65,6 +65,8 @@ class PrefManager {
 		if (values.settings) {
 			if (values.settings.period_names)
 				this.period_names = values.settings.period_names;
+			if (values.settings.theme)
+				this.setThemeByName(values.settings.theme);
 			// do other loading stuff here
 		}
 
@@ -98,20 +100,16 @@ class PrefManager {
 		});
 	}
 
-	getPeriodName(num) {
-		return this.period_names[num];
-	}
-
 	setTheme(num) {
-		this.theme.num = num;
-		this.theme.color.completed = this.theme_options.completed[num];
-		this.theme.color.background = this.theme_options.background[num];
-		this.theme.color.text = this.theme_options.text[num];
-		this.theme.name = this.theme_options.name[num];
 
 		if (this.isLoggedIn())
-			return RequestManager.updateTheme(this.theme.name).then(data => {
+			return RequestManager.updateTheme(this.theme_options.name[num]).then(data => {
 				if (data.success) {
+					this.theme.num = num;
+					this.theme.color.completed = this.theme_options.completed[num];
+					this.theme.color.background = this.theme_options.background[num];
+					this.theme.color.text = this.theme_options.text[num];
+					this.theme.name = this.theme_options.name[num];
 					this.save();
 					return true;
 				}
@@ -122,8 +120,12 @@ class PrefManager {
 	}
 
 	setThemeByName(name) {
-		return this.setTheme(this.theme_options.name.indexOf(name));
+		let val = this.theme_options.name.indexOf(name);
+		if (val)
+			return this.setTheme(val);
 	}
+
+	getPeriodName(num) { return this.period_names[num] }
 
 	getThemeName() { return this.theme.name }
 

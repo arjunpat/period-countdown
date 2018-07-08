@@ -68,11 +68,12 @@ class Cache {
 		let encoding = 'utf8';
 		let stats = fs.statSync(filename);
 
-		let headers;
+		let headers = {
+			Date: (new Date(stats.mtime)).toString()
+		}
 
 		if (reg[1]) headers = header_presets[reg[1]];
 		if (reg[1] === 'png') encoding = undefined;
-		headers.Date = new Date(stats.mtime).toString();
 
 		// if file not found, will throw error and catch the promise
 		this.files[filename] = {

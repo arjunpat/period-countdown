@@ -157,12 +157,12 @@ render.settings = () => {
 	Logger.timeEnd('main', 'settings');
 }
 render.notFound = () => {
-	Logger.time('main', 'notFound');
+	Logger.time('main', 'not-found');
 
 	document.title = 'Not Found - Bell Countdown';
 	elements.switchTo('not-found');
 
-	Logger.timeEnd('main', 'notFound');
+	Logger.timeEnd('main', 'not-found');
 }
 
 var load = (path, shouldPushHistory = false) => {
