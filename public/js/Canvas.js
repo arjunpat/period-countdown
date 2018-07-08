@@ -37,25 +37,28 @@ class Canvas {
 
 		if (to !== this.props.decimalAnimatingTowards) {
 			this.props.decimalAnimatingTowards = to;
-			window.clearInterval(this.animationInterval); // just for fun!
+			window.cancelAnimationFrame(this.animationInterval); // just for fun!
 			this.animationInterval = undefined;
 
 			let reg = this.createSineAnimationRegression(this.props.decimalCompleted, to);
 
 			let startTime = Date.now();
 
-			this.animationInterval = setInterval(() => {
+			let func = () => {
 				let secondsPassed = (Date.now() - startTime) / 1e3;
 
 				this.draw(reg(secondsPassed));
 
 				if (this.props.animationLength < secondsPassed) {
-					window.clearInterval(this.animationInterval);
+					window.cancelAnimationFrame(this.animationInterval);
 					this.animationInterval = undefined;
 					this.draw(this.props.decimalAnimatingTowards);
 				}
 
-			}, 15); // ~60hz
+				window.requestAnimationFrame(func);
+			}
+
+			this.animationInterval = window.requestAnimationFrame(func);
 
 		}
 
