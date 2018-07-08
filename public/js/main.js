@@ -187,6 +187,11 @@ load(window.location.pathname);
 
 RequestManager.init().then(data => {
 
+	if (typeof data !== 'object') {
+		window.alert('It looks like our servers are having trouble. Try again later.');
+		throw "Device id was not established";
+	}
+
 	if (data.email) {
 		prefManager.setGoogleAccount(data);
 		elements.applyPreferencesToElements(prefManager.getAllPreferences());
