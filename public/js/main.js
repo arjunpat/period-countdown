@@ -1,11 +1,10 @@
 // instatiate classes
-var timingEngine, elements = new Elements(), analytics = new Analytics, prefManager = new PrefManager;
-
+var timingEngine, view = new View(), analytics = new Analytics, prefManager = new PrefManager;
 
 // inital page render
 load(window.location.pathname);
 
-elements.updateScreenDimensions();
+view.updateScreenDimensions();
 
 RequestManager.init().then(data => {
 
@@ -16,10 +15,10 @@ RequestManager.init().then(data => {
 
 	if (data.email) {
 		prefManager.setGoogleAccount(data);
-		elements.applyPreferencesToElements(prefManager.getAllPreferences());
+		view.applyPreferencesToElements(prefManager.getAllPreferences());
 		analytics.setRegisteredTo(data.email);
 	} else
-		elements.addGoogleApi();
+		view.addGoogleApi();
 
 	if (data.device_id)
 		analytics.setNewLoad(true);
@@ -61,7 +60,7 @@ var googleApiDidLoad = () => {
 			scope: 'profile email'
 		}).then(GoogleAuth => {
 			var gSuccess = user => {
-				if (elements.modal.open) elements.closeModal();
+				if (view.modal.open) view.closeModal();
 
 				let data = user.getBasicProfile();
 
@@ -77,7 +76,7 @@ var googleApiDidLoad = () => {
 				RequestManager.login(account).then(res => {
 					if (res.data.status === 'returning_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
-						elements.settingChangesSaved();
+						view.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
 						// OTHER CASE
 					} else {
@@ -85,15 +84,13 @@ var googleApiDidLoad = () => {
 						window.alert('Our servers are having a bad day. Please try again another time.');
 					}
 					
-					elements.applyPreferencesToElements(prefManager.getAllPreferences());
+					view.applyPreferencesToElements(prefManager.getAllPreferences());
 				}).catch(err => {
 					// OTHER CASE
 				});
 			}
 
-			var gFail = () => {
-				window.alert('There was a problem signing you in. Please try again later.');
-			}
+			var gFail = () => window.alert('There was a problem signing you in. Please try again later.');
 
 			for (let element of document.getElementsByClassName('google-login-button'))
 				GoogleAuth.attachClickHandler(element, {}, gSuccess, gFail);

@@ -13,101 +13,111 @@ const load = (path, shouldPushHistory = false) => {
 }
 
 const render = {};
+
 render.index = () => {
-	Logger.time('main', 'index');
+	Logger.time('render', 'index');
 
-	elements.switchTo('index');
+	view.switchTo('index');
 
-	if (!timingEngine) {
+	if (timingEngine)
+		return Logger.timeEnd('render', 'index');
 
-		let firstRun = true;
-		var mainLoop = () => {
+	let firstRun = true;
+	var mainLoop = () => {
 
-			if (window.location.pathname === '/') {
+		if (window.location.pathname === '/') {
 
-				let time = timingEngine.getRemainingTime();
+			let time = timingEngine.getRemainingTime();
 
-				time.period_name = prefManager.getPeriodName(time.period) || time.period;
+			time.period_name = prefManager.getPeriodName(time.period) || time.period;
 
-				elements.updateScreen(time);
-
-				if (firstRun) {
-					window.onresize();
-					analytics.setPeriod(time.period);
-					analytics.setPeriodName(time.period_name);
-					firstRun = false;
-				}
-
+			if (firstRun) {
+				Logger.log('render', 'first-run');
+				view.updateScreen(time, true);
+				analytics.setPeriod(time.period);
+				analytics.setPeriodName(time.period_name);
+				window.onresize();
+				firstRun = false;
+				return window.setTimeout(mainLoop, 50);
 			}
 
-			setTimeout(mainLoop, 50);
-		}
-		// startup the actually timer; only happens when u actually go to the index page
-		Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
-			let [presets, calendar] = values;
+			if (document.hasFocus()) {
+				view.updateScreen(time, true);
+				return window.setTimeout(mainLoop, 50);
+			}
 
-			timingEngine = new TimingEngine(presets, calendar);
-			
-			elements.applyPreferencesToElements(prefManager.getAllPreferences()); // before first paint
-			mainLoop();
-			//elements.hidePreloader();
+			view.updateScreen(time, false);
+
+		}
+
+		return window.setTimeout(mainLoop, 500); // .5s when user not on the page; helps with cpu usage
+	}
+
+	// startup the actually timer; only happens when u actually go to the index page
+	Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
+		let [presets, calendar] = values;
+
+		timingEngine = new TimingEngine(presets, calendar);
 		
-			Logger.timeEnd('main', 'index');
+		view.applyPreferencesToElements(prefManager.getAllPreferences()); // before first paint
+		mainLoop();
+		//view.hidePreloader();
+	
+		Logger.timeEnd('render', 'index');
 
-		}).catch(err => {
-			//elements.showErrorScreen();
-			RequestManager.sendError({
-				where: 'browser',
-				type: 'client_page_load',
-				description: err.stack
-			});
+	}).catch(err => {
+		//view.showErrorScreen();
+		RequestManager.sendError({
+			where: 'browser',
+			type: 'client_page_load',
+			description: err.stack
 		});
+	});
 
-		window.onresize = () => {
-			elements.updateScreenDimensions();
-			elements.dimensionCanvas();
-		}
+	window.onresize = () => {
+		view.updateScreenDimensions();
+		view.dimensionCanvas();
+	}
 
-		elements.index.settingsButton.querySelector('div').onclick = () => {
-			load('/settings', true);
+	view.index.settingsButton.querySelector('div').onclick = () => {
+		load('/settings', true);
 
-			if (!prefManager.isLoggedIn())
-				setTimeout(() => elements.showModal('log-in-first'), 2000);
-		}
+		if (!prefManager.isLoggedIn())
+			setTimeout(() => view.showModal('log-in-first'), 2000);
+	}
 
-		elements.index.googleSignin.querySelector('div').onclick = () => {
-			elements.addGoogleApi();
-			elements.showModal('modal-profile-options');
-		}
+	view.index.googleSignin.querySelector('div').onclick = () => {
+		view.addGoogleApi();
+		view.showModal('modal-profile-options');
+	}
 
-		document.querySelector('#modal .modal-profile-options > button').onclick = () => {
-			Promise.all([gapi.auth2.getAuthInstance().signOut(), RequestManager.logout()]).then(values => {
-				Storage.clearAllExceptDeviceId();
-				window.location.reload();
-			});
-		}
-	} else
-		Logger.timeEnd('main', 'index');
-
+	document.querySelector('#modal .modal-profile-options > button').onclick = () => {
+		Promise.all([gapi.auth2.getAuthInstance().signOut(), RequestManager.logout()]).then(values => {
+			Storage.clearAllExceptDeviceId();
+			window.location.reload();
+		});
+	}
 }
+
+
 render.settings = () => {
 
-	Logger.time('main', 'settings');
+	Logger.time('render', 'settings');
 
 	// webpage display
 	document.title = 'Settings - Bell Countdown';
-	elements.switchTo('settings');
+	view.switchTo('settings');
 
 	// animation
-	elements.settings.title.classList.remove('underlineAnimation');
-	setTimeout(() => elements.settings.title.classList.add('underlineAnimation'), 20);
+	view.settings.title.classList.remove('underlineAnimation');
+	setTimeout(() => view.settings.title.classList.add('underlineAnimation'), 20);
 
 	// form stuff
-	if (elements.settings.closeButton.onclick === null) {
+	if (view.settings.closeButton.onclick === null) {
 
 		var savePeriodNames = () => {
 			let names = {};
-			for (let element of elements.settings.inputs) {
+			for (let element of view.settings.inputs) {
 				let num = element.id.substring(6, 7);
 				names[num] = element.value.trim();
 			}
@@ -115,20 +125,20 @@ render.settings = () => {
 			prefManager.setPeriodNames(names).then(val => {
 				if (val)
 					setTimeout(() => {
-						elements.settingChangesSaved();
+						view.settingChangesSaved();
 					}, 1000);
 				else
 					window.alert('not saving'); // TODO
 			});
 		}
 
-		elements.settings.closeButton.onclick = () => {
-			if (!elements.settings.saved)
+		view.settings.closeButton.onclick = () => {
+			if (!view.settings.saved)
 				savePeriodNames();
 			load('/', true);
 		}
 
-		for (let element of elements.settings.inputs) {
+		for (let element of view.settings.inputs) {
 			let period_num = parseInt(element.id.substring(6, 7));
 
 			element.onblur = () => {
@@ -144,32 +154,34 @@ render.settings = () => {
 						element.classList.add('has-value');
 					else
 						element.classList.remove('has-value');
-					elements.settingChangesNotSaved();
+					view.settingChangesNotSaved();
 				}
 			}
 		}
-		elements.settings.themeSelector.onchange = () => {
-			let val = elements.settings.themeSelector.value;
+		view.settings.themeSelector.onchange = () => {
+			let val = view.settings.themeSelector.value;
 
 			prefManager.setThemeByName(val).then(success => {
 				if (success)
-					elements.applyPreferencesToElements(prefManager.getAllPreferences());
+					view.applyPreferencesToElements(prefManager.getAllPreferences());
 				else
 					window.alert('We are having trouble saving your theme change. Try again later.'); // TODO give some error!
 			});
 		}
 	}
 
-	elements.applyPreferencesToElements(prefManager.getAllPreferences());
+	view.applyPreferencesToElements(prefManager.getAllPreferences());
 
 
-	Logger.timeEnd('main', 'settings');
+	Logger.timeEnd('render', 'settings');
 }
+
+
 render.notFound = () => {
-	Logger.time('main', 'not-found');
+	Logger.time('render', 'not-found');
 
 	document.title = 'Not Found - Bell Countdown';
-	elements.switchTo('not-found');
+	view.switchTo('not-found');
 
-	Logger.timeEnd('main', 'not-found');
+	Logger.timeEnd('render', 'not-found');
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-class Elements {
+class View {
 	constructor() {
 
 		this.currentValues = {};
@@ -36,7 +36,7 @@ class Elements {
 		this.modal.footer.querySelector('a').onclick = this.closeModal;
 	}
 
-	updateScreen(time) {
+	updateScreen(time, showVisuals) {
 
 		let {percent_completed, days, hours, minutes, seconds, period_name, day_type, period_length} = time;
 
@@ -50,13 +50,13 @@ class Elements {
 
 		if (typeof period_name === 'number') period_name = this.getOrdinalNum(period_name) + ' Period';
 
-		let documentTitle = `${timeString} — ${period_name}`;
+		let documentTitle = `${timeString} \u2022 ${period_name}`;
 		if (this.currentValues.documentTitle !== documentTitle) {
 			document.title = documentTitle;
 			this.currentValues.documentTitle = documentTitle;
 		}
 
-		if (document.hasFocus()) {
+		if (showVisuals) {
 			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99))
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
 			else if (!this.canvas.animationInterval || Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 2)
@@ -71,8 +71,8 @@ class Elements {
 
 			if (this.currentValues.currentPeriodText !== period_name) {
 				this.index.currentPeriodText.innerText = period_name;
-				// animation
 				
+				// animation
 				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
 				this.currentValues.currentPeriodText = period_name;
@@ -187,7 +187,7 @@ class Elements {
 			document.querySelector('#root #modal').style.display = 'none';
 			document.querySelector('#root #modal').style.transform = 'translateY(-500px)';
 		}, 400);
-		elements.modal.open = false; // TODO pls no reference like this! fix
+		view.modal.open = false; // TODO pls no reference like this! fix
 	}
 
 	addGoogleApi() {

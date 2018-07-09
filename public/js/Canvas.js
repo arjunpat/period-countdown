@@ -35,32 +35,33 @@ class Canvas {
 
 	animate(to) {
 
-		if (to !== this.props.decimalAnimatingTowards) {
-			this.props.decimalAnimatingTowards = to;
-			window.cancelAnimationFrame(this.animationInterval); // just for fun!
-			this.animationInterval = undefined;
+		if (to === this.props.decimalAnimatingTowards) return;
 
-			let reg = this.createSineAnimationRegression(this.props.decimalCompleted, to);
+		this.props.decimalAnimatingTowards = to;
+		window.cancelAnimationFrame(this.animationInterval); // just for fun!
+		delete this.animationInterval;
 
-			let startTime = Date.now();
+		let reg = this.createSineAnimationRegression(this.props.decimalCompleted, to);
 
-			let func = () => {
-				let secondsPassed = (Date.now() - startTime) / 1e3;
+		let startTime = Date.now();
 
-				this.draw(reg(secondsPassed));
+		let func = () => {
+			let secondsPassed = (Date.now() - startTime) / 1e3;
 
-				if (this.props.animationLength < secondsPassed) {
-					window.cancelAnimationFrame(this.animationInterval);
-					this.animationInterval = undefined;
-					this.draw(this.props.decimalAnimatingTowards);
-				}
+			this.draw(reg(secondsPassed));
 
-				window.requestAnimationFrame(func);
+			if (this.props.animationLength < secondsPassed) {
+				window.cancelAnimationFrame(this.animationInterval);
+				delete this.animationInterval;
+				this.draw(this.props.decimalAnimatingTowards);
+				return;
 			}
 
-			this.animationInterval = window.requestAnimationFrame(func);
-
+			window.requestAnimationFrame(func);
 		}
+
+		this.animationInterval = window.requestAnimationFrame(func);
+
 
 	}
 
