@@ -86,6 +86,11 @@
 	margin: 40px 0;
 }
 
+#settings #save-settings-button {
+	width: 160px;
+	transition: all ease 0.5s;
+}
+
 #settings .container {
 	width: 100%;
 	margin: 0 auto;

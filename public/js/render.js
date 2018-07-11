@@ -32,7 +32,6 @@ render.index = () => {
 			time.period_name = prefManager.getPeriodName(time.period) || time.period;
 
 			if (firstRun) {
-				Logger.log('render', 'first-run');
 				view.updateScreen(time, true);
 				analytics.setPeriod(time.period);
 				analytics.setPeriodName(time.period_name);
@@ -115,27 +114,45 @@ render.settings = () => {
 	// form stuff
 	if (view.settings.closeButton.onclick === null) {
 
-		var savePeriodNames = () => {
+		view.settings.closeButton.onclick = () => {
+			load('/', true);
+		}
+
+		view.settings.saveSettingsButton.onclick = () => {
+			let elem = view.settings.saveSettingsButton;
+			let currentText = elem.innerHTML;
+			elem.innerHTML = 'Saving...';
+			elem.disabled = 'true';
+
+			let theme = parseInt(view.settings.themeSelector.value);
+
 			let names = {};
 			for (let element of view.settings.inputs) {
-				let num = element.id.substring(6, 7);
+				let num = parseInt(element.id.substring(6, 7));
 				names[num] = element.value.trim();
 			}
 
-			prefManager.setPeriodNames(names).then(val => {
+			prefManager.setPreferences(names, theme).then(val => {
 				if (val)
 					setTimeout(() => {
+						elem.disabled = '';
+						elem.innerHTML = currentText;
 						view.settingChangesSaved();
-					}, 1000);
+						view.applyPreferencesToElements(prefManager.getAllPreferences());
+					}, 2e3);
 				else
-					window.alert('not saving'); // TODO
+					window.alert("Your preferences can not be saved at this time due to a server error. Try again later.");
 			});
+
 		}
 
-		view.settings.closeButton.onclick = () => {
-			if (!view.settings.saved)
-				savePeriodNames();
-			load('/', true);
+		view.settings.themeSelector.onchange = () => {
+			let val = parseInt(view.settings.themeSelector.value);
+
+			if (val !== prefManager.getThemeNum())
+				view.settingChangesNotSaved();
+
+			view.showThemeColorExamples(prefManager.getThemeFromNum(val));
 		}
 
 		for (let element of view.settings.inputs) {
@@ -145,11 +162,11 @@ render.settings = () => {
 				element.onkeyup();
 
 				if (element.value !== prefManager.getPeriodName(period_num) && !(element.value === '' && prefManager.getPeriodName(period_num) === undefined))
-					savePeriodNames();
+					view.settingChangesNotSaved();
 
 			}
 			element.onkeyup = () => {
-				if (element.value !== prefManager.getPeriodName(period_num)) {
+				if (element.value !== prefManager.getPeriodName(period_num) && !(element.value === '' && prefManager.getPeriodName(period_num) === undefined)) {
 					if (element.value.length > 0)
 						element.classList.add('has-value');
 					else
@@ -157,21 +174,12 @@ render.settings = () => {
 					view.settingChangesNotSaved();
 				}
 			}
-		}
-		view.settings.themeSelector.onchange = () => {
-			let val = view.settings.themeSelector.value;
 
-			prefManager.setThemeByName(val).then(success => {
-				if (success)
-					view.applyPreferencesToElements(prefManager.getAllPreferences());
-				else
-					window.alert('We are having trouble saving your theme change. Try again later.'); // TODO give some error!
-			});
 		}
+
 	}
 
 	view.applyPreferencesToElements(prefManager.getAllPreferences());
-
 
 	Logger.timeEnd('render', 'settings');
 }

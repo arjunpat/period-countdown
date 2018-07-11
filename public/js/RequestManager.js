@@ -15,7 +15,7 @@ class RequestManager {
 			options.headers = {
 				'Content-Type': 'application/json; charset=UTF-8'
 			};
-			options.body = params.data;
+			options.body = JSON.stringify(params.data);
 		}
 
 		let startTime = Date.now();
@@ -37,10 +37,10 @@ class RequestManager {
 			return this.ajax({
 				url: '/api/v1/init',
 				type: 'POST',
-				data: JSON.stringify({
+				data: {
 					device_id: Storage.getDeviceId(),
 					data: {}
-				})
+				}
 			}).then(res => {
 
 				if (res.json.error === 'no_user_exists') {
@@ -69,13 +69,13 @@ class RequestManager {
 			return this.ajax({
 				url: '/api/v1/init',
 				type: 'POST',
-				data: JSON.stringify({
+				data: {
 					data: {
 						user_agent: window.navigator.userAgent,
 						platform: window.navigator.platform,
 						browser
 					}
-				})
+				}
 			}).then(res => {
 				if (res.json.success)
 					Storage.setDeviceId(res.json.data.device_id);
@@ -89,10 +89,10 @@ class RequestManager {
 		return this.ajax({
 			url: '/api/v1/write/login',
 			type: 'POST',
-			data: JSON.stringify({
+			data: {
 				device_id: Storage.getDeviceId(),
 				data: account
-			})
+			}
 		}).then(res => res.json);
 	}
 
@@ -100,10 +100,10 @@ class RequestManager {
 		return this.ajax({
 			url: '/api/v1/write/logout',
 			type: 'POST',
-			data: JSON.stringify({
+			data: {
 				device_id: Storage.getDeviceId(),
 				data: {}
-			})
+			}
 		}).then(res => res.json);
 	}
 
@@ -111,33 +111,24 @@ class RequestManager {
 		return this.ajax({
 			url: '/api/v1/write/analytics',
 			type: 'POST',
-			data: JSON.stringify({
+			data: {
 				device_id: Storage.getDeviceId(),
 				data: data
-			})
+			}
 		}).then(res => res.json);
 	}
 
-	static updatePeriodNames(values) {
-
+	static updatePreferences(period_names, theme) {
 		return this.ajax({
-			url: '/api/v1/update/period_names',
+			url: '/api/v1/update/preferences',
 			type: 'POST',
-			data: JSON.stringify({
+			data: {
 				device_id: Storage.getDeviceId(),
-				data: values
-			})
-		}).then(res => res.json);
-	}
-
-	static updateTheme(new_theme) {
-		return this.ajax({
-			url: '/api/v1/update/theme',
-			type: 'POST',
-			data: JSON.stringify({
-				device_id: Storage.getDeviceId(),
-				data: { new_theme }
-			})
+				data: {
+					period_names,
+					theme
+				}
+			}
 		}).then(res => res.json);
 	}
 

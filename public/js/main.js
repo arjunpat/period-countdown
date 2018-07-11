@@ -4,8 +4,6 @@ var timingEngine, view = new View(), analytics = new Analytics, prefManager = ne
 // inital page render
 load(window.location.pathname);
 
-view.updateScreenDimensions();
-
 RequestManager.init().then(data => {
 
 	if (typeof data !== 'object') {
@@ -27,7 +25,7 @@ RequestManager.init().then(data => {
 
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
-		analytics.setTheme(prefManager.getThemeName());
+		analytics.setTheme(prefManager.getThemeNum());
 	} else
 		throw "Device id was not established";
 

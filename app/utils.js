@@ -26,6 +26,12 @@ class Utils {
 		return true;
 	}
 
+	removeEveryOtherElementFromArray(arr, startingAt = 0) {
+		for (let i = startingAt; i < arr.length; i++)
+			arr.splice(i, 1);
+		return arr;
+	}
+
 	mergeHeaders(headers) {
 		return this.mergeObjects({
 			'Server': 'Spice',

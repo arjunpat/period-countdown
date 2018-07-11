@@ -23,6 +23,7 @@ class View {
 			closeButton: document.getElementById('settings-close'),
 			themeSelector: document.getElementById('theme-selector'),
 			themeExamples: document.getElementsByClassName('theme-example'),
+			saveSettingsButton: document.getElementById('save-settings-button'),
 			saved: true
 		}
 		this.modal = {
@@ -38,7 +39,7 @@ class View {
 
 	updateScreen(time, showVisuals) {
 
-		let {percent_completed, days, hours, minutes, seconds, period_name, day_type, period_length} = time;
+		let {percent_completed, hours, minutes, seconds, period_name, day_type} = time;
 
 		// make time human readable
 		if (seconds < 10) seconds = '0' + seconds;
@@ -93,11 +94,8 @@ class View {
 		this.index.settingsButton.querySelector('div').style.background = values.theme.color.text;
 		this.index.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
 
-		this.settings.themeExamples[0].style.background = values.theme.color.completed;
-		this.settings.themeExamples[1].style.background = values.theme.color.background;
-		this.settings.themeExamples[0].style.color = values.theme.color.text;
-		this.settings.themeExamples[1].style.color = values.theme.color.text;
-		this.settings.themeSelector.value = values.theme.name;
+		this.showThemeColorExamples(values.theme.color);
+		this.settings.themeSelector.value = values.theme.num;
 
 		if (values.google_account.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
@@ -105,11 +103,11 @@ class View {
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
 
 			this.settings.themeSelector.disabled = '';
-			this.settings.changesSaved.querySelector('span').innerText = 'All changes saved in the cloud';
+			this.settings.saveSettingsButton.disabled = '';
+			this.settingChangesSaved();
 
-			for (let element of this.settings.inputs) {
+			for (let element of this.settings.inputs)
 				element.disabled = '';
-			}
 		}
 
 		let period_names = values.period_names;
@@ -117,18 +115,28 @@ class View {
 		if (period_names)
 			for (let element of this.settings.inputs) {
 				let num = element.id.substring(6, 7);
-				if (period_names[num]) {
+				if (typeof period_names[num] === 'string') {
 					element.value = period_names[num];
 					element.classList.add('has-value');
+				} else {
+					element.value = '';
+					element.classList.remove('has-value');
 				}
 			}
 
 	}
 
+	showThemeColorExamples(theme) {
+		this.settings.themeExamples[0].style.background = theme.completed;
+		this.settings.themeExamples[1].style.background = theme.background;
+		this.settings.themeExamples[0].style.color = theme.text;
+		this.settings.themeExamples[1].style.color = theme.text;
+	}
+
 	switchTo(screen) {
 		let screens = this.root.children;
 
-		for (let i = 0; i < screens.length; i++) {
+		for (let i = 0; i < screens.length; i++)
 			if (screens[i].id === screen) {
 				screens[i].style.display = 'block';
 				setTimeout(() => { screens[i].style.opacity = '1'; }, 20);
@@ -136,7 +144,8 @@ class View {
 				screens[i].style.opacity = '0';
 				setTimeout(() => { screens[i].style.display = 'none'; }, 200);
 			}
-		}
+
+		this.updateScreenDimensions();
 	}
 
 	updateScreenDimensions() {
@@ -147,37 +156,41 @@ class View {
 		this.index.settingsButton.style.padding = Math.min(45, dimension / 18) + 'px';
 		this.index.settingsButton.querySelector('div').style.padding = Math.min(18, dimension / 28) + 'px';
 
-		if (window.innerHeight > 765 && dimension > 1000)
+		if (window.innerHeight > 800 && dimension > 900)
 			document.body.style.overflow = 'hidden'; // locks screen
+	}
+
+	setLockScreenState(state) {
+		if (typeof state !== 'boolean')
+			throw new TypeError('invalid arguments');
+		document.body.style.overflow = state ? 'hidden' : 'auto';
 	}
 
 	showModal(screen) {
 		let screens = this.modal.body.children;
 
-		for (let i = 0; i < screens.length; i++) {
-			if (screens[i].classList.contains(screen)) {
+		for (let i = 0; i < screens.length; i++)
+			if (screens[i].classList.contains(screen))
 				screens[i].style.display = 'block';
-			} else {
+			else
 				screens[i].style.display = 'none';
-			}
-		}
 
 		let titles = this.modal.title.children;
 
-		for (let i = 0; i < titles.length; i++) {
-			if (titles[i].classList.contains(screen)) {
+		for (let i = 0; i < titles.length; i++)
+			if (titles[i].classList.contains(screen))
 				titles[i].style.display = 'block';
-			} else {
+			else
 				titles[i].style.display = 'none';
-			}
-		}
 
 		let modalStyle = this.root.querySelector('#modal').style;
 		modalStyle.display = 'block';
+
 		setTimeout(() => {
 			modalStyle.opacity = '1';
 			modalStyle.transform = 'translateY(0)';
 		}, 20);
+
 		this.modal.open = true;
 	}
 
@@ -202,7 +215,7 @@ class View {
 		this.settings.saved = false;
 		this.settings.changesSaved.style.background = '#464646';
 		this.settings.changesSaved.querySelector('span').style.color = '#fff';
-		this.settings.changesSaved.querySelector('span').innerHTML = 'Saving changes...';
+		this.settings.changesSaved.querySelector('span').innerHTML = 'Click save to save changes';
 	}
 
 	settingChangesSaved() {

@@ -1,6 +1,6 @@
 {
 	"name": "bell-countdown",
-	"version": "0.3-alpha",
+	"version": "1.0.0",
 	"description": "A countdown timer for MVHS's complicated schedules.",
 	"main": "server.js",
 	"scripts": {

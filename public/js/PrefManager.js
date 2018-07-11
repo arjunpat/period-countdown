@@ -65,8 +65,12 @@ class PrefManager {
 		if (values.settings) {
 			if (values.settings.period_names)
 				this.period_names = values.settings.period_names;
-			if (values.settings.theme)
-				this.setThemeByName(values.settings.theme);
+			if (values.settings.theme) {
+				if (this.isValidThemeNum(values.settings.theme))
+					this.setTheme(values.settings.theme);
+				else
+					this.setTheme(0);
+			}
 			// do other loading stuff here
 		}
 
@@ -75,66 +79,62 @@ class PrefManager {
 
 	// period stuff
 
-	setPeriodNames(values) {
-		for (let num in values) {
-			let name = values[num];
+	setPreferences(period_values, theme) {
+		if (!this.isLoggedIn())
+			return;
 
-			if (typeof num === 'string')
-				num = parseInt(num);
+		let period_names = {};
+		for (let num in period_values) {
+			let name = period_values[num];
 
-			if (num >= 0 && num <= 7 && typeof name === 'string' && this.isLoggedIn() && this.getPeriodName(num) !== name) {
-
+			if (num >= 0 && num <= 7 && typeof name === 'string' && this.isLoggedIn())
 				if (name.length <= 20 && name.length > 0)
-					this.period_names[num] = name;
-				else if (name.length === 0)
-					delete this.period_names[num];
-			}
+					period_names[num] = name;
 		}
 
-		return RequestManager.updatePeriodNames(this.period_names).then(data => {
+		if (!this.isValidThemeNum(theme))
+			theme = 0;
+
+		return RequestManager.updatePreferences(period_names, theme).then(data => {
 			if (data.success) {
-				this.save();
+				this.setTheme(theme);
+				this.period_names = period_names;
 				return true;
-			}
-			return false;
+			} else
+				return false;
 		});
+
 	}
 
 	setTheme(num) {
 
-		if (this.isLoggedIn())
-			return RequestManager.updateTheme(this.theme_options.name[num]).then(data => {
-				if (data.success) {
-					this.theme.num = num;
-					this.theme.color.completed = this.theme_options.completed[num];
-					this.theme.color.background = this.theme_options.background[num];
-					this.theme.color.text = this.theme_options.text[num];
-					this.theme.name = this.theme_options.name[num];
-					this.save();
-					return true;
-				}
-				return false;
-			});
-		else {
-			this.theme.num = num;
-			this.theme.color.completed = this.theme_options.completed[num];
-			this.theme.color.background = this.theme_options.background[num];
-			this.theme.color.text = this.theme_options.text[num];
-			this.theme.name = this.theme_options.name[num];
-			this.save();
+		let {completed, background, text} = this.getThemeFromNum(num);
+
+		this.theme.num = num;
+		this.theme.color.completed = completed;
+		this.theme.color.background = background;
+		this.theme.color.text = text;
+		this.save();
+	}
+
+	getThemeFromNum(num) {
+		return {
+			num,
+			completed: this.theme_options.completed[num],
+			background: this.theme_options.background[num],
+			text: this.theme_options.text[num]
 		}
 	}
 
-	setThemeByName(name) {
-		let val = this.theme_options.name.indexOf(name);
-		if (val > -1)
-			return this.setTheme(val);
-		throw new Error(`${name} is not in array`);
+	isValidThemeNum(num) {
+		if (this.theme_options.text[num])
+			return true;
+		return false;
 	}
 
 	getPeriodName(num) { return this.period_names[num] }
 
-	getThemeName() { return this.theme.name }
+	getThemeNum() { return this.theme.num }
 
 	isLoggedIn() {
 		return !!this.google_account.signed_in;

@@ -171,35 +171,26 @@ module.exports = async (path, postData) => {
 			return responses.success;
 
 			break;
-		case '/update/period_names':
+		case '/update/preferences':
 
 			if (!device_id || !data)
 				return responses.missing_data;
 
-			let valuesToEnter = {};
-			for (let i = 0; i <= 7; i++)
-				if (data[i] && typeof data[i] === 'string' && data[i].length <= 20)
-					valuesToEnter[i] = data[i];
+			let {period_names, theme} = data;
 
-			let res = await bellData.updatePeriodNames(device_id, valuesToEnter);
-
-			if (res.error)
-				return generateResponse(false, res.error);
-			else
-				return responses.success;
-
-			break;
-		case '/update/theme':
-
-			if (!device_id || !data)
-				return responses.missing_data;
-
-			if (typeof data.new_theme !== 'string' || data.new_theme.length > 20)
+			// validate theme
+			if (typeof theme !== 'number' || theme > 10)
 				return responses.bad_data;
 
-			let val = await bellData.updateTheme(device_id, data.new_theme);
+			// validate period_names
+			let valuesToEnter = {};
+			for (let i = 0; i <= 7; i++)
+				if (period_names[i] && typeof period_names[i] === 'string' && period_names[i].length <= 20)
+					valuesToEnter[i] = period_names[i];
 
-			if (val.error)
+			let res = await bellData.updatePreferences(device_id, valuesToEnter, theme);
+
+			if (res.error)
 				return generateResponse(false, res.error);
 			else
 				return responses.success;
