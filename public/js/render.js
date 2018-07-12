@@ -115,7 +115,14 @@ render.settings = () => {
 	if (view.settings.closeButton.onclick === null) {
 
 		view.settings.closeButton.onclick = () => {
-			load('/', true);
+			if (view.settings.saved)
+				load('/', true);
+			else {
+				view.showModal('unsaved-setting-changes');
+				document.querySelector('.unsaved-setting-changes > a').onclick = () => {
+					load('/', true);
+				}
+			}
 		}
 
 		view.settings.saveSettingsButton.onclick = () => {
