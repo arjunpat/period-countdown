@@ -104,7 +104,7 @@ render.settings = () => {
 	Logger.time('render', 'settings');
 
 	// webpage display
-	document.title = 'Settings - Bell Countdown';
+	document.title = 'Settings';
 	view.switchTo('settings');
 
 	// animation
@@ -167,20 +167,30 @@ render.settings = () => {
 
 			element.onblur = () => {
 				element.onkeyup();
-
-				if (element.value !== prefManager.getPeriodName(period_num) && !(element.value === '' && prefManager.getPeriodName(period_num) === undefined))
-					view.settingChangesNotSaved();
-
 			}
+
 			element.onkeyup = () => {
-				if (element.value !== prefManager.getPeriodName(period_num) && !(element.value === '' && prefManager.getPeriodName(period_num) === undefined)) {
-					if (element.value.length > 0)
+				let val = element.value.trim();
+
+				if (val !== prefManager.getPeriodName(period_num) && !(val === '' && prefManager.getPeriodName(period_num) === undefined)) {
+					if (val.length > 0)
 						element.classList.add('has-value');
 					else
 						element.classList.remove('has-value');
 					view.settingChangesNotSaved();
+
+					// logic to check for free period
+					if (PrefManager.isFreePeriod(val)) {
+						element.style.textDecoration = 'line-through';
+						element.nextElementSibling.innerHTML += ' - removed from schedule';
+					} else {
+						element.style.textDecoration = 'none';
+						element.nextElementSibling.innerHTML = element.nextElementSibling.innerHTML.replace(' - removed from schedule', '');
+					}
+
 				}
 			}
+
 
 		}
 

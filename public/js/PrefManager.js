@@ -132,6 +132,13 @@ class PrefManager {
 		return false;
 	}
 
+
+	static isFreePeriod(period_name) {
+		// some serious machine learning going on here!
+		period_name = period_name.trim().toLowerCase();
+		return ['free', 'none', 'nothing'].some(a => period_name.contains(a));
+	}
+
 	getPeriodName(num) { return this.period_names[num] }
 
 	getThemeNum() { return this.theme.num }
