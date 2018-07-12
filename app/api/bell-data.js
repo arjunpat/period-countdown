@@ -2,8 +2,6 @@
 const mysql = require('mysql');
 const utils = require('../utils.js');
 
-// entire thing should be sync so that higher level abstractions can be async
-
 class BellData {
 
 	constructor() {
