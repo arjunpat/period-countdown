@@ -58,7 +58,7 @@ var googleApiDidLoad = () => {
 			cookiepolicy: 'single_host_origin',
 			scope: 'profile email'
 		}).then(GoogleAuth => {
-			var gSuccess = user => {
+			let gSuccess = user => {
 				if (view.modal.open) view.closeModal();
 
 				let data = user.getBasicProfile();
@@ -89,7 +89,7 @@ var googleApiDidLoad = () => {
 				});
 			}
 
-			var gFail = () => window.alert('There was a problem signing you in. Please try again later.');
+			let gFail = () => window.alert('There was a problem signing you in. Please try again later.');
 
 			for (let element of document.getElementsByClassName('google-login-button'))
 				GoogleAuth.attachClickHandler(element, {}, gSuccess, gFail);

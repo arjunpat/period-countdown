@@ -180,12 +180,16 @@ render.settings = () => {
 					view.settingChangesNotSaved();
 
 					// logic to check for free period
-					if (PrefManager.isFreePeriod(val)) {
+					let label = element.nextElementSibling;
+					if (prefManager.isFreePeriod(val)) {
 						element.style.textDecoration = 'line-through';
-						element.nextElementSibling.innerHTML += ' - removed from schedule';
+
+						if (!label.innerHTML.includes(' - removed from schedule'))
+							label.innerHTML += ' - removed from schedule';
+					
 					} else {
 						element.style.textDecoration = 'none';
-						element.nextElementSibling.innerHTML = element.nextElementSibling.innerHTML.replace(' - removed from schedule', '');
+						label.innerHTML = element.nextElementSibling.innerHTML.replace(' - removed from schedule', '');
 					}
 
 				}
