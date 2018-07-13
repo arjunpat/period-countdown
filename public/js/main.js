@@ -54,7 +54,7 @@ var googleApiDidLoad = () => {
 
 	gapi.load('auth2', () => {
 		gapi.auth2.init({
-			client_id: '989074405041-k1nns8p3h7eb1s7c6e3j6ui5ohcovjso.apps.googleusercontent.com',
+			client_id: '770077939711-hbanoschq9p65gr8st8grsfbku4bsnhl.apps.googleusercontent.com',
 			cookiepolicy: 'single_host_origin',
 			scope: 'profile email'
 		}).then(GoogleAuth => {
