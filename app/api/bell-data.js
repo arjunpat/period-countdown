@@ -90,7 +90,7 @@ class BellData {
 	async createNewUser(params) {
 		let {email, first_name, last_name, profile_pic} = params;
 
-		let empty_obj = JSON.stringify({});
+		let empty_obj = '{}';
 
 		await this.query(
 			'INSERT INTO users (email, first_name, last_name, profile_pic, settings, devices, stats, created_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -163,7 +163,6 @@ class BellData {
 		delete user.devices[device_id];
 
 		let a = this.query('UPDATE devices SET registered_to = NULL WHERE device_id = ?', [device_id]);
-
 		let b = this.setObjectToUser('devices', email, user.devices);
 
 		await Promise.all([a, b]);

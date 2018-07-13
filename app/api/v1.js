@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 const bellData = require('./bell-data.js');
 
 var generateResponse = (success, error = null, data = null) => {
@@ -26,8 +26,6 @@ const responses = {
 
 module.exports = async (path, postData) => {
 	
-	// TODO: limit size of any entry into the userData
-
 	if (!postData.data) return responses.missing_data;
 
 	let device_id = postData.device_id;
