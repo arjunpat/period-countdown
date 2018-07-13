@@ -1,3 +1,4 @@
+/* globals */
 // instatiate classes
 var timingEngine, view = new View(), analytics = new Analytics, prefManager = new PrefManager;
 
