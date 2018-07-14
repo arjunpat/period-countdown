@@ -3,20 +3,22 @@
 class TimingEngine {
 
 	constructor(presets, calendar) {
+
 		Logger.time('TimingEngine', 'setup');
-		
+
 		this.calendar = {};
 		this.schedule = [];
 		this.presets = JSON.stringify(presets);
 		this.offset = 0;
-		this.stats = {}
+		this.stats = {};
 
 		this.parseCalendar(calendar);
 		this.prepareSchedule();
 		this.calculateOffset();
-		setInterval(this.calculateOffset, 900000); // every 15 minutes
+		setInterval(this.calculateOffset, 900000); // 15 minutes
 
 		Logger.timeEnd('TimingEngine', 'setup');
+
 	}
 
 	getRemainingTime() {
@@ -44,10 +46,12 @@ class TimingEngine {
 		minutes = Math.floor((dist % 36e5) / 6e4);
 		seconds = Math.floor((dist % 6e4) / 1e3);
 
-		/*days = Math.floor(distance / (1000 * 60 * 60 * 24)),
-		hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + (days * 24),
-		minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-		seconds = Math.floor((distance % (1000 * 60)) / 1000);*/
+		/* 
+		 * days = Math.floor(distance / (1000 * 60 * 60 * 24)),
+		 * hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + (days * 24),
+		 * minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+		 * seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		 */
 
 		return {
 			percent_completed,
@@ -64,7 +68,6 @@ class TimingEngine {
 
 	prepareSchedule() {
 		this.schedule = []; // always a fresh start
-
 
 		let dateString = this.getTodayDateString();
 		this.parseDay(dateString);
@@ -101,16 +104,15 @@ class TimingEngine {
 		// otherwise
 		if (this.calendar[dateString]) {
 
-
 			if (!this.calendar[dateString].schedule) {
 
 				let {s, n} = this.getPresetSchedule(this.calendar[dateString].type) || this.getPresetScheduleFromDateString(dateString);
 
 				this.calendar[dateString].schedule = s;
 				if (!this.calendar[dateString].name) this.calendar[dateString].name = n;
-			} else if (!this.calendar[dateString].name) {
+
+			} else if (!this.calendar[dateString].name)
 				this.calendar[dateString].name = this.getPresetScheduleFromDateString(dateString).n;
-			}
 
 		} else {
 			let {s: schedule, n: name} = this.getPresetScheduleFromDateString(dateString);
@@ -158,7 +160,6 @@ class TimingEngine {
 				do {
 
 					this.calendar[date] = JSON.parse(cache.content);
-
 					date = this.getNextDayDateString(date);
 
 				} while (date !== to);
@@ -168,29 +169,20 @@ class TimingEngine {
 	}
 
 	calculateOffset(numOfRequests = 5) {
-
 		Logger.log('TimingEngine', 'calculating offset');
 
 		var offsets = [];
-
 		for (let i = 0; i < numOfRequests; i++) {
 
-			setTimeout(() =>
+			setTimeout(() => RequestManager.getTime().then(time => {
+				offsets.push(time - Date.now());
 
-				RequestManager.getTime().then(time => {
+				let temp = 0;
+				for (let i = 0; i < offsets.length; i++) temp += offsets[i];
 
-					offsets.push(time - Date.now());
-
-					let temp = 0;
-					for (let i = 0; i < offsets.length; i++) temp += offsets[i];
-
-
-					this.offset = temp / offsets.length;
-
-				}
-			), 1000 * i);
+				this.offset = temp / offsets.length;
+			}), 1000 * i);
 		}
-
 	}
 
 	addAnotherDayToSchedule() {
@@ -198,6 +190,7 @@ class TimingEngine {
 		this.parseDay(this.stats.parsedUpTo);
 		this.schedule = this.schedule.concat(this.calendar[this.stats.parsedUpTo].schedule);
 	}
+
 
 	// helper methods
 

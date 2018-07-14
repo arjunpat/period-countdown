@@ -12,6 +12,14 @@ const load = (path, shouldPushHistory = false) => {
 		render.notFound();
 }
 
+const removePeriods = (obj) => {
+
+	for (let key in obj) {
+		
+	}
+
+}
+
 const render = {};
 
 render.index = () => {
@@ -56,9 +64,9 @@ render.index = () => {
 	Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 		let [presets, calendar] = values;
 
-		timingEngine = new TimingEngine(presets, calendar);
+		timingEngine.init(presets, calendar);
 		
-		view.applyPreferencesToElements(prefManager.getAllPreferences()); // before first paint
+		render.showPrefs(); // before first paint
 		mainLoop();
 		//view.hidePreloader();
 	
@@ -131,13 +139,20 @@ render.settings = () => {
 			elem.innerHTML = 'Saving...';
 			elem.disabled = 'true';
 
-			let theme = parseInt(view.settings.themeSelector.value);
+			let theme = view.getSelectedThemeNum();
 
-			let names = {};
-			for (let element of view.settings.inputs) {
-				let num = parseInt(element.id.substring(6, 7));
-				names[num] = element.value.trim();
+			let names = view.getValuesFromAllPeriodInputs();
+
+			let freePeriods = {};
+			for (let elem of view.settings.inputs) {
+				let id = view.getIdFromInputElem(elem);
+				let res = prefManager.isFreePeriodGivenContext(names, id);
+				view.showPeriodInput(elem, res);
+				freePeriods[id] = res;
 			}
+
+			timingEngine.setFreePeriod(freePeriods);
+
 
 			prefManager.setPreferences(names, theme).then(val => {
 				if (val)
@@ -145,7 +160,7 @@ render.settings = () => {
 						elem.disabled = '';
 						elem.innerHTML = currentText;
 						view.settingChangesSaved();
-						view.applyPreferencesToElements(prefManager.getAllPreferences());
+						render.showPrefs();
 					}, 2e3);
 				else
 					window.alert("Your preferences can not be saved at this time due to a server error. Try again later.");
@@ -153,8 +168,17 @@ render.settings = () => {
 
 		}
 
+		document.onkeydown = (e) => {
+			// support ctrl/cmd+s as saving
+			if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+				e.preventDefault();
+				if (view.settings.saveSettingsButton.disabled !== true)
+					view.settings.saveSettingsButton.onclick();
+			}
+		}
+
 		view.settings.themeSelector.onchange = () => {
-			let val = parseInt(view.settings.themeSelector.value);
+			let val = view.getSelectedThemeNum();
 
 			if (val !== prefManager.getThemeNum())
 				view.settingChangesNotSaved();
@@ -163,7 +187,7 @@ render.settings = () => {
 		}
 
 		for (let element of view.settings.inputs) {
-			let period_num = parseInt(element.id.substring(6, 7));
+			let period_num = view.getIdFromInputElem(element);
 
 			element.onblur = () => {
 				element.onkeyup();
@@ -177,30 +201,23 @@ render.settings = () => {
 						element.classList.add('has-value');
 					else
 						element.classList.remove('has-value');
-					view.settingChangesNotSaved();
-
-					// logic to check for free period
-					let label = element.nextElementSibling;
-					if (prefManager.isFreePeriod(val)) {
-						element.style.textDecoration = 'line-through';
-
-						if (!label.innerHTML.includes(' - removed from schedule'))
-							label.innerHTML += ' - removed from schedule';
 					
-					} else {
-						element.style.textDecoration = 'none';
-						label.innerHTML = element.nextElementSibling.innerHTML.replace(' - removed from schedule', '');
-					}
-
+					view.settingChangesNotSaved();
 				}
+
+				let names = view.getValuesFromAllPeriodInputs();
+
+				for (let elem of view.settings.inputs) {
+					let res = prefManager.isFreePeriodGivenContext(names, view.getIdFromInputElem(elem));
+					view.showPeriodInput(elem, res);
+				}
+
 			}
 
-
 		}
-
 	}
 
-	view.applyPreferencesToElements(prefManager.getAllPreferences());
+	render.showPrefs();
 
 	Logger.timeEnd('render', 'settings');
 }
@@ -213,4 +230,11 @@ render.notFound = () => {
 	view.switchTo('not-found');
 
 	Logger.timeEnd('render', 'not-found');
+}
+
+
+render.showPrefs = () => {
+	let prefs = prefManager.getAllPreferences();
+	view.applyPreferencesToElements(prefs);
+	timingEngine.setFreePeriods(prefs.free_periods)
 }

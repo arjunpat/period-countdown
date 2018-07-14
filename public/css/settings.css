@@ -118,6 +118,10 @@
 	font-size: 20px;
 }
 
+#settings #free-period {
+	text-decoration: line-through;
+}
+
 @media (max-width: 750px) {
 	#settings .container {
 		flex-direction: column;

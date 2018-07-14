@@ -29,10 +29,19 @@ class PrefManager {
 	}
 
 	getAllPreferences() {
+
+		let free_periods = {};
+		for (let i = 0; i <= 7; i++)
+			if (typeof name === 'string' && this.isFreePeriodGivenContext(this.period_names, i))
+				free_periods[i] = true;
+			else
+				free_periods[i] = false;
+
 		return {
 			theme: this.theme,
 			period_names: this.period_names,
-			google_account: this.google_account
+			google_account: this.google_account,
+			free_periods
 		}
 	}
 
@@ -79,13 +88,13 @@ class PrefManager {
 
 	// period stuff
 
-	setPreferences(period_values, theme) {
+	setPreferences(periodValues, theme) {
 		if (!this.isLoggedIn())
 			return;
 
 		let period_names = {};
-		for (let num in period_values) {
-			let name = period_values[num];
+		for (let num in periodValues) {
+			let name = periodValues[num];
 
 			if (num >= 0 && num <= 7 && typeof name === 'string' && this.isLoggedIn())
 				if (name.length <= 20 && name.length > 0)
@@ -133,18 +142,57 @@ class PrefManager {
 	}
 
 
-	isFreePeriod(period_name) {
+	isFreePeriod(periodName) {
 		// some serious ml going on here!
-		period_name = period_name.trim().toLowerCase();
-		return ['free', 'none', 'nothing'].some(a => period_name.includes(a));
+
+		if (typeof periodName !== 'string')
+			return false;
+
+		periodName = periodName.trim().toLowerCase();
+		return ['free', 'none', 'nothin'].some(a => periodName.includes(a));
+	}
+
+	isFreePeriodGivenContext(context, num) {
+
+		/*
+		 * this method only marks a free period as free
+		 * if it is consecutive with other free periods at either
+		 * the begining of end of the day
+		 */
+
+		// sanitize
+		context = JSON.parse(JSON.stringify(context))
+
+		for (let key in context)
+			context[key] = this.isFreePeriod(context[key]);
+
+		if (!context[num])
+			return false;
+
+		if (num === 0 || num === 7)
+			return true;
+
+		let isFree = true;
+		for (let i = 0; i < num; i++)
+			if (!context[i]) {
+				isFree = false;
+				break;
+			}
+
+		if (isFree)
+			return isFree;
+
+		for (let i = Object.keys(context).length; i > num; i--)
+			if (!context[i])
+				return false;
+		return true;
+
 	}
 
 	getPeriodName(num) { return this.period_names[num] }
 
 	getThemeNum() { return this.theme.num }
 
-	isLoggedIn() {
-		return !!this.google_account.signed_in;
-	}
+	isLoggedIn() { return !!this.google_account.signed_in; }
 
 }
