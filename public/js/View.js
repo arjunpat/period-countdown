@@ -112,7 +112,7 @@ class View {
 
 		if (values.period_names)
 			for (let element of this.settings.inputs) {
-				let num = element.id.substring(6, 7);
+				let num = this.getIdFromInputElem(element);
 				this.showPeriodInput(element, values.free_periods[num], values.period_names[num])
 			}
 

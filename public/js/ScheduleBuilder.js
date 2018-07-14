@@ -17,19 +17,20 @@ class ScheduleBuilder {
 		let presets = JSON.parse(this.presets);
 
 		for (let key in presets) {
+			if (!presets.hasOwnProperty(key))
+				continue;
+
 			let schedule = presets[key].s;
 
-			for (let i = 0; i < schedule.length; i++) {
-				let event = schedule[i];
-				if (typeof event.n === 'number')
-					if (this.free[event.n])
-						schedule.splice(i, 1);
-					else
-						break;
-				schedule.splice(i, 1);
+			while (schedule.length > 0) {
+				let event = schedule[0];
+				if (typeof event.n === 'number' && !this.free[event.n])
+					break;
+				else
+					schedule.splice(0, 1);
 			}
 
-			let lastTime;
+			var lastTime;
 			for (let i = schedule.length - 2; i >= 0; i--) { // subtract 2 because last is always free
 				let event = schedule[i];
 				if (typeof event.n === 'number')
@@ -40,23 +41,31 @@ class ScheduleBuilder {
 						schedule[schedule.length - 1].f = lastTime;
 						break;
 					}
-				schedule.splice(i, 1);
+				else
+					schedule.splice(i, 1);
 			}
 
 		}
 
+		this.new = false;
 		return presets;
 	}
 
 	setFreePeriods(obj) {
-		this.free = {};
+		if (!this.free)
+			this.free = {};
 
 		for (let key in obj)
-			if (obj.hasOwnProperty(key) && typeof obj[key] === 'boolean')
+			if (obj.hasOwnProperty(key) && typeof obj[key] === 'boolean' && this.free[key] !== obj[key]) {
 				this.free[key] = obj[key];
+				this.new = true;
+			}
+		
 	}
+
+	isNew() { return !!this.new }
 
 	getCalendar() { return JSON.parse(this.calendar) }
 
-	hasInitialized() { return !!this.initialized }
+	isInitialized() { return !!this.initialized }
 }

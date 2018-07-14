@@ -2,23 +2,28 @@
 
 class TimingEngine {
 
-	constructor(presets, calendar) {
+	constructor() {}
 
+	init(presets, calendar) {
 		Logger.time('TimingEngine', 'setup');
 
-		this.calendar = {};
+		if (!this.isInitialized()) {
+			// the calendar never changes
+			this.calendar = {};
+			this.offset = 0;
+			this.parseCalendar(calendar);
+			this.calculateOffset();
+			this.offsetInterval = setInterval(this.calculateOffset, 900000); // 15 minutes
+		}
+
 		this.schedule = [];
 		this.presets = JSON.stringify(presets);
-		this.offset = 0;
 		this.stats = {};
 
-		this.parseCalendar(calendar);
 		this.prepareSchedule();
-		this.calculateOffset();
-		setInterval(this.calculateOffset, 900000); // 15 minutes
 
+		this.initialized = true;
 		Logger.timeEnd('TimingEngine', 'setup');
-
 	}
 
 	getRemainingTime() {
@@ -221,4 +226,6 @@ class TimingEngine {
 	}
 
 	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())) }
+
+	isInitialized() { return !!this.initialized }
 }

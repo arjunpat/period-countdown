@@ -1,4 +1,4 @@
-var timingEngine,
+const timingEngine = new TimingEngine(),
 	view = new View(),
 	analytics = new Analytics,
 	prefManager = new PrefManager,

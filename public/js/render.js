@@ -19,7 +19,7 @@ render.index = () => {
 
 	view.switchTo('index');
 
-	if (timingEngine)
+	if (timingEngine.isInitialized())
 		return Logger.timeEnd('render', 'index');
 
 	let firstRun = true;
@@ -225,5 +225,7 @@ render.showPrefs = () => {
 	let prefs = prefManager.getAllPreferences();
 	view.applyPreferencesToElements(prefs);
 	scheduleBuilder.setFreePeriods(prefs.free_periods);
-	timingEngine = new TimingEngine(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
+	
+	if (scheduleBuilder.isInitialized() && scheduleBuilder.isNew())
+		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
 }
