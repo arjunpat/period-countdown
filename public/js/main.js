@@ -1,6 +1,8 @@
-/* globals */
-// instatiate classes
-var timingEngine, view = new View(), analytics = new Analytics, prefManager = new PrefManager;
+var timingEngine = new TimingEngine(),
+	view = new View(),
+	analytics = new Analytics,
+	prefManager = new PrefManager,
+	scheduleBuilder = new ScheduleBuilder();
 
 // inital page render
 load(window.location.pathname);
@@ -14,7 +16,7 @@ RequestManager.init().then(data => {
 
 	if (data.email) {
 		prefManager.setGoogleAccount(data);
-		view.applyPreferencesToElements(prefManager.getAllPreferences());
+		render.showPrefs();
 		analytics.setRegisteredTo(data.email);
 	} else
 		view.addGoogleApi();
@@ -83,7 +85,7 @@ var googleApiDidLoad = () => {
 						window.alert('Our servers are having a bad day. Please try again another time.');
 					}
 					
-					view.applyPreferencesToElements(prefManager.getAllPreferences());
+					render.showPrefs();
 				}).catch(err => {
 					// OTHER CASE
 				});

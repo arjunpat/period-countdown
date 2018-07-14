@@ -110,19 +110,37 @@ class View {
 				element.disabled = '';
 		}
 
-		let period_names = values.period_names;
-
-		if (period_names)
+		if (values.period_names)
 			for (let element of this.settings.inputs) {
 				let num = element.id.substring(6, 7);
-				if (typeof period_names[num] === 'string') {
-					element.value = period_names[num];
-					element.classList.add('has-value');
-				} else {
-					element.value = '';
-					element.classList.remove('has-value');
-				}
+				this.showPeriodInput(element, values.free_periods[num], values.period_names[num])
 			}
+
+	}
+
+	showPeriodInput(element, isFree, value = null) {
+		let num = element.id.substring(6, 7);
+		let label = element.nextElementSibling;
+
+		element.classList.remove('free-period');
+		label.innerHTML = label.innerHTML.replace(' - removed from schedule', '');
+
+		if (isFree) {
+			element.classList.add('free-period');
+			if (!label.innerHTML.includes(' - removed from schedule'))
+				label.innerHTML += ' - removed from schedule';
+		}
+
+		if (value === null)
+			return;
+
+		if (typeof value === 'string') {
+			element.value = value;
+			element.classList.add('has-value');
+		} else {
+			element.value = '';
+			element.classList.remove('has-value');
+		}
 
 	}
 
@@ -224,6 +242,20 @@ class View {
 		this.settings.changesSaved.querySelector('span').style.color = '';
 		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
 	}
+
+	getValuesFromAllPeriodInputs() {
+		let names = {};
+		for (let element of this.settings.inputs) {
+			let num = this.getIdFromInputElem(element);
+			names[num] = element.value.trim();
+		}
+
+		return names;
+	}
+
+	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)) }
+
+	getSelectedThemeNum() { return parseInt(this.settings.themeSelector.value) }
 
 	dimensionCanvas() { this.canvas.dimension() }
 

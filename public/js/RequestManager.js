@@ -43,7 +43,7 @@ class RequestManager {
 				}
 			}).then(res => {
 
-				if (res.json.error === 'no_user_exists') {
+				if (res.json.data.error === 'no_user_exists') {
 					Storage.clearAll();
 					return this.init();
 				} else return res.json.data;
