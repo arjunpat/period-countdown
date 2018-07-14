@@ -1,4 +1,4 @@
-var timingEngine = new TimingEngine(),
+var timingEngine,
 	view = new View(),
 	analytics = new Analytics,
 	prefManager = new PrefManager,
