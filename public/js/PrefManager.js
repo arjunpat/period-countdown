@@ -31,7 +31,7 @@ class PrefManager {
 	getAllPreferences() {
 
 		let free_periods = {};
-		for (let i = 0; i <= 7; i++)
+		for (let i = 0; i < Object.keys(this.period_names).length; i++)
 			if (typeof name === 'string' && this.isFreePeriodGivenContext(this.period_names, i))
 				free_periods[i] = true;
 			else
@@ -159,7 +159,7 @@ class PrefManager {
 		 * if it is consecutive with other free periods at either
 		 * the begining of end of the day
 		 */
-
+		
 		// sanitize
 		context = JSON.parse(JSON.stringify(context))
 

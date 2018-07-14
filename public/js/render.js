@@ -12,14 +12,6 @@ const load = (path, shouldPushHistory = false) => {
 		render.notFound();
 }
 
-const removePeriods = (obj) => {
-
-	for (let key in obj) {
-		
-	}
-
-}
-
 const render = {};
 
 render.index = () => {
@@ -63,10 +55,9 @@ render.index = () => {
 	// startup the actually timer; only happens when u actually go to the index page
 	Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 		let [presets, calendar] = values;
-
-		timingEngine.init(presets, calendar);
 		
-		render.showPrefs(); // before first paint
+		scheduleBuilder.init(presets, calendar);
+		render.showPrefs();
 		mainLoop();
 		//view.hidePreloader();
 	
@@ -143,16 +134,13 @@ render.settings = () => {
 
 			let names = view.getValuesFromAllPeriodInputs();
 
-			let freePeriods = {};
+			/* let freePeriods = {};
 			for (let elem of view.settings.inputs) {
 				let id = view.getIdFromInputElem(elem);
 				let res = prefManager.isFreePeriodGivenContext(names, id);
 				view.showPeriodInput(elem, res);
 				freePeriods[id] = res;
-			}
-
-			timingEngine.setFreePeriod(freePeriods);
-
+			} */
 
 			prefManager.setPreferences(names, theme).then(val => {
 				if (val)
@@ -236,5 +224,6 @@ render.notFound = () => {
 render.showPrefs = () => {
 	let prefs = prefManager.getAllPreferences();
 	view.applyPreferencesToElements(prefs);
-	timingEngine.setFreePeriods(prefs.free_periods)
+	scheduleBuilder.setFreePeriods(prefs.free_periods);
+	timingEngine = new TimingEngine(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
 }
