@@ -52,8 +52,12 @@ class ScheduleBuilder {
 	}
 
 	setFreePeriods(obj) {
-		if (!this.free)
+		let firstRun = false;
+		
+		if (!this.free) {
+			firstRun = true;
 			this.free = {};
+		}
 
 		for (let key in obj)
 			if (obj.hasOwnProperty(key) && typeof obj[key] === 'boolean' && this.free[key] !== obj[key]) {
@@ -61,11 +65,18 @@ class ScheduleBuilder {
 				this.new = true;
 			}
 		
+		if (firstRun && Object.keys(this.free).find(key => this.free[key] === true))
+			this.new = false;
+		
+		// make sure not all periods are free
+		if (Object.keys(this.free).find(key => this.free[key] === false)) {
+			// TODO
+		}
 	}
 
-	isNew() { return !!this.new }
+	isNew() { return !!this.new && this.isInitialized(); }
 
-	getCalendar() { return JSON.parse(this.calendar) }
+	getCalendar() { return JSON.parse(this.calendar); }
 
-	isInitialized() { return !!this.initialized }
+	isInitialized() { return !!this.initialized; }
 }

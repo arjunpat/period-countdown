@@ -2,14 +2,20 @@
 
 const load = (path, shouldPushHistory = false) => {
 
-	if (shouldPushHistory) window.history.pushState({}, '', path);
+	if (shouldPushHistory)
+		window.history.pushState({}, '', path);
 
-	if (path === '/')
-		render.index();
-	else if (path === '/settings')
-		render.settings();
-	else
-		render.notFound();
+	switch (path) {
+		case '/':
+			render.index();
+			break;
+		case '/settings':
+			render.settings();
+			break;
+		default:
+			render.notFound();
+			break;
+	}
 }
 
 const render = {};
@@ -57,6 +63,7 @@ render.index = () => {
 		let [presets, calendar] = values;
 		
 		scheduleBuilder.init(presets, calendar);
+		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
 		render.showPrefs();
 		mainLoop();
 		//view.hidePreloader();
@@ -226,6 +233,6 @@ render.showPrefs = () => {
 	view.applyPreferencesToElements(prefs);
 	scheduleBuilder.setFreePeriods(prefs.free_periods);
 	
-	if (scheduleBuilder.isInitialized() && scheduleBuilder.isNew())
-		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
+	if (scheduleBuilder.isNew())
+		timingEngine.loadNewPreset(scheduleBuilder.generatePresets());
 }
