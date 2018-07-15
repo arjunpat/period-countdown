@@ -5,16 +5,39 @@ class TimingEngine {
 	constructor() {}
 
 	init(presets, calendar) {
+		if (this.isInitialized())
+			throw new Error('TimingEngine has already been initialized');
+
 		Logger.time('TimingEngine', 'setup');
 
-		if (!this.isInitialized()) {
-			// the calendar never changes
-			this.calendar = {};
-			this.offset = 0;
-			this.parseCalendar(calendar);
-			this.calculateOffset();
-			this.offsetInterval = setInterval(this.calculateOffset, 900000); // 15 minutes
-		}
+		this.calendar = {};
+		this.offset = 0;
+		this.schedule = [];
+		this.presets = JSON.stringify(presets);
+		this.stats = {};
+
+		// parse the calendar arr into a defined interface
+		this.parsed = this.parseCalendar(calendar);
+
+		// save the plain parsed version
+		this.calendar = this.create(this.parsed);
+
+		// calc offset and run every 15 minutes
+		this.calculateOffset();
+		this.offsetInterval = setInterval(this.calculateOffset, 900000); // 15 minutes
+
+		// prepare the schedule
+		this.prepareSchedule();
+
+		this.initialized = true;
+		Logger.timeEnd('TimingEngine', 'setup');
+	}
+
+	loadNewPreset(presets) {
+		if (!this.isInitialized)
+			throw new Error('TimingEngine has not been initialized');
+		
+		Logger.time('TimingEngine', 'reinit');
 
 		this.schedule = [];
 		this.presets = JSON.stringify(presets);
@@ -22,11 +45,14 @@ class TimingEngine {
 
 		this.prepareSchedule();
 
-		this.initialized = true;
-		Logger.timeEnd('TimingEngine', 'setup');
+		Logger.timeEnd('TimingEngine', 'reinit');
+
 	}
 
 	getRemainingTime() {
+
+		if (!this.isInitialized)
+			throw new Error('TimingEngine has not been initialized');
 
 		let now = this.getCurrentTime();
 
@@ -149,13 +175,14 @@ class TimingEngine {
 	}
 
 	parseCalendar(calendar) {
+		let parsed = {};
+
 		for (let i = 0; i < calendar.length; i++) {
 			let cache = calendar[i];
-			cache.content = JSON.stringify(cache.content);
 
 			if (cache.date) {
 
-				this.calendar[cache.date] = JSON.parse(cache.content); // TODO: find better way
+				parsed[cache.date] = cache.content;
 
 			} else if (cache.from && cache.to) {
 
@@ -164,13 +191,15 @@ class TimingEngine {
 
 				do {
 
-					this.calendar[date] = JSON.parse(cache.content);
+					parsed[date] = cache.content;
 					date = this.getNextDayDateString(date);
 
 				} while (date !== to);
 
 			}
 		}
+
+		return JSON.parse(JSON.stringify(parsed)); // TODO: find better way
 	}
 
 	calculateOffset(numOfRequests = 5) {
@@ -213,9 +242,7 @@ class TimingEngine {
 		return (dateObject.getMonth() + 1) + '/' + dateObject.getDate() + '/' + dateObject.getFullYear();
 	}
 
-	getDateObjectFromDateString(dateString) {
-		return new Date(dateString);
-	}
+	getDateObjectFromDateString(dateString) { return new Date(dateString); }
 
 	getNextDayDateString(dateString) {
 		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() + 8.64e7));
@@ -225,7 +252,9 @@ class TimingEngine {
 		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() - 8.64e7));
 	}
 
-	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())) }
+	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())); }
+
+	create(obj) { return JSON.parse(JSON.stringify(obj)); }
 
 	isInitialized() { return !!this.initialized }
 }
