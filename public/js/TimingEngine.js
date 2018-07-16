@@ -11,9 +11,9 @@ class TimingEngine {
 		Logger.time('TimingEngine', 'setup');
 
 		this.calendar = {};
+		this.presets = presets;
 		this.offset = 0;
 		this.schedule = [];
-		this.presets = JSON.stringify(presets);
 		this.stats = {};
 
 		// parse the calendar arr into a defined interface
@@ -33,19 +33,20 @@ class TimingEngine {
 		Logger.timeEnd('TimingEngine', 'setup');
 	}
 
-	loadNewPreset(presets) {
+	loadNewPresets(presets) {
 		if (!this.isInitialized)
 			throw new Error('TimingEngine has not been initialized');
 		
-		Logger.time('TimingEngine', 'reinit');
+		Logger.time('TimingEngine', 'new-preset');
 
+		this.calendar = this.create(this.parsed);
+		this.presets = presets;
 		this.schedule = [];
-		this.presets = JSON.stringify(presets);
 		this.stats = {};
 
 		this.prepareSchedule();
 
-		Logger.timeEnd('TimingEngine', 'reinit');
+		Logger.timeEnd('TimingEngine', 'new-preset');
 
 	}
 
@@ -124,7 +125,7 @@ class TimingEngine {
 			else break;
 		}
 
-		this.makeSureTwoItemsInSchedule()
+		this.makeSureTwoItemsInSchedule();
 
 	}
 
@@ -151,25 +152,15 @@ class TimingEngine {
 			this.calendar[dateString] = {
 				schedule,
 				name
-			}
+			};
 		}
 
 		// on change of s, the calendar also changes
 		let s = this.calendar[dateString].schedule;
 	
 		// parses the day's s by replacing from with epoch ms time
-		for (let i = 0; i < s.length; i++) {
+		for (let i = 0; i < s.length; i++)
 			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
-
-			// test if this is a period
-			if (typeof s[i].n === 'number') {
-				s.splice(i, 0, {
-					n: 'Passing',
-					f: s[i].f - 300000 // 5 minute passing period
-				});
-				i++; // so it doesn't try to parse itself
-			}
-		}
 
 		this.calendar[dateString].parsed = true;
 	}
@@ -199,7 +190,7 @@ class TimingEngine {
 			}
 		}
 
-		return JSON.parse(JSON.stringify(parsed)); // TODO: find better way
+		return parsed; // TODO: find better way
 	}
 
 	calculateOffset(numOfRequests = 5) {
@@ -230,7 +221,7 @@ class TimingEngine {
 
 	makeSureTwoItemsInSchedule() { while (this.schedule.length < 2) this.addAnotherDayToSchedule(); }
 
-	getPresetSchedule(type) { return JSON.parse(this.presets)[type]; /* presets are stored in json to delete references */ }
+	getPresetSchedule(type) { return this.create(this.presets[type]); /* presets are stored in json to delete references */ }
 
 	getPresetScheduleFromDateString(dateString) {
 		return this.getPresetSchedule(['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'][this.getDateObjectFromDateString(dateString).getDay()]);
