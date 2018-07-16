@@ -10,7 +10,7 @@ class Analytics {
 		if (this.sent) return;
 
 		let data;
-		if (this.pathname === '/' && this.device_id && this.theme && typeof this.period === 'number' && this.period_name && typeof this.new_load === 'boolean') { // index page
+		if (this.pathname === '/' && this.device_id && typeof this.theme === 'number' && typeof this.period === 'number' && this.period_name && typeof this.new_load === 'boolean') { // index page
 
 			while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0) await this.sleep(1);
 			let speedInfo = window.performance.timing;
@@ -30,9 +30,9 @@ class Analytics {
 					theme: this.theme,
 					period: this.period
 				}
-			}
+			};
 			if (this.period !== this.period_name) data.prefs.period_name = this.period_name;
-		} else if (this.pathname && this.device_id && this.theme && typeof this.new_load === 'boolean') {
+		} else if (this.pathname && this.device_id && typeof this.theme === 'number' && typeof this.new_load === 'boolean') {
 
 			while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0) await this.sleep(1);
 			let speedInfo = window.performance.timing;
@@ -51,9 +51,10 @@ class Analytics {
 				prefs: {
 					theme: this.theme
 				}
-			}
+			};
 
-		} else return;
+		} else
+			return;
 
 		if (this.registered_to) data.registered_to = this.registered_to;
 

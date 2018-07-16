@@ -181,8 +181,8 @@ class PrefManager {
 
 		if (isFree)
 			return isFree;
-
-		for (let i = Object.keys(context).length; i > num; i--)
+		
+		for (let i = Object.keys(context).length - 1; i > num; i--)
 			if (!context[i])
 				return false;
 		return true;

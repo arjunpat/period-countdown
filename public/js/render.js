@@ -234,5 +234,5 @@ render.showPrefs = () => {
 	scheduleBuilder.setFreePeriods(prefs.free_periods);
 	
 	if (scheduleBuilder.isNew())
-		timingEngine.loadNewPreset(scheduleBuilder.generatePresets());
+		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
 }
