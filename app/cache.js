@@ -1,19 +1,20 @@
 "use strict";
 const fs = require('fs');
 
-const url_map = {
+const urlMap = {
 	'/': '/index.html',
 	'/settings': '/index.html',
-	'/favicon.ico': '/images/1024.png'
-}
+	'/favicon.ico': '/images/1024.png',
+	'/sw.js': '/js/sw.js'
+};
 
-const header_presets = {
+const headerPresets = {
 	js: {
-		'Content-Type': 'application/javascript; charset=UTF-8',
-		'Cache-Control': 'public, max-age=31536000'
+		'Content-Type': 'application/javascript; charset=utf-8',
+		'Cache-Control': 'public, max-age=31536000' // 1 year
 	},
 	css: {
-		'Content-Type': 'text/css; charset=UTF-8',
+		'Content-Type': 'text/css; charset=utf-8',
 		'Cache-Control': 'public, max-age=31536000'
 	},
 	html: {
@@ -24,8 +25,18 @@ const header_presets = {
 		'Content-Type': 'image/png',
 		'Cache-Control': 'public, max-age=31536000',
 		'Accept-ranges': 'bytes'
+	},
+	json: {
+		'Content-Type': 'application/json; charset=utf-8',
+		'Cache-Control': 'public, max-age=31536000'
 	}
-}
+};
+
+const filePresets = {
+	'/js/sw.js': {
+		'Cache-Control': 'public, max-age=900' // 15 minutes
+	}
+};
 
 class Cache {
 
@@ -36,7 +47,7 @@ class Cache {
 	getFile(filename) {
 
 		return new Promise((resolve, reject) => {
-			if (url_map[filename]) filename = url_map[filename];
+			if (urlMap[filename]) filename = urlMap[filename];
 
 			filename = __dirname + '/../public' + filename;
 
@@ -70,9 +81,9 @@ class Cache {
 
 		let headers = {
 			Date: (new Date(stats.mtime)).toString()
-		}
+		};
 
-		if (reg[1]) headers = header_presets[reg[1]];
+		if (reg[1]) headers = headerPresets[reg[1]];
 		if (reg[1] === 'png') encoding = undefined;
 
 		// if file not found, will throw error and catch the promise
@@ -80,7 +91,7 @@ class Cache {
 			content: fs.readFileSync(filename, encoding),
 			lastLoad: Date.now(),
 			headers
-		}
+		};
 	}
 
 }

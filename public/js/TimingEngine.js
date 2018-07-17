@@ -201,6 +201,9 @@ class TimingEngine {
 		for (let i = 0; i < numOfRequests; i++) {
 
 			setTimeout(() => RequestManager.getTime().then(time => {
+				if (!time)
+					return;
+				
 				offsets.push(time - Date.now());
 
 				let temp = 0;

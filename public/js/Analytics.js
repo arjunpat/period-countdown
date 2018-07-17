@@ -9,11 +9,16 @@ class Analytics {
 
 		if (this.sent) return;
 
-		let data = {};
-		if (this.pathname === '/' && this.device_id && typeof this.theme === 'number' && typeof this.period === 'number' && this.period_name && typeof this.new_load === 'boolean') { // index page
+		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || typeof this.newLoad !== 'boolean')
+			return;
 
-			this.sent = true;
-			await this.forPerformanceStats();
+		this.sent = true;
+		while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0)
+			await this.sleep(1);
+
+		let data = {};
+		if (this.pathname === '/' && typeof this.period === 'number' && this.period_name) { // index page
+
 			data.prefs = {
 				theme: this.theme,
 				period: this.period
@@ -21,22 +26,17 @@ class Analytics {
 			if (this.period !== this.period_name)
 				data.prefs.period_name = this.period_name;
 
-		} else if (this.pathname && this.device_id && typeof this.theme === 'number' && typeof this.new_load === 'boolean') {
-
-			this.sent = true;
-			await this.forPerformanceStats();
+		} else {
 			data.prefs = {
 				theme: this.theme
 			}
-			
-		} else
-			return;
+		}
 
 		let speedInfo = window.performance.timing;
 
 		data.pathname = this.pathname;
 		data.referrer = window.document.referrer;
-		data.new_load = this.new_load;
+		data.new_load = this.newLoad;
 		data.speed = {
 			page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 			response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -46,8 +46,8 @@ class Analytics {
 			tti: speedInfo.domInteractive - speedInfo.domLoading
 		};
 
-		if (this.registered_to)
-			data.registered_to = this.registered_to;
+		if (this.registeredTo)
+			data.registered_to = this.registeredTo;
 
 		RequestManager.sendAnalytics(data).then(data => {
 			if (data.success) {
@@ -58,12 +58,12 @@ class Analytics {
 	}
 
 	setNewLoad(x) {
-		this.new_load = x;
+		this.newLoad = x;
 		this.a();
 	}
 
 	setDeviceId(x) {
-		this.device_id = x;
+		this.deviceId = x;
 		this.a();
 	}
 
@@ -89,13 +89,8 @@ class Analytics {
 	}
 
 	setRegisteredTo(x) {
-		this.registered_to = x;
+		this.registeredTo = x;
 		this.a();
-	}
-
-	async forPerformanceStats() {
-		while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0)
-			await this.sleep(1);
 	}
 
 	sleep(seconds) {

@@ -136,19 +136,35 @@ class RequestManager {
 	static getTime() {
 		return this.ajax({
 			url: '/api/time'
-		}).then(res => res.json.data.ms + res.loadTime);
+		}).then(res => res.json.data.ms + res.loadTime).catch(err => {
+			return false;
+		});
 	}
 
 	static getPresets() {
-		return this.ajax({
-			url: '/api/presets'
-		}).then(res => res.json);
+		return fetch('/api/presets').then(async res => {
+			let resClone = res.clone();
+
+			if (window.caches)
+				window.caches.open(APP_VERSION).then(cache => {
+					cache.put('/api/presets', res);
+				});
+
+			return await resClone.json();
+		});
 	}
 
 	static getCalendar() {
-		return this.ajax({
-			url: '/api/calendar'
-		}).then(res => res.json);
+		return fetch('/api/calendar').then(async res => {
+			let resClone = res.clone();
+
+			if (window.caches)
+				window.caches.open(APP_VERSION).then(cache => {
+					cache.put('/api/calendar', res);
+				});
+
+			return await resClone.json();
+		});
 	}
 
 	static sendError(data) {

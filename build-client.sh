@@ -12,7 +12,7 @@ done
 
 cat public/js/render.js >> client-dist/js/bundle.js
 cat public/js/main.js >> client-dist/js/bundle.js
-
+cat public/js/sw.js > client-dist/sw.js
 
 
 # css ----------------------------------

@@ -1,4 +1,5 @@
-const timingEngine = new TimingEngine(),
+const APP_VERSION = '0.4.2', // needs to match sw.js
+	timingEngine = new TimingEngine(),
 	view = new View(),
 	analytics = new Analytics,
 	prefManager = new PrefManager,
@@ -33,6 +34,9 @@ RequestManager.init().then(data => {
 		throw "Device id was not established";
 
 }).catch(err => {
+
+	//view.showOffline();
+
 	RequestManager.sendError({
 		where: 'browser',
 		type: 'client_page_load',
@@ -46,10 +50,20 @@ window.onpopstate = () => load(window.location.pathname);
 // sends analytics
 analytics.setPathname(window.location.pathname);
 
+// add service workers
+if (navigator.serviceWorker) {
+	navigator.serviceWorker.register('/sw.js').then((reg) => {
+		Logger.log('main', 'service worker registered');
+	}).catch(err => {
+		Logger.log('main', 'service worker registration failed');
+		console.error(err);
+	})
+}
+
+
 // welcome, cause what else is the computer going to do?
 let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خوش آمدی', 'Bienvenue', 'желанный', 'Bem vinda', 'Benvenuto', 'Gratus mihi venis', 'Welkom', 'ברוך הבא', 'ようこそ'][Math.floor(Math.random() * 13)];
 console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
-
 
 // has to be global for google
 var googleApiDidLoad = () => {
