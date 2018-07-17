@@ -138,16 +138,7 @@ render.settings = () => {
 			elem.disabled = 'true';
 
 			let theme = view.getSelectedThemeNum();
-
 			let names = view.getValuesFromAllPeriodInputs();
-
-			/* let freePeriods = {};
-			for (let elem of view.settings.inputs) {
-				let id = view.getIdFromInputElem(elem);
-				let res = prefManager.isFreePeriodGivenContext(names, id);
-				view.showPeriodInput(elem, res);
-				freePeriods[id] = res;
-			} */
 
 			prefManager.setPreferences(names, theme).then(val => {
 				if (val)
@@ -158,6 +149,7 @@ render.settings = () => {
 						render.showPrefs();
 					}, 2e3);
 				else
+					// TODO
 					window.alert("Your preferences can not be saved at this time due to a server error. Try again later.");
 			});
 

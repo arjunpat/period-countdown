@@ -13,7 +13,7 @@ class ScheduleBuilder {
 	generatePresets() {
 
 		if (!this.isInitialized())
-			throw new Error('has not been initialized');
+			throw 'has not been initialized';
 
 		if (!this.free || Object.keys(this.free).length === 0)
 			return JSON.parse(this.presets);
@@ -91,9 +91,8 @@ class ScheduleBuilder {
 			this.new = false;
 		
 		// make sure not all periods are free
-		if (Object.keys(this.free).find(key => this.free[key] === false)) {
-			// TODO
-		}
+		if (!Object.keys(this.free).find(key => this.free[key] === false))
+			delete this.free; // just treats it like a normal schedule
 	}
 
 	addToStandardTime(standardTime, minutes) {

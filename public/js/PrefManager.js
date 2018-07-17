@@ -5,7 +5,7 @@ class PrefManager {
 	constructor() {
 		this.initVars();
 
-		this.theme_options = {
+		this.themeOptions = {
 			completed: ['#fee581','#262626','#d9d9d9','#262626','#262626'],
 			background: ['#fccb0b','#000000','#fff','#000','#000'],
 			text: ['#000','#fccb0b','#000','#7cfc00','#ff3b9e'],
@@ -14,35 +14,31 @@ class PrefManager {
 
 		if (Storage.prefsExist())
 			this.setAllPreferences(Storage.getPrefs());
-		else // default prefs
-			this.setTheme(0);
 	}
 
 	initVars() {
-		this.theme = {
-			color: {}
-		}
+		this.themeNum = 0;
 		this.period_names = {};
 		this.google_account = {
 			signed_in: false
-		}
+		};
 	}
 
 	getAllPreferences() {
 
 		let free_periods = {};
 		for (let i = 0; i <= 7; i++)
-			if (typeof name === 'string' && this.isFreePeriodGivenContext(this.period_names, i))
+			if (this.isFreePeriodGivenContext(this.period_names, i))
 				free_periods[i] = true;
 			else
 				free_periods[i] = false;
 
 		return {
-			theme: this.theme,
+			theme: this.getThemeFromNum(this.themeNum),
 			period_names: this.period_names,
 			google_account: this.google_account,
 			free_periods
-		}
+		};
 	}
 
 	setAllPreferences(values) {
@@ -52,9 +48,8 @@ class PrefManager {
 	}
 
 	save() {
-
 		Storage.setPrefs({
-			theme: this.theme.num,
+			theme: this.themeNum,
 			period_names: this.period_names,
 			google_account: this.google_account
 		});
@@ -74,19 +69,13 @@ class PrefManager {
 		if (values.settings) {
 			if (values.settings.period_names)
 				this.period_names = values.settings.period_names;
-			if (values.settings.theme) {
-				if (this.isValidThemeNum(values.settings.theme))
-					this.setTheme(values.settings.theme);
-				else
-					this.setTheme(0);
-			}
+			if (values.settings.theme)
+				this.setTheme(values.settings.theme);
 			// do other loading stuff here
 		}
 
 		this.save();
 	}
-
-	// period stuff
 
 	setPreferences(periodValues, theme) {
 		if (!this.isLoggedIn())
@@ -116,27 +105,24 @@ class PrefManager {
 	}
 
 	setTheme(num) {
+		if (!this.isValidThemeNum(num))
+			return;
 
-		let {completed, background, text} = this.getThemeFromNum(num);
-
-		this.theme.num = num;
-		this.theme.color.completed = completed;
-		this.theme.color.background = background;
-		this.theme.color.text = text;
+		this.themeNum = num;
 		this.save();
 	}
 
 	getThemeFromNum(num) {
 		return {
 			num,
-			completed: this.theme_options.completed[num],
-			background: this.theme_options.background[num],
-			text: this.theme_options.text[num]
+			completed: this.themeOptions.completed[num],
+			background: this.themeOptions.background[num],
+			text: this.themeOptions.text[num]
 		}
 	}
 
 	isValidThemeNum(num) {
-		if (this.theme_options.text[num])
+		if (this.themeOptions.text[num])
 			return true;
 		return false;
 	}
@@ -144,7 +130,6 @@ class PrefManager {
 
 	isFreePeriod(periodName) {
 		// some serious ml going on here!
-
 		if (typeof periodName !== 'string')
 			return false;
 
@@ -166,7 +151,8 @@ class PrefManager {
 		for (let key in context)
 			context[key] = this.isFreePeriod(context[key]);
 
-		if (!context[num])
+		// make sure all periods are not free
+		if (!context[num] || !Object.keys(context).find(key => context[key] === false))
 			return false;
 
 		if (num === 0 || num === 7)
@@ -182,7 +168,7 @@ class PrefManager {
 		if (isFree)
 			return isFree;
 		
-		for (let i = Object.keys(context).length - 1; i > num; i--)
+		for (let i = 7; i > num; i--)
 			if (!context[i])
 				return false;
 
@@ -192,7 +178,7 @@ class PrefManager {
 
 	getPeriodName(num) { return this.period_names[num] }
 
-	getThemeNum() { return this.theme.num }
+	getThemeNum() { return this.themeNum }
 
 	isLoggedIn() { return !!this.google_account.signed_in; }
 

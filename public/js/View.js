@@ -89,12 +89,12 @@ class View {
 
 	applyPreferencesToElements(values) {
 		// theme stuff
-		this.canvas.updateColors(values.theme.color.background, values.theme.color.completed);
-		this.index.mainCanvasOverlay.style.color = values.theme.color.text;
-		this.index.settingsButton.querySelector('div').style.background = values.theme.color.text;
-		this.index.settingsButton.querySelector('div > i').style.color = values.theme.color.background;
+		this.canvas.updateColors(values.theme.background, values.theme.completed);
+		this.index.mainCanvasOverlay.style.color = values.theme.text;
+		this.index.settingsButton.querySelector('div').style.background = values.theme.text;
+		this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
 
-		this.showThemeColorExamples(values.theme.color);
+		this.showThemeColorExamples(values.theme);
 		this.settings.themeSelector.value = values.theme.num;
 
 		if (values.google_account.signed_in) {
@@ -253,11 +253,11 @@ class View {
 		return names;
 	}
 
-	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)) }
+	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }
 
-	getSelectedThemeNum() { return parseInt(this.settings.themeSelector.value) }
+	getSelectedThemeNum() { return parseInt(this.settings.themeSelector.value); }
 
-	dimensionCanvas() { this.canvas.dimension() }
+	dimensionCanvas() { this.canvas.dimension(); }
 
-	getOrdinalNum(e) { return e + (e > 0 ? ["th", "st", "nd", "rd"][e > 3 && 21 > e || e % 10 > 3 ? 0 : e % 10] : "") }
+	getOrdinalNum(n) { return n + (n > 0 ? ["th", "st", "nd", "rd"][n > 3 && 21 > n || n % 10 > 3 ? 0 : n % 10] : ""); }
 }

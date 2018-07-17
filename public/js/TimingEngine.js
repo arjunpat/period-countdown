@@ -6,7 +6,7 @@ class TimingEngine {
 
 	init(presets, calendar) {
 		if (this.isInitialized())
-			throw new Error('TimingEngine has already been initialized');
+			throw 'TimingEngine has already been initialized';
 
 		Logger.time('TimingEngine', 'setup');
 
@@ -24,7 +24,6 @@ class TimingEngine {
 
 		// calc offset and run every 15 minutes
 		this.calculateOffset();
-		this.offsetInterval = setInterval(this.calculateOffset, 900000); // 15 minutes
 
 		// prepare the schedule
 		this.prepareSchedule();
@@ -34,8 +33,7 @@ class TimingEngine {
 	}
 
 	loadNewPresets(presets) {
-		if (!this.isInitialized)
-			throw new Error('TimingEngine has not been initialized');
+		this.checkInit();
 		
 		Logger.time('TimingEngine', 'new-preset');
 
@@ -51,14 +49,11 @@ class TimingEngine {
 	}
 
 	getRemainingTime() {
-
-		if (!this.isInitialized)
-			throw new Error('TimingEngine has not been initialized');
+		this.checkInit();
 
 		let now = this.getCurrentTime();
 
 		if (this.schedule[1].f < now) this.schedule.splice(0, 1);
-
 		this.makeSureTwoItemsInSchedule();
 
 		let period_length, dist, percent_completed, days, hours, minutes, seconds;
@@ -94,11 +89,13 @@ class TimingEngine {
 			period: this.schedule[0].n,
 			day_type: this.calendar[this.getTodayDateString()].name,
 			period_length
-		}
+		};
 
 	}
 
 	prepareSchedule() {
+		this.checkInit();
+
 		this.schedule = []; // always a fresh start
 
 		let dateString = this.getTodayDateString();
@@ -130,6 +127,8 @@ class TimingEngine {
 	}
 
 	parseDay(dateString) {
+		this.checkInit();
+
 		// makes sure hasn't been parsed before
 		if (this.calendar[dateString] && this.calendar[dateString].parsed) return;
 
@@ -190,10 +189,12 @@ class TimingEngine {
 			}
 		}
 
-		return parsed; // TODO: find better way
+		return parsed;
 	}
 
 	calculateOffset(numOfRequests = 5) {
+		this.checkInit();
+
 		Logger.log('TimingEngine', 'calculating offset');
 
 		var offsets = [];
@@ -208,6 +209,8 @@ class TimingEngine {
 				this.offset = temp / offsets.length;
 			}), 1000 * i);
 		}
+
+		setTimeout(this.calculateOffset, 900000); // does every 15 minutes
 	}
 
 	addAnotherDayToSchedule() {
@@ -247,5 +250,10 @@ class TimingEngine {
 
 	create(obj) { return JSON.parse(JSON.stringify(obj)); }
 
-	isInitialized() { return !!this.initialized }
+	isInitialized() { return !!this.initialized; }
+
+	checkInit() {
+		if (!this.isInitialized)
+			throw 'TimingEngine has not been initialized';
+	}
 }

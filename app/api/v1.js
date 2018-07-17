@@ -154,7 +154,7 @@ module.exports = async (path, postData) => {
 				tti: speed.tti,
 				ttfb: speed.ttfb,
 				user: registered_to || null
-			}
+			};
 
 			delete values.prefs.theme;
 			delete values.prefs.period;

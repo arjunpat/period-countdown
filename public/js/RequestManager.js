@@ -4,12 +4,12 @@ class RequestManager {
 
 	static ajax(params) {
 
-		if (!params.type) params.type = 'GET';
-		//params.type = params.type.toUpperCase();
+		if (!params.type)
+			params.type = 'GET';
 
 		let options = {
 			method: params.type
-		}
+		};
 
 		if (params.type === 'POST') {
 			options.headers = {
@@ -46,7 +46,8 @@ class RequestManager {
 				if (res.json.data.error === 'no_user_exists') {
 					Storage.clearAll();
 					return this.init();
-				} else return res.json.data;
+				} else
+					return res.json.data;
 				
 			});
 		else {
@@ -58,9 +59,9 @@ class RequestManager {
 				safari: /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]" })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)),
 				firefox: typeof InstallTrigger !== 'undefined',
 				opera: (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
-			}
+			};
 
-			let browser = {}
+			let browser = {};
 
 			for (let val in temp)
 				if (temp.hasOwnProperty(val) && temp[val] === true)

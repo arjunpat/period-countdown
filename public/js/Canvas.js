@@ -19,13 +19,11 @@ class Canvas {
 	}
 
 	draw(to) {
-		let w = this.canvas.width, h = this.canvas.height;
-
-		/*this.ctx.clearRect(0, 0, w, h);*/
+		let w = this.canvas.width,
+			h = this.canvas.height;
 
 		this.ctx.fillStyle = this.props.colors.background;
 		this.ctx.fillRect(0, 0, w, h);
-
 
 		this.ctx.fillStyle = this.props.colors.completed;
 		this.ctx.fillRect(0, 0, to * w, h);
@@ -73,7 +71,7 @@ class Canvas {
 		return x => (amp * (Math.sin(b * (x - (this.props.animationLength / 2))))) + verticleShift;
 	}
 
-	redraw() { this.draw(this.props.decimalCompleted) }
+	redraw() { this.draw(this.props.decimalCompleted); }
 
 	updateColors(background, completed) {
 		this.props.colors.background = background;

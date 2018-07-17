@@ -53,7 +53,7 @@ class BellData {
 		return this.query(
 			`UPDATE users SET ${what} = ? WHERE email = ?`,
 			[JSON.stringify(object), email]
-		)
+		);
 
 	}
 
@@ -181,7 +181,7 @@ class BellData {
 		user.settings = {
 			period_names,
 			theme
-		}
+		};
 
 		let now = Date.now();
 		let arr = user.stats;

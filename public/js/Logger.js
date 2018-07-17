@@ -2,9 +2,10 @@
 
 var Logger = {
 	timings: {},
-	log_level: 1,
+	logLevel: 1,
 	log(from, what) {
 		if (!from || !what) throw TypeError('invalid arguments');
+
 		this.writeOut(from, what);
 	},
 	time(from, action) {
@@ -16,7 +17,7 @@ var Logger = {
 		this.timings[from + action] = {
 			start: window.performance.now(),
 			from
-		}
+		};
 	},
 	timeEnd(from, action) {
 		if (!from || !action) throw new TypeError('invalid arguments');
@@ -26,13 +27,13 @@ var Logger = {
 
 			this.writeOut(this.timings[from + action].from, `${action} took ${time.toFixed(8)}ms`);
 
-			this.timings[from + action] = undefined;
+			delete this.timings[from + action];
 		} else
 			throw "Timing does not exist";
 	},
 	writeOut(from, text) {
 
-		if (this.log_level === 1)
+		if (this.logLevel === 1)
 			console.log(`%c${this.getTimeSincePageLoad()} %c[${from}] %c${text}`, 'color: grey', 'color: black; font-weight: bold;', 'color: blue');
 
 	},
@@ -54,6 +55,6 @@ var Logger = {
 		return hours + minutes + seconds;
 	},
 	setLogLevel(num) {
-		this.log_level = num;
+		this.logLevel = num;
 	}
 }
