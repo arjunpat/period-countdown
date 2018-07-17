@@ -87,7 +87,7 @@ class ScheduleBuilder {
 				this.new = true;
 			}
 		
-		if (firstRun && Object.keys(this.free).find(key => this.free[key] === true))
+		if (firstRun && !Object.keys(this.free).find(key => this.free[key] === true))
 			this.new = false;
 		
 		// make sure not all periods are free

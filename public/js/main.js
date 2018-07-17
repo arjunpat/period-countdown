@@ -72,13 +72,14 @@ var googleApiDidLoad = () => {
 					profile_pic: data.Paa
 				}
 
-				prefManager.setGoogleAccount(account);
+				//prefManager.setGoogleAccount(account);
 
 				RequestManager.login(account).then(res => {
 					if (res.data.status === 'returning_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
 						view.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
+						prefManager.setGoogleAccount(res.data.user_data);
 						// OTHER CASE
 					} else {
 						// OTHER CASE

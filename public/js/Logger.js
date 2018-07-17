@@ -47,7 +47,7 @@ var Logger = {
 		now -= minutes * 1e3 * 60;
 		minutes = (minutes < 10 && hours > 0) ? `0${minutes}:` : `${minutes}:`;
 
-		let seconds = (now / 1e3).toFixed(2);
+		let seconds = (now / 1e3).toFixed(4);
 		
 		seconds = (seconds < 10) ? `0${seconds}` : seconds;
 

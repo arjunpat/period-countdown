@@ -96,7 +96,7 @@ class PrefManager {
 		for (let num in periodValues) {
 			let name = periodValues[num];
 
-			if (num >= 0 && num <= 7 && typeof name === 'string' && this.isLoggedIn())
+			if (num >= 0 && num <= 7 && typeof name === 'string')
 				if (name.length <= 20 && name.length > 0)
 					period_names[num] = name;
 		}
@@ -185,6 +185,7 @@ class PrefManager {
 		for (let i = Object.keys(context).length - 1; i > num; i--)
 			if (!context[i])
 				return false;
+
 		return true;
 
 	}

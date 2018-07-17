@@ -104,7 +104,14 @@ module.exports = async (path, postData) => {
 				await bellData.registerDevice(device_id, email);
 
 				return generateResponse(true, null, {
-					status: 'new_user'
+					status: 'new_user',
+					user_data: {
+						email,
+						first_name,
+						last_name,
+						profile_pic,
+						settings: {}
+					}
 				});
 			}
 
