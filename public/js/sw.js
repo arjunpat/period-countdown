@@ -35,8 +35,6 @@ const FILES = [
 	`/manifest.json?${APP_VERSION}`
 ];
 
-var fileAge = {};
-
 var Logger = {
 	logLevel: 1,
 	log(what) {
@@ -53,11 +51,6 @@ var Logger = {
 
 this.oninstall = (e) => {
 	e.waitUntil(caches.open(APP_VERSION).then(cache => {
-
-		let now = Date.now();
-		for (let i = 0; i < FILES.length; i++)
-			fileAge[FILES[i]] = now;
-
 		return cache.addAll(FILES);
 	}));
 
@@ -78,11 +71,21 @@ this.onactivate = (e) => {
 };
 
 this.onfetch = (e) => {
-	let requestClone = e.request.clone();
+	let requestUrl = e.request.url;
 
 	e.respondWith(
-		fetch(e.request).catch(err => {
-			return caches.match(requestClone);
+		fetch(e.request).then(res => {
+			let resClone = res.clone();
+
+			if (requestUrl.pathname === '/api/schedule' || requestUrl.pathname === '/api/calendar')
+				caches.open(APP_VERSION).then(cache => {
+					cache.put(requestUrl.pathname, resClone);
+				});
+
+			return res;
+
+		}).catch(err => {
+			return caches.match(e.request);
 		})
 	);
 };

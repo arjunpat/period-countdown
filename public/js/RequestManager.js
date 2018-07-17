@@ -142,29 +142,15 @@ class RequestManager {
 	}
 
 	static getPresets() {
-		return fetch('/api/presets').then(async res => {
-			let resClone = res.clone();
-
-			if (window.caches)
-				window.caches.open(APP_VERSION).then(cache => {
-					cache.put('/api/presets', res);
-				});
-
-			return await resClone.json();
-		});
+		return this.ajax({
+			url: '/api/presets'
+		}).then(res => res.json);
 	}
 
 	static getCalendar() {
-		return fetch('/api/calendar').then(async res => {
-			let resClone = res.clone();
-
-			if (window.caches)
-				window.caches.open(APP_VERSION).then(cache => {
-					cache.put('/api/calendar', res);
-				});
-
-			return await resClone.json();
-		});
+		return this.ajax({
+			url: '/api/calendar'
+		}).then(res => res.json);
 	}
 
 	static sendError(data) {
