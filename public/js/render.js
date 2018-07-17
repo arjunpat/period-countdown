@@ -16,7 +16,7 @@ const load = (path, shouldPushHistory = false) => {
 			render.notFound();
 			break;
 	}
-}
+};
 
 const render = {};
 
@@ -29,7 +29,7 @@ render.index = () => {
 		return Logger.timeEnd('render', 'index');
 
 	let firstRun = true;
-	var mainLoop = () => {
+	const mainLoop = () => {
 
 		if (window.location.pathname === '/') {
 
@@ -102,7 +102,7 @@ render.index = () => {
 			window.location.reload();
 		});
 	}
-}
+};
 
 
 render.settings = () => {
@@ -207,7 +207,7 @@ render.settings = () => {
 	render.showPrefs();
 
 	Logger.timeEnd('render', 'settings');
-}
+};
 
 
 render.notFound = () => {
@@ -217,7 +217,7 @@ render.notFound = () => {
 	view.switchTo('not-found');
 
 	Logger.timeEnd('render', 'not-found');
-}
+};
 
 
 render.showPrefs = () => {
@@ -227,4 +227,4 @@ render.showPrefs = () => {
 	
 	if (scheduleBuilder.isNew())
 		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
-}
+};

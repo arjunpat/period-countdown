@@ -99,4 +99,4 @@ var googleApiDidLoad = () => {
 		});
 	});
 
-}
+};
