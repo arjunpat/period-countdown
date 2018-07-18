@@ -47,9 +47,7 @@ class Utils {
 		let path = url.substring(0, indexOfSearch);
 		let search = url.substring(indexOfSearch + 1, url.length);
 
-		let layers = path.split('/').filter((val) => {
-			return val !== '';
-		});
+		let layers = path.split('/').filter(val => val !== '');
 
 		return {
 			path,
@@ -65,7 +63,6 @@ class Utils {
 			id += this.alphaNumerics[Math.floor(Math.random() * 62)];
 
 		return id;
-
 	}
 }
 

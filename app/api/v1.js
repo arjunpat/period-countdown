@@ -70,8 +70,6 @@ module.exports = async (path, postData) => {
 			}
 
 			return responses.missing_data;
-
-			break;
 		case '/write/login':
 
 			let {email, first_name, last_name, profile_pic} = data;
@@ -98,24 +96,22 @@ module.exports = async (path, postData) => {
 						settings: emailUserData.settings
 					}
 				});
-			} else {
-
-				await bellData.createNewUser(data);
-				await bellData.registerDevice(device_id, email);
-
-				return generateResponse(true, null, {
-					status: 'new_user',
-					user_data: {
-						email,
-						first_name,
-						last_name,
-						profile_pic,
-						settings: {}
-					}
-				});
 			}
 
-			break;
+			await bellData.createNewUser(data);
+			await bellData.registerDevice(device_id, email);
+
+			return generateResponse(true, null, {
+				status: 'new_user',
+				user_data: {
+					email,
+					first_name,
+					last_name,
+					profile_pic,
+					settings: {}
+				}
+			});
+			
 		case '/write/logout':
 
 			if (!device_id)
@@ -129,11 +125,10 @@ module.exports = async (path, postData) => {
 
 				return responses.success;
 
-			} else
-				return responses.bad_data;
+			}
+			
+			return responses.bad_data;
 
-
-			break;
 		case '/write/analytics':
 
 			let {pathname, prefs, referrer, speed, new_load, registered_to} = data;
@@ -174,8 +169,6 @@ module.exports = async (path, postData) => {
 			await bellData.createNewHit(values);
 
 			return responses.success;
-
-			break;
 		case '/write/error':
 
 			if (!device_id || typeof data.error !== 'string')
@@ -189,8 +182,6 @@ module.exports = async (path, postData) => {
 				await bellData.createNewError(device_id, data.error, user.email);
 
 			return responses.success;
-
-			break;
 		case '/update/preferences':
 
 			if (!device_id || !data)
@@ -212,10 +203,8 @@ module.exports = async (path, postData) => {
 
 			if (res.error)
 				return generateResponse(false, res.error);
-			else
-				return responses.success;
-
-			break;
+			
+			return responses.success;
 		default:
 			return responses.bad_path;
 	}
