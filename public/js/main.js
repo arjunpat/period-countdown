@@ -31,15 +31,13 @@ RequestManager.init().then(data => {
 		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeNum());
 	} else
-		throw "Device id was not established";
-
+		throw 'Device id was not established';
 }).catch(err => {
 
 	//view.showOffline();
 
 	RequestManager.sendError({
-		where: 'browser',
-		type: 'client_page_load',
+		where: 'client_page_load',
 		description: err.stack
 	});
 });
@@ -51,14 +49,14 @@ window.onpopstate = () => load(window.location.pathname);
 analytics.setPathname(window.location.pathname);
 
 // add service workers
-if (navigator.serviceWorker) {
+/*if (navigator.serviceWorker) {
 	navigator.serviceWorker.register('/sw.js').then((reg) => {
 		Logger.log('main', 'service worker registered');
 	}).catch(err => {
 		Logger.log('main', 'service worker registration failed');
 		console.error(err);
 	})
-}
+}*/
 
 
 // welcome, cause what else is the computer going to do?
@@ -99,7 +97,7 @@ var googleApiDidLoad = () => {
 						// OTHER CASE
 						window.alert('Our servers are having a bad day. Please try again another time.');
 					}
-					
+
 					render.showPrefs();
 				}).catch(err => {
 					// OTHER CASE

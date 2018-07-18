@@ -18,7 +18,7 @@ class ScheduleBuilder {
 		if (!this.free || Object.keys(this.free).length === 0)
 			return JSON.parse(this.presets);
 
-		Logger.time('ScheduleBuilder', 'parse-time');		
+		Logger.time('ScheduleBuilder', 'parse-time');
 
 		let presets = JSON.parse(this.presets);
 
@@ -75,7 +75,7 @@ class ScheduleBuilder {
 
 	setFreePeriods(obj) {
 		let firstRun = false;
-		
+
 		if (!this.free) {
 			firstRun = true;
 			this.free = {};
@@ -86,10 +86,10 @@ class ScheduleBuilder {
 				this.free[key] = obj[key];
 				this.new = true;
 			}
-		
+
 		if (firstRun && !Object.keys(this.free).find(key => this.free[key] === true))
 			this.new = false;
-		
+
 		// make sure not all periods are free
 		if (!Object.keys(this.free).find(key => this.free[key] === false))
 			delete this.free; // just treats it like a normal schedule

@@ -1,7 +1,7 @@
 'use strict';
 
 class PrefManager {
-	
+
 	constructor() {
 		this.initVars();
 
@@ -144,7 +144,7 @@ class PrefManager {
 		 * if it is consecutive with other free periods at either
 		 * the begining of end of the day
 		 */
-		
+
 		// sanitize
 		context = JSON.parse(JSON.stringify(context))
 
@@ -167,7 +167,7 @@ class PrefManager {
 
 		if (isFree)
 			return isFree;
-		
+
 		for (let i = 7; i > num; i--)
 			if (!context[i])
 				return false;

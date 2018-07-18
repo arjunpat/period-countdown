@@ -1,7 +1,7 @@
 'use strict';
 
 class Storage {
-	
+
 	static setDeviceId(x) {
 		if (!x)
 			throw new TypeError('invalid arguments');

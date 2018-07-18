@@ -34,7 +34,7 @@ class TimingEngine {
 
 	loadNewPresets(presets) {
 		this.checkInit();
-		
+
 		Logger.time('TimingEngine', 'new-preset');
 
 		this.calendar = this.create(this.parsed);
@@ -73,7 +73,7 @@ class TimingEngine {
 		minutes = Math.floor((dist % 36e5) / 6e4);
 		seconds = Math.floor((dist % 6e4) / 1e3);
 
-		/* 
+		/*
 		 * days = Math.floor(distance / (1000 * 60 * 60 * 24)),
 		 * hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) + (days * 24),
 		 * minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
@@ -156,7 +156,7 @@ class TimingEngine {
 
 		// on change of s, the calendar also changes
 		let s = this.calendar[dateString].schedule;
-	
+
 		// parses the day's s by replacing from with epoch ms time
 		for (let i = 0; i < s.length; i++)
 			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
@@ -203,7 +203,7 @@ class TimingEngine {
 			setTimeout(() => RequestManager.getTime().then(time => {
 				if (!time)
 					return;
-				
+
 				offsets.push(time - Date.now());
 
 				let temp = 0;

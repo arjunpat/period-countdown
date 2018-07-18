@@ -61,13 +61,13 @@ render.index = () => {
 	// startup the actually timer; only happens when u actually go to the index page
 	Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 		let [presets, calendar] = values;
-		
+
 		scheduleBuilder.init(presets, calendar);
 		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
 		render.showPrefs();
 		mainLoop();
 		//view.hidePreloader();
-	
+
 		Logger.timeEnd('render', 'index');
 
 	}).catch(err => {
@@ -188,7 +188,7 @@ render.settings = () => {
 						element.classList.add('has-value');
 					else
 						element.classList.remove('has-value');
-					
+
 					view.settingChangesNotSaved();
 				}
 
@@ -224,7 +224,7 @@ render.showPrefs = () => {
 	let prefs = prefManager.getAllPreferences();
 	view.applyPreferencesToElements(prefs);
 	scheduleBuilder.setFreePeriods(prefs.free_periods);
-	
+
 	if (scheduleBuilder.isNew())
 		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
 };

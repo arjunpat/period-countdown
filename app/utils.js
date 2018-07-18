@@ -6,7 +6,7 @@ class Utils {
 
 	mergeObjects(object1, object2) {
 
-		for (let key in object2) 
+		for (let key in object2)
 			if (object2.hasOwnProperty(key))
 				object1[key] = object2[key];
 		return object1;
@@ -46,7 +46,7 @@ class Utils {
 
 		let path = url.substring(0, indexOfSearch);
 		let search = url.substring(indexOfSearch + 1, url.length);
-		
+
 		let layers = path.split('/').filter((val) => {
 			return val !== '';
 		});

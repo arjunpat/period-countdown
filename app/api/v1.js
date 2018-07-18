@@ -25,7 +25,7 @@ const responses = {
 
 
 module.exports = async (path, postData) => {
-	
+
 	if (!postData.data) return responses.missing_data;
 
 	let device_id = postData.device_id;
@@ -35,7 +35,7 @@ module.exports = async (path, postData) => {
 		case '/init':
 
 			let {user_agent, platform, browser} = data;
-			
+
 			if (user_agent && platform && browser) {
 				// if we need to register a new device
 
@@ -53,7 +53,7 @@ module.exports = async (path, postData) => {
 
 			} else if (device_id) {
 				// if the device has already been registered
-				
+
 				let dataToSend;
 
 				let {email, profile_pic, first_name, last_name, settings, error} = await bellData.getUserByDeviceId(device_id);
@@ -172,6 +172,21 @@ module.exports = async (path, postData) => {
 				return responses.bad_data;
 
 			await bellData.createNewHit(values);
+
+			return responses.success;
+
+			break;
+		case '/write/error':
+
+			if (!device_id || typeof data.error !== 'string')
+				return responses.bad_data;
+
+			let user = await bellData.getUserByDeviceId(device_id);
+
+			if (user.error)
+				await bellData.createNewError(device_id, data.error, null);
+			else
+				await bellData.createNewError(device_id, data.error, user.email);
 
 			return responses.success;
 

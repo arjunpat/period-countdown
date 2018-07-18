@@ -13,7 +13,7 @@ var Logger = {
 
 		if (this.timings[from + action])
 			throw "Timing already exists";
-		
+
 		this.timings[from + action] = {
 			start: window.performance.now(),
 			from
@@ -49,7 +49,7 @@ var Logger = {
 		minutes = (minutes < 10 && hours > 0) ? `0${minutes}:` : `${minutes}:`;
 
 		let seconds = (now / 1e3).toFixed(4);
-		
+
 		seconds = (seconds < 10) ? `0${seconds}` : seconds;
 
 		return hours + minutes + seconds;

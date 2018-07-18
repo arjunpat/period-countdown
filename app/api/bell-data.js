@@ -7,8 +7,7 @@ class BellData {
 	constructor() {
 		this.conn = mysql.createConnection({
 			host: '127.0.0.1',
-			user: 'bell_user',
-			password: 'ABEqUJHEAyPkdeV3sE8TBeDFL', // dev password
+			user: 'root',
 			database: 'bell_data'
 		});
 
@@ -131,6 +130,15 @@ class BellData {
 				'UPDATE users SET last_view_time = ? WHERE email = ?',
 				[a.time, a.user]
 			);
+	}
+
+	async createNewError(device_id, error, user) {
+
+		await this.query(
+			'INSERT INTO errors (device_id, error, user) VALUES (?, ?, ?)',
+			[device_id, error, user]
+		);
+
 	}
 
 	// edit/augment user, devices, etc.

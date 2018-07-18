@@ -4,14 +4,14 @@ class RequestManager {
 
 	static ajax(params) {
 
-		if (!params.type)
-			params.type = 'GET';
+		if (!params.method)
+			params.method = 'GET';
 
 		let options = {
-			method: params.type
+			method: params.method
 		};
 
-		if (params.type === 'POST') {
+		if (params.method === 'POST') {
 			options.headers = {
 				'Content-Type': 'application/json; charset=UTF-8'
 			};
@@ -36,7 +36,7 @@ class RequestManager {
 		if (Storage.deviceIdExists())
 			return this.ajax({
 				url: '/api/v1/init',
-				type: 'POST',
+				method: 'POST',
 				data: {
 					device_id: Storage.getDeviceId(),
 					data: {}
@@ -48,7 +48,7 @@ class RequestManager {
 					return this.init();
 				} else
 					return res.json.data;
-				
+
 			});
 		else {
 
@@ -69,7 +69,7 @@ class RequestManager {
 
 			return this.ajax({
 				url: '/api/v1/init',
-				type: 'POST',
+				method: 'POST',
 				data: {
 					data: {
 						user_agent: window.navigator.userAgent,
@@ -89,7 +89,7 @@ class RequestManager {
 	static login(account) {
 		return this.ajax({
 			url: '/api/v1/write/login',
-			type: 'POST',
+			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
 				data: account
@@ -100,7 +100,7 @@ class RequestManager {
 	static logout() {
 		return this.ajax({
 			url: '/api/v1/write/logout',
-			type: 'POST',
+			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
 				data: {}
@@ -111,7 +111,7 @@ class RequestManager {
 	static sendAnalytics(data) {
 		return this.ajax({
 			url: '/api/v1/write/analytics',
-			type: 'POST',
+			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
 				data: data
@@ -122,7 +122,7 @@ class RequestManager {
 	static updatePreferences(period_names, theme) {
 		return this.ajax({
 			url: '/api/v1/update/preferences',
-			type: 'POST',
+			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
 				data: {
@@ -154,7 +154,16 @@ class RequestManager {
 	}
 
 	static sendError(data) {
-		// TODO: do this
+		return this.ajax({
+			url: '/api/v1/write/error',
+			method: 'POST',
+			data: {
+				device_id: Storage.getDeviceId(),
+				data: {
+					error: `${data.where} | ${data.description}`
+				}
+			}
+		});
 		console.error(data);
 	}
 }

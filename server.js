@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
 	//console.log(path);
 
 	if (path.layers[0] === 'api') {
-		
+
 		api(req, res, path).then(data => {
 			if (data.valid) {
 
