@@ -154,6 +154,7 @@ class RequestManager {
 	}
 
 	static sendError(data) {
+		console.error(data);
 		return this.ajax({
 			url: '/api/v1/write/error',
 			method: 'POST',
@@ -164,6 +165,5 @@ class RequestManager {
 				}
 			}
 		});
-		console.error(data);
 	}
 }

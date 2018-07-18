@@ -66,7 +66,7 @@ render.index = () => {
 		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
 		render.showPrefs();
 		mainLoop();
-		//view.hidePreloader();
+		view.hidePreloader();
 
 		Logger.timeEnd('render', 'index');
 
@@ -205,6 +205,7 @@ render.settings = () => {
 	}
 
 	render.showPrefs();
+	view.hidePreloader();
 
 	Logger.timeEnd('render', 'settings');
 };
@@ -215,6 +216,7 @@ render.notFound = () => {
 
 	document.title = 'Not Found - Bell Countdown';
 	view.switchTo('not-found');
+	view.hidePreloader();
 
 	Logger.timeEnd('render', 'not-found');
 };

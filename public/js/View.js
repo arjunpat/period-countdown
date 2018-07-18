@@ -3,8 +3,12 @@
 class View {
 	constructor() {
 
+		Logger.time('View', 'grabbed-elements');
+
 		this.currentValues = {};
 		this.root = document.getElementById('root');
+
+		this.preloader = document.getElementById('preloader');
 
 		this.index = {
 			mainCanvas: document.getElementById('main-canvas'),
@@ -35,6 +39,9 @@ class View {
 
 		this.canvas = new Canvas(this.index.mainCanvas);
 		this.modal.footer.querySelector('a').onclick = this.closeModal;
+
+		Logger.timeEnd('View', 'grabbed-elements');
+
 	}
 
 	updateScreen(time, showVisuals) {
@@ -72,7 +79,7 @@ class View {
 
 			if (this.currentValues.currentPeriodText !== period_name) {
 				this.index.currentPeriodText.innerText = period_name;
-				
+
 				// animation
 				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
@@ -227,6 +234,21 @@ class View {
 		script.async = 'true';
 		script.defer = 'true';
 		document.body.append(script);
+	}
+
+	hidePreloader() {
+
+		if (this.preloader.style.display !== 'none') {
+
+			this.preloader.querySelector('div').style.opacity = '0';
+			this.preloader.style.opacity = '0';
+			this.preloader.style.pointerEvents = 'none';
+			setTimeout(() => {
+				this.preloader.style.display = 'none';
+			}, 2000);
+
+		}
+
 	}
 
 	settingChangesNotSaved() {
