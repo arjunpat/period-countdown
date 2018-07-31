@@ -93,10 +93,10 @@ render.index = () => {
 
 	view.index.googleSignin.querySelector('div').onclick = () => {
 		view.addGoogleApi();
-		view.showModal('modal-profile-options');
+		view.showModal('modal-logout');
 	}
 
-	document.querySelector('#modal .modal-profile-options > button').onclick = () => {
+	document.querySelector('#modal .modal-logout > a').onclick = () => {
 		Promise.all([gapi.auth2.getAuthInstance().signOut(), RequestManager.logout()]).then(values => {
 			Storage.clearAllExceptDeviceId();
 			window.location.reload();

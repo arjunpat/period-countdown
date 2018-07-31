@@ -29,6 +29,7 @@
 	right: 0;
 	position: fixed;
 	padding: 45px;
+	user-select: none;
 }
 
 #index #google-signin > button {

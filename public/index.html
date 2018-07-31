@@ -42,7 +42,7 @@
 					<div id="main-canvas-overlay">
 						<div id="google-signin">
 							<button class="google-login-button">Sign in with Google</button>
-							<div tooltip="Profile options"><img></div>
+							<div tooltip="Logout"><img></div>
 						</div>
 						<div style="bottom: 0; left: 0; position: fixed; padding: 50px; user-select: none;">
 							<span style="font-size: 50px; padding-left: 15px; font-family: 'Product Sans';">
@@ -140,21 +140,23 @@
 			<div id="modal">
 				<div id="modal-title">
 					<span class="log-in-first">Please, log in</span>
-					<span class="modal-profile-options">Profile Options</span>
 					<span class="unsaved-setting-changes">Wait!</span>
+					<span class="modal-logout">Are you sure?</span>
 				</div>
 				<div id="modal-body">
 					<div class="log-in-first">
 						In order to save your settings, you must first log into your Google account.<br><br>
 						<a class="google-login-button">Click here</a> to log in with your Google Account.
 					</div>
-					<div class="modal-profile-options">
-						<button>Logout</button>
-					</div>
 					<div class="unsaved-setting-changes">
 						It looks like you have some unsaved changes.<br><br>
 						By leaving this page, you will loose all changes.
 						<a>Click here</a> to leave anyway.
+					</div>
+					<div class="modal-logout">
+						<p>Your settings will <span style="font-weight: bold;">not</span> be deleted. They will continue to live in the cloud.</p>
+						<br>
+						<a>Yes. Log me out.</a>
 					</div>
 				</div>
 				<div id="modal-footer">

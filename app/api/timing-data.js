@@ -16,7 +16,7 @@ let calendar = [
 	}*/
 	{
 		from: '6/21/2018',
-		to: '7/25/2018',
+		to: '8/25/2018',
 		content: {
 			type: 'A',
 			name: 'Summer Break'
