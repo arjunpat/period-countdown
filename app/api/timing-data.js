@@ -1,56 +1,59 @@
-let calendar = [
-	/*{
-		date: '6/23/2018',
-		content: {
-			type: 'A',
-			name: 'Custom Name Support'
+let calendar = {
+	presets: ['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'],
+	schedule: [
+		/*{
+			date: '6/23/2018',
+			content: {
+				type: 'A',
+				name: 'Custom Name Support'
+			}
+		},*/
+		/*{
+			from: '6/24/2018',
+			to: '8/20/2018',
+			content: {
+				schedule: [],
+				name: 'BREAK!'
+			}
+		}*/
+		/*{
+			from: '7/21/2018',
+			to: '8/25/2018',
+			content: {
+				type: 'A',
+				name: 'Summer Break'
+			}
+		},*/
+		/*{
+			from: '6/21/2018',
+			to: '6/25/2018',
+			content: {
+				name: 'Summer Break'
+			}
+		}*/
+		{
+			from: '6/21/2018',
+			to: '8/25/2018',
+			content: {
+				name: 'BREAK!',
+				schedule: [
+					{
+						n: 1,
+						f: '0:30'
+					},
+					{
+						n: 4,
+						f: '13:01'
+					},
+					{
+						n: 7,
+						f: '13:20'
+					}
+				]
+			}
 		}
-	},*/
-	/*{
-		from: '6/24/2018',
-		to: '8/20/2018',
-		content: {
-			schedule: [],
-			name: 'BREAK!'
-		}
-	}*/
-	{
-		from: '6/21/2018',
-		to: '8/25/2018',
-		content: {
-			type: 'A',
-			name: 'Summer Break'
-		}
-	}
-	/*{
-		from: '6/21/2018',
-		to: '6/25/2018',
-		content: {
-			name: 'Summer Break'
-		}
-	}*/
-	/*{
-		from: '6/21/2018',
-		to: '6/25/2018',
-		content: {
-			name: 'BREAK!',
-			schedule: [
-				{
-					n: 1,
-					f: '12:30'
-				},
-				{
-					n: 4,
-					f: '13:01'
-				},
-				{
-					n: 7,
-					f: '13:20'
-				}
-			]
-		}
-	}*/
-]
+	]
+}
 
 let presets = {
 	A: {

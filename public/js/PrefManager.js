@@ -152,7 +152,7 @@ class PrefManager {
 			context[key] = this.isFreePeriod(context[key]);
 
 		// make sure all periods are not free
-		if (!context[num] || !Object.keys(context).find(key => context[key] === false))
+		if (!context[num])
 			return false;
 
 		if (num === 0 || num === 7)

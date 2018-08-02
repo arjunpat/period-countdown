@@ -4,7 +4,7 @@
 	"description": "A countdown timer for MVHS's complicated schedules.",
 	"main": "server.js",
 	"scripts": {
-		"monitor": "nodemon server.js",
+		"watch": "nodemon server.js",
 		"build-client": "./build-client.sh"
 	},
 	"repository": {
@@ -26,6 +26,6 @@
 	},
 	"homepage": "https://github.com/arjunpat/bell-countdown#readme",
 	"dependencies": {
-		"mysql": "^2.15.0"
+		"mysql": "^2.16.0"
 	}
 }

@@ -16,8 +16,11 @@ class TimingEngine {
 		this.schedule = [];
 		this.stats = {};
 
+		// get the day preset array
+		this.expectedDay = calendar.presets;
+
 		// parse the calendar arr into a defined interface
-		this.parsed = this.parseCalendar(calendar);
+		this.parsed = this.parseCalendar(calendar.schedule);
 
 		// save the plain parsed version
 		this.calendar = this.create(this.parsed);
@@ -230,7 +233,7 @@ class TimingEngine {
 	getPresetSchedule(type) { return this.create(this.presets[type]); /* presets are stored in json to delete references */ }
 
 	getPresetScheduleFromDateString(dateString) {
-		return this.getPresetSchedule(['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'][this.getDateObjectFromDateString(dateString).getDay()]);
+		return this.getPresetSchedule(this.expectedDay[this.getDateObjectFromDateString(dateString).getDay()]);
 	}
 
 	getCurrentTime() { return Math.round(this.offset) + Date.now() /* jic client doesn't like ms w/ decimal */ }

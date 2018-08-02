@@ -62,8 +62,11 @@ render.index = () => {
 	Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
 		let [presets, calendar] = values;
 
+		Logger.time('render', 'full timer init');
 		scheduleBuilder.init(presets, calendar);
 		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
+		Logger.timeEnd('render', 'full timer init');
+
 		render.showPrefs();
 		mainLoop();
 		view.hidePreloader();

@@ -4,6 +4,23 @@ class ScheduleBuilder {
 	constructor() {}
 
 	init(presets, calendar) {
+
+		// moves all inline calendar schedules to presets
+		let cal = calendar.schedule;
+		for (let i = 0; i < cal.length; i++) {
+			if (cal[i].content.schedule) {
+				let presetName = 'preset-' + Date.now();
+
+				presets[presetName] = {
+					n: cal[i].content.name,
+					s: cal[i].content.schedule
+				}
+
+				delete cal[i].content.schedule;
+				cal[i].content.type = presetName;
+			}
+		}
+
 		this.presets = JSON.stringify(presets);
 		this.calendar = JSON.stringify(calendar);
 		this.initialized = true;
