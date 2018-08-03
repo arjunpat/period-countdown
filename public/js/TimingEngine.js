@@ -195,7 +195,7 @@ class TimingEngine {
 	calculateOffset(numOfRequests = 5) {
 		this.checkInit();
 
-		Logger.log('TimingEngine', 'calculating offset');
+		//Logger.log('TimingEngine', 'calculating offset');
 
 		var offsets = [];
 		for (let i = 0; i < numOfRequests; i++) {

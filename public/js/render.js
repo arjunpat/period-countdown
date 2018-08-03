@@ -46,7 +46,7 @@ render.index = () => {
 				return window.setTimeout(mainLoop, 50);
 			}
 
-			if (view.isVisible()) {
+			if (!document.hidden || document.hasFocus()) {
 				view.updateScreen(time, true);
 				return window.setTimeout(mainLoop, 50);
 			}
@@ -104,10 +104,19 @@ render.index = () => {
 	view.index.settingsButton.querySelector('div').onclick = () => {
 		load('/settings', true);
 
-		if (!prefManager.isLoggedIn())
+		if (!prefManager.isLoggedIn()) {
+			view.addGoogleApi();
 			setTimeout(() => view.showModal('log-in-first'), 2000);
+		}
 	}
 
+	// login button
+	view.index.googleSignin.querySelector('button').onclick = () => {
+		view.addGoogleApi();
+		view.showModal('modal-login');
+	}
+
+	// logout button
 	view.index.googleSignin.querySelector('div').onclick = () => {
 		view.addGoogleApi();
 		view.showModal('modal-logout');

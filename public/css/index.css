@@ -106,8 +106,8 @@
 	border-radius: 8px;
 	bottom: 95%;
 	z-index: 10;
-	/*box-shadow: 0 0 300vmax 300vmax rgba(0,0,0,0.6);*/
-	box-shadow: 2px 2px 8px 3px rgba(0, 0, 0, 0.06);
+	box-shadow: 0 0 300vmax 300vmax rgba(0,0,0,0.6);
+	/*box-shadow: 2px 2px 8px 3px rgba(0, 0, 0, 0.06);*/
 	padding: 20px;
 	white-space: nowrap;
 	transition: opacity 0.2s ease;

@@ -41,10 +41,6 @@ class View {
 		this.canvas = new Canvas(this.index.mainCanvas);
 		this.modal.footer.querySelector('a').onclick = this.closeModal;
 
-		window.onvisibilitychange = () => {
-			this.pageVisibility = !document.hidden;
-		}
-
 		Logger.timeEnd('View', 'grabbed-elements');
 
 	}
@@ -234,11 +230,16 @@ class View {
 	}
 
 	addGoogleApi() {
+		if (this.googleApiAdded)
+			return;
+
 		let script = document.createElement('script');
 		script.src = 'https://apis.google.com/js/platform.js?onload=googleApiDidLoad';
 		script.async = 'true';
 		script.defer = 'true';
 		document.body.append(script);
+
+		this.googleApiAdded = true;
 	}
 
 	hidePreloader() {
@@ -278,10 +279,6 @@ class View {
 		}
 
 		return names;
-	}
-
-	isVisible() {
-		return this.pageVisibility;
 	}
 
 	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }

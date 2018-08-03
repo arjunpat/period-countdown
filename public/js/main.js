@@ -19,8 +19,7 @@ RequestManager.init().then(data => {
 		prefManager.setGoogleAccount(data);
 		render.showPrefs();
 		analytics.setRegisteredTo(data.email);
-	} else
-		view.addGoogleApi();
+	}
 
 	if (data.device_id)
 		analytics.setNewLoad(true);
