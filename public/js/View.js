@@ -40,6 +40,10 @@ class View {
 		this.canvas = new Canvas(this.index.mainCanvas);
 		this.modal.footer.querySelector('a').onclick = this.closeModal;
 
+		window.onvisibilitychange = () => {
+			this.pageVisibility = !document.hidden;
+		}
+
 		Logger.timeEnd('View', 'grabbed-elements');
 
 	}
@@ -273,6 +277,10 @@ class View {
 		}
 
 		return names;
+	}
+
+	isVisible() {
+		return this.pageVisibility;
 	}
 
 	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }

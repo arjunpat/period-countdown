@@ -46,7 +46,7 @@ render.index = () => {
 				return window.setTimeout(mainLoop, 50);
 			}
 
-			if (document.hasFocus()) {
+			if (view.isVisible()) {
 				view.updateScreen(time, true);
 				return window.setTimeout(mainLoop, 50);
 			}
