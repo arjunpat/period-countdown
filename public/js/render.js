@@ -82,6 +82,20 @@ render.index = () => {
 		});
 	});
 
+	view.index.dayType.onmouseover = () => {
+		view.index.scheduleTable.style.display = 'block';
+		setTimeout(() => {
+			view.index.scheduleTable.style.opacity = '1';
+		}, 20);
+	}
+
+	view.index.dayType.onmouseleave = () => {
+		view.index.scheduleTable.style.opacity = '0';
+		setTimeout(() => {
+			view.index.scheduleTable.style.display = 'none';
+		}, 500);
+	}
+
 	window.onresize = () => {
 		view.updateScreenDimensions();
 		view.dimensionCanvas();
@@ -127,6 +141,7 @@ render.settings = () => {
 			if (view.settings.saved)
 				load('/', true);
 			else {
+				window.scrollTo(0, document.body.scrollHeight);
 				view.showModal('unsaved-setting-changes');
 				document.querySelector('.unsaved-setting-changes > a').onclick = () => {
 					load('/', true);

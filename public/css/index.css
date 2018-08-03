@@ -12,6 +12,11 @@
 
 #index #day-type {
 	font-family: 'Product Sans';
+	cursor: pointer;
+}
+
+#index #day-type:hover {
+	text-decoration: underline;
 }
 
 #index #current-period-text {
@@ -90,4 +95,59 @@
 	font-size: 40px;
 	cursor: pointer;
 	user-select: none;
+}
+
+/* table stuff */
+#index #schedule-table {
+	width: 250px;
+	height: 300px;
+	background: #fff;
+	position: absolute;
+	border-radius: 8px;
+	bottom: 95%;
+	z-index: 10;
+	/*box-shadow: 0 0 300vmax 300vmax rgba(0,0,0,0.6);*/
+	box-shadow: 2px 2px 8px 3px rgba(0, 0, 0, 0.06);
+	padding: 20px;
+	white-space: nowrap;
+	transition: opacity 0.2s ease;
+	opacity: 0;
+	display: none;
+}
+
+#index #schedule-table:after {
+	content:'';
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	width: 0;
+	height: 0;
+	border-top: solid 10px #fff;
+	border-left: solid 10px transparent;
+	border-right: solid 10px transparent;
+}
+
+#index #schedule-table > span {
+	text-align: center;
+	color: black;
+	font-weight: bold;
+	font-size: 30px;
+	margin: 0;
+	display: block;
+}
+
+#index #schedule-table > table {
+	margin: 0 auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#index #schedule-table > table > tbody > tr > td {
+	text-align: right;
+	padding: 12px;
+	font-size: 15px;
+	border-top: 1px solid #ddd;
+	color: #000;
 }
