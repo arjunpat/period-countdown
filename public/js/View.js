@@ -17,7 +17,8 @@ class View {
 			currentPeriodText: document.getElementById('current-period-text'),
 			timeLeft: document.getElementById('time-left'),
 			settingsButton: document.getElementById('settings-button'),
-			googleSignin: document.getElementById('google-signin')
+			googleSignin: document.getElementById('google-signin'),
+			scheduleTable: document.getElementById('schedule-table')
 		}
 		this.settings = {
 			title: document.querySelector('#settings #title'),

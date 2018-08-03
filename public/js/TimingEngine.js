@@ -8,8 +8,6 @@ class TimingEngine {
 		if (this.isInitialized())
 			throw 'TimingEngine has already been initialized';
 
-		Logger.time('TimingEngine', 'setup');
-
 		this.calendar = {};
 		this.presets = presets;
 		this.offset = 0;
@@ -32,7 +30,6 @@ class TimingEngine {
 		this.prepareSchedule();
 
 		this.initialized = true;
-		Logger.timeEnd('TimingEngine', 'setup');
 	}
 
 	loadNewPresets(presets) {

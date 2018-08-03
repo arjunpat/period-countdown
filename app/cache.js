@@ -40,8 +40,9 @@ const filePresets = {
 
 class Cache {
 
-	constructor() {
+	constructor(cacheTime) {
 		this.files = {};
+		this.cacheTime = cacheTime;
 	}
 
 	getFile(filename) {
@@ -55,7 +56,7 @@ class Cache {
 				//console.log('file was found');
 
 				// if 15 min old
-				if (Date.now() - this.files[filename].lastLoad > 900000) this.addFile(filename);
+				if (Date.now() - this.files[filename].lastLoad > this.cacheTime) this.addFile(filename);
 
 			} else {
 				//console.log('not found');
@@ -97,4 +98,4 @@ class Cache {
 }
 
 
-module.exports = new Cache();
+module.exports = new Cache(/*900000*/0);

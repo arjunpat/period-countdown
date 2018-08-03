@@ -9,7 +9,7 @@ class ScheduleBuilder {
 		let cal = calendar.schedule;
 		for (let i = 0; i < cal.length; i++) {
 			if (cal[i].content.schedule) {
-				let presetName = 'preset-' + Date.now();
+				let presetName = 'preset-' + Math.random();
 
 				presets[presetName] = {
 					n: cal[i].content.name,
