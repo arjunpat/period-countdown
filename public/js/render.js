@@ -29,7 +29,7 @@ render.index = () => {
 		return Logger.timeEnd('render', 'index');
 
 	let firstRun = true;
-	const mainLoop = () => {
+	function mainLoop() {
 
 		if (window.location.pathname === '/') {
 

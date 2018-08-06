@@ -62,7 +62,7 @@ let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خو
 console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
 
 // has to be global for google
-var googleApiDidLoad = () => {
+function googleApiDidLoad() {
 
 	gapi.load('auth2', () => {
 		gapi.auth2.init({

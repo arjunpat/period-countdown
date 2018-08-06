@@ -77,10 +77,7 @@ this.onfetch = (e) => {
 		fetch(e.request).then(res => {
 			let resClone = res.clone();
 
-			if (requestUrl.pathname === '/api/schedule' || requestUrl.pathname === '/api/calendar')
-				caches.open(APP_VERSION).then(cache => {
-					cache.put(requestUrl.pathname, resClone);
-				});
+			caches.open(APP_VERSION).then( cache => cache.put(requestUrl.pathname, resClone) );
 
 			return res;
 

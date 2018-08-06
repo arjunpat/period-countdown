@@ -50,14 +50,18 @@ class View {
 		let {percent_completed, hours, minutes, seconds, period_name, day_type} = time;
 
 		// make time human readable
-		if (seconds < 10) seconds = '0' + seconds;
-		if (minutes < 10 && hours !== 0) minutes = '0' + minutes;
+		seconds = padNum(seconds);
+		if (hours !== 0)
+			minutes = padNum(minutes);
 
 		let timeString = '';
-		if (hours !== 0) timeString = `${hours}:`;
+		if (hours !== 0)
+			timeString = `${hours}:`;
+
 		timeString += `${minutes}:${seconds}`;
 
-		if (typeof period_name === 'number') period_name = this.getOrdinalNum(period_name) + ' Period';
+		if (typeof period_name === 'number')
+			period_name = formatPeriodNumber(period_name);
 
 		let documentTitle = `${timeString} \u2022 ${period_name}`;
 		if (this.currentValues.documentTitle !== documentTitle) {
@@ -149,6 +153,40 @@ class View {
 			element.value = '';
 			element.classList.remove('has-value');
 		}
+
+	}
+
+	updateScheduleTable(periods) {
+
+		let html = '';
+		let added = 0;
+		for (let i = 0; i < periods.length - 1 && added < 8; i++) {
+			let p = periods[i];
+
+			if (p.n !== 'Passing' && p.n !== 'Free') {
+
+				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== (new Date()).setHours(0, 0, 0, 0))
+					break;
+
+				if (typeof p.n === 'number')
+					p.n = formatPeriodNumber(p.n);
+
+				html += `
+					<tr>
+						<td>${p.n}</td>
+						<td>${formatEpoch(p.f)} - ${formatEpoch(periods[i + 1].f)}</td>
+					</tr>
+				`;
+
+				added++;
+			}
+
+		}
+
+		if (added === 0)
+			html = '<span style="color: black; font-style: italic;">No classes today</span>'
+
+		this.index.scheduleTable.querySelector('table > tbody').innerHTML = html;
 
 	}
 
@@ -286,6 +324,30 @@ class View {
 	getSelectedThemeNum() { return parseInt(this.settings.themeSelector.value); }
 
 	dimensionCanvas() { this.canvas.dimension(); }
+}
 
-	getOrdinalNum(n) { return n + (n > 0 ? ["th", "st", "nd", "rd"][n > 3 && 21 > n || n % 10 > 3 ? 0 : n % 10] : ""); }
+// helper functions
+function getOrdinalNumber(n) {
+	return n + (n > 0 ? ["th", "st", "nd", "rd"][n > 3 && 21 > n || n % 10 > 3 ? 0 : n % 10] : "");
+}
+
+function formatPeriodNumber(n) {
+	return getOrdinalNumber(n) + ' Period';
+}
+
+function padNum(n) {
+	if (n < 10)
+		return '0' + n;
+	return n;
+}
+
+function formatEpoch(t) {
+	let d = new Date(t);
+	let h = d.getHours();
+	let m = d.getMinutes();
+
+	if (h > 12)
+		h -= 12;
+
+	return `${h}:${padNum(m)}`;
 }

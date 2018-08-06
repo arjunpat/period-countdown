@@ -8,14 +8,14 @@ let calendar = {
 				name: 'Custom Name Support'
 			}
 		},*/
-		/*{
-			from: '6/24/2018',
+		{
+			from: '6/1/2018',
 			to: '8/20/2018',
 			content: {
 				schedule: [],
-				name: 'BREAK!'
+				name: 'Summer Break'
 			}
-		}*/
+		}
 		/*{
 			from: '7/21/2018',
 			to: '8/25/2018',
@@ -31,7 +31,7 @@ let calendar = {
 				name: 'Summer Break'
 			}
 		}*/
-		{
+		/*{
 			from: '6/21/2018',
 			to: '8/25/2018',
 			content: {
@@ -51,7 +51,7 @@ let calendar = {
 					}
 				]
 			}
-		}
+		}*/
 	]
 }
 

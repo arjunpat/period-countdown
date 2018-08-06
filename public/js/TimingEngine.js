@@ -140,7 +140,9 @@ class TimingEngine {
 				let {s, n} = this.getPresetSchedule(this.calendar[dateString].type) || this.getPresetScheduleFromDateString(dateString);
 
 				this.calendar[dateString].schedule = s;
-				if (!this.calendar[dateString].name) this.calendar[dateString].name = n;
+				
+				if (!this.calendar[dateString].name)
+					this.calendar[dateString].name = n;
 
 			} else if (!this.calendar[dateString].name)
 				this.calendar[dateString].name = this.getPresetScheduleFromDateString(dateString).n;
@@ -151,15 +153,16 @@ class TimingEngine {
 			this.calendar[dateString] = {
 				schedule,
 				name
-			};
+			}
 		}
 
 		// on change of s, the calendar also changes
 		let s = this.calendar[dateString].schedule;
 
 		// parses the day's s by replacing from with epoch ms time
-		for (let i = 0; i < s.length; i++)
+		for (let i = 0; i < s.length; i++) {
 			s[i].f = Date.parse(`${dateString} ${s[i].f}:00`);
+		}
 
 		this.calendar[dateString].parsed = true;
 	}
@@ -250,6 +253,8 @@ class TimingEngine {
 	}
 
 	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())); }
+
+	getUpcomingPeriods() { return this.create(this.schedule); }
 
 	create(obj) { return JSON.parse(JSON.stringify(obj)); }
 
