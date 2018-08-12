@@ -9,3 +9,8 @@ node_modules/
 
 # no need for this
 client-dist/
+
+.env
+
+# 3 simple, non-conflicting dependencies -> this file is just an eyesore
+package-lock.json
