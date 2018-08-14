@@ -196,7 +196,6 @@ class TimingEngine {
 	}
 
 	calculateOffset(numOfRequests = 5) {
-		this.checkInit();
 
 		//Logger.log('TimingEngine', 'calculating offset');
 

@@ -1,4 +1,4 @@
-const APP_VERSION = '0.4.2'; // needs to match main.js
+const APP_VERSION = '0.4.2';
 /*const FILES = [
 	`/`,
 	`/js/bundle.js?${APP_VERSION}`,

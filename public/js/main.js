@@ -1,5 +1,4 @@
-const APP_VERSION = '0.4.2', // needs to match sw.js
-	timingEngine = new TimingEngine(),
+const timingEngine = new TimingEngine(),
 	view = new View(),
 	analytics = new Analytics,
 	prefManager = new PrefManager,
@@ -21,10 +20,7 @@ RequestManager.init().then(data => {
 		analytics.setRegisteredTo(data.email);
 	}
 
-	if (data.device_id)
-		analytics.setNewLoad(true);
-	else
-		analytics.setNewLoad(false);
+	analytics.setNewLoad(!!data.device_id);
 
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
