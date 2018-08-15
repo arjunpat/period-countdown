@@ -44,9 +44,8 @@
 	border: 0;
 	outline: 0;
 	color: #fff;
-	height: 40px;
+	padding: 12px 26px;
 	float: right;
-	width: 180px;
 	display: inline-block;
 	font-size: 16px;
 	transition: .2s background ease;

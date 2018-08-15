@@ -9,7 +9,7 @@ class RequestManager {
 
 		let options = {
 			method: params.method
-		};
+		}
 
 		if (params.method === 'POST') {
 			options.headers = {
@@ -18,7 +18,7 @@ class RequestManager {
 			options.body = JSON.stringify(params.data);
 		}
 
-		let startTime = Date.now();
+		let startTime = window.performance.now();
 
 		return fetch(params.url, options).then(async response => {
 			if (!params.response_type)
@@ -26,7 +26,7 @@ class RequestManager {
 			else if (params.response_type === 'text')
 				response.text = await response.text();
 
-			response.loadTime = Date.now() - startTime;
+			response.loadTime = window.performance.now() - startTime;
 
 			return response;
 		});
@@ -43,12 +43,12 @@ class RequestManager {
 				}
 			}).then(res => {
 
-				if (res.json.data.error === 'no_user_exists') {
+				if (res.json.data.error === 'no_device_exists') {
 					Storage.clearAll();
 					return this.init();
-				} else
-					return res.json.data;
-
+				}
+				
+				return res.json.data;
 			});
 		else {
 

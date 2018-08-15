@@ -1,5 +1,5 @@
 # client-dist/js cannot exist! delete before running
-
+# written to run in root dir
 
 # javascript ---------------------------
 mkdir -p client-dist/js
@@ -27,7 +27,7 @@ cat public/css/modal.css >> client-dist/css/bundle.css
 
 cat public/index.html > client-dist/index.html
 cat public/manifest.json > client-dist/manifest.json
-cp -rf public/images client-dist/images
+cp -rf public/images/ client-dist/images/
 
 echo "Things to do:"
 echo "1. Update the <link> and <script> tags in index.html"

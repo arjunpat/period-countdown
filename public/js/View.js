@@ -47,6 +47,7 @@ class View {
 
 	updateScreen(time, showVisuals) {
 
+		let returnVal = false;
 		let {percent_completed, hours, minutes, seconds, period_name, day_type} = time;
 
 		// make time human readable
@@ -70,17 +71,18 @@ class View {
 		}
 
 		if (showVisuals) {
-			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99))
+			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99)) {
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
-			else if (!this.canvas.animationInterval || Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 2)
+			} else if (!this.canvas.animationInterval || Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 2) {
 				this.canvas.animate(Math.floor(percent_completed) / 100);
+			}
 
 
 			if (this.currentValues.dayTypeText !== day_type) {
 				this.index.dayType.innerText = day_type;
 				this.currentValues.dayTypeText = day_type;
+				returnVal = true;
 			}
-
 
 			if (this.currentValues.currentPeriodText !== period_name) {
 				this.index.currentPeriodText.innerText = period_name;
@@ -89,6 +91,7 @@ class View {
 				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
 				this.currentValues.currentPeriodText = period_name;
+				returnVal = true;
 			}
 
 			if (this.currentValues.timeLeftText !== timeString) {
@@ -97,6 +100,8 @@ class View {
 			}
 
 		}
+
+		return returnVal;
 	}
 
 	applyPreferencesToElements(values) {
@@ -156,7 +161,9 @@ class View {
 
 	}
 
-	updateScheduleTable(periods) {
+	updateScheduleTable(periods, currentTime) {
+
+		let currentDate = (new Date(currentTime)).setHours(0, 0, 0, 0);
 
 		let html = '';
 		let added = 0;
@@ -165,8 +172,8 @@ class View {
 
 			if (p.n !== 'Passing' && p.n !== 'Free') {
 
-				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== (new Date()).setHours(0, 0, 0, 0))
-					break;
+				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== currentDate)
+					continue;
 
 				if (typeof p.n === 'number')
 					p.n = formatPeriodNumber(p.n);

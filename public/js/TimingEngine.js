@@ -51,12 +51,20 @@ class TimingEngine {
 	getRemainingTime() {
 		this.checkInit();
 
-		let now = this.getCurrentTime();
+		let now = this.getCurrentTime(),
+			new_period = false,
+			period_length,
+			dist,
+			percent_completed,
+			days,
+			hours,
+			minutes,
+			seconds;
 
-		if (this.schedule[1].f < now) this.schedule.splice(0, 1);
-		this.makeSureTwoItemsInSchedule();
-
-		let period_length, dist, percent_completed, days, hours, minutes, seconds;
+		if (this.schedule[1].f < now)
+			this.schedule.splice(0, 1);
+		
+		this.ensureTwoItemsInSchedule();
 
 		// calculations
 		period_length = this.schedule[1].f - this.schedule[0].f;
@@ -88,7 +96,8 @@ class TimingEngine {
 			seconds,
 			period: this.schedule[0].n,
 			day_type: this.calendar[this.getTodayDateString()].name,
-			period_length
+			period_length,
+			new_period
 		};
 
 	}
@@ -122,7 +131,7 @@ class TimingEngine {
 			else break;
 		}
 
-		this.makeSureTwoItemsInSchedule();
+		this.ensureTwoItemsInSchedule();
 
 	}
 
@@ -227,7 +236,7 @@ class TimingEngine {
 
 	// helper methods
 
-	makeSureTwoItemsInSchedule() { while (this.schedule.length < 2) this.addAnotherDayToSchedule(); }
+	ensureTwoItemsInSchedule() { while (this.schedule.length < 2) this.addAnotherDayToSchedule(); }
 
 	getPresetSchedule(type) { return this.create(this.presets[type]); /* presets are stored in json to delete references */ }
 

@@ -22,15 +22,17 @@ const server = http.createServer((req, res) => {
 	if (path.layers[0] === 'api') {
 		api(req, res, path).then(data => {
 			if (data.valid) {
-				res.writeHead(200, data.headers);
+				res.writeHead(200, utils.mergeHeaders(data.headers));
 				res.end(data.content);
 			} else {
+				res.writeHead(200, utils.mergeHeaders({}));
 				res.end(JSON.stringify({
 					success: false,
 					error: 'bad_request'
 				}));
 			}
 		}).catch(err => {
+			res.writeHead(200, utils.mergeHeaders({}));
 			res.end(JSON.stringify({
 				success: false,
 				error: 'bad_request'
@@ -49,6 +51,6 @@ const server = http.createServer((req, res) => {
 		});
 	}
 
-}).listen(8080, () => {
+}).listen(process.env.PORT, () => {
 	console.timeEnd('startup');
 });

@@ -14,3 +14,16 @@ client-dist/
 
 # 3 simple, non-conflicting dependencies -> this file is just an eyesore
 package-lock.json
+
+# extention copy stuff
+extensions/chrome/css/main.css
+extensions/chrome/css/index.css
+
+extensions/chrome/js/TimingEngine.js
+extensions/chrome/js/Canvas.js
+extensions/chrome/js/Logger.js
+extensions/chrome/js/ScheduleBuilder.js
+extensions/chrome/js/PrefManager.js
+extensions/chrome/js/Storage.js
+
+extensions/chrome/images/

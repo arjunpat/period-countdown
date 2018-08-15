@@ -1,0 +1,22 @@
+{
+	"manifest_version": 2,
+	"name": "MVHS Bell Countdown",
+	"short_name": "Countdown",
+	"version": "2.0",
+	"description": "A Chrome Extension that accompanies the MVHS Bell Countdown (bell.mvhs.club) website.",
+	"browser_action": {
+		"default_popup": "popup.html",
+		"default_icon": "/images/1024.png"
+	},
+	"icons": {
+		"1024": "/images/1024.png"
+	},
+	"permissions": [],
+	"externally_connectable": {
+		"matches": [
+			"https://bell.mvhs.club/*",
+			"*://localhost:*/*"
+		]
+	},
+	"permissions": []
+}

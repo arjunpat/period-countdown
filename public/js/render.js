@@ -34,25 +34,28 @@ render.index = () => {
 		if (window.location.pathname === '/') {
 
 			let time = timingEngine.getRemainingTime();
-
 			time.period_name = prefManager.getPeriodName(time.period) || time.period;
 
 			if (firstRun) {
 				view.updateScreen(time, true);
+				view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
+
 				analytics.setPeriod(time.period);
 				analytics.setPeriodName(time.period_name);
+
 				window.onresize();
 				firstRun = false;
 				return window.setTimeout(mainLoop, 50);
 			}
 
 			if (!document.hidden || document.hasFocus()) {
-				view.updateScreen(time, true);
+				if (view.updateScreen(time, true)) {
+					view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
+				}
 				return window.setTimeout(mainLoop, 50);
 			}
 
 			view.updateScreen(time, false);
-
 		}
 
 		return window.setTimeout(mainLoop, 500); // .5s when user not on the page; helps with cpu usage
@@ -254,6 +257,8 @@ render.showPrefs = () => {
 	view.applyPreferencesToElements(prefs);
 	scheduleBuilder.setFreePeriods(prefs.free_periods);
 
-	if (scheduleBuilder.isNew())
+	if (scheduleBuilder.isNew()) {
 		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
+		view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
+	}
 };
