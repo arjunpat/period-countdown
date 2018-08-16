@@ -7,6 +7,7 @@ cat public/js/Logger.js > extensions/chrome/js/Logger.js
 cat public/js/ScheduleBuilder.js > extensions/chrome/js/ScheduleBuilder.js
 cat public/js/PrefManager.js > extensions/chrome/js/PrefManager.js
 cat public/js/Storage.js > extensions/chrome/js/Storage.js
+cat public/js/Analytics.js > extensions/chrome/js/Analytics.js
 
 # ----- css
 cat public/css/main.css > extensions/chrome/css/main.css

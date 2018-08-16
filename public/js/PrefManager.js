@@ -69,7 +69,7 @@ class PrefManager {
 		if (values.settings) {
 			if (values.settings.period_names)
 				this.period_names = values.settings.period_names;
-			if (values.settings.theme)
+			if (typeof values.settings.theme === 'number')
 				this.setTheme(values.settings.theme);
 			// do other loading stuff here
 		}

@@ -1,6 +1,6 @@
 const timingEngine = new TimingEngine(),
 	view = new ExtnView(),
-	//analytics = new Analytics,
+	analytics = new Analytics(),
 	prefManager = new PrefManager(),
 	scheduleBuilder = new ScheduleBuilder(),
 	RequestManager = ExtnRequestManager,
@@ -49,15 +49,26 @@ chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 
 	Storage.setDeviceId(device_id);
 	RequestManager.init().then(values => {
+
 		if (!values) {
 			Storage.clearAll();
 			window.open(URL_PREFIX);
 		}
 
 		if (values.error !== 'not_registered') {
+			analytics.setRegisteredTo(values.email);
 			prefManager.setGoogleAccount(values);
 		}
 		showPrefs();
+
+		let analyticsTime = timingEngine.getRemainingTime();
+
+		analytics.setPeriod(analyticsTime.period);
+		analytics.setPeriodName(prefManager.getPeriodName(analyticsTime.period) || analyticsTime.period);
+		analytics.setTheme(prefManager.getThemeNum());
+		analytics.setPathname('extn');
+		analytics.setNewLoad(false);
+		analytics.setDeviceId(Storage.getDeviceId());
 	});
 });
 

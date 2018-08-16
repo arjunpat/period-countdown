@@ -30,7 +30,7 @@ render.index = () => {
 
 	let firstRun = true;
 	function mainLoop() {
-
+		
 		if (window.location.pathname === '/') {
 
 			let time = timingEngine.getRemainingTime();
@@ -50,14 +50,13 @@ render.index = () => {
 
 			if (!document.hidden || document.hasFocus()) {
 				if (view.updateScreen(time, true)) {
-					view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
+					view.updateScheduleTable(timingEngine.getUpcomingPeriods(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
 				}
 				return window.setTimeout(mainLoop, 50);
 			}
 
 			view.updateScreen(time, false);
 		}
-
 		return window.setTimeout(mainLoop, 500); // .5s when user not on the page; helps with cpu usage
 	}
 

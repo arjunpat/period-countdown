@@ -161,7 +161,7 @@ class View {
 
 	}
 
-	updateScheduleTable(periods, currentTime) {
+	updateScheduleTable(periods, periodNames, currentTime) {
 
 		let currentDate = (new Date(currentTime)).setHours(0, 0, 0, 0);
 
@@ -175,8 +175,9 @@ class View {
 				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== currentDate)
 					continue;
 
-				if (typeof p.n === 'number')
-					p.n = formatPeriodNumber(p.n);
+				if (typeof p.n === 'number') {
+					p.n = periodNames[p.n] || formatPeriodNumber(p.n);
+				}
 
 				html += `
 					<tr>

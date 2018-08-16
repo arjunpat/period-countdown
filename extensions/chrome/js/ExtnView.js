@@ -58,7 +58,7 @@ class ExtnView {
 		if (this.currentValues.dayTypeText !== day_type) {
 			this.index.dayType.innerText = day_type;
 			this.currentValues.dayTypeText = day_type;
-			returnVal = true;
+			this.updateScreenDimensions();
 		}
 
 		if (this.currentValues.currentPeriodText !== period_name) {
@@ -68,7 +68,7 @@ class ExtnView {
 			this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 			setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
 			this.currentValues.currentPeriodText = period_name;
-			returnVal = true;
+			this.updateScreenDimensions();
 		}
 
 		if (this.currentValues.timeLeftText !== timeString) {
@@ -109,9 +109,9 @@ class ExtnView {
 
 	updateScreenDimensions() {
 		let dimension = window.innerWidth;
-		this.index.dayType.parentElement.style.fontSize = Math.min(50, dimension / 17) + 'px';
+		this.index.dayType.parentElement.style.fontSize = Math.min(50, (dimension / this.index.dayType.parentElement.innerText.length) / .6) + 'px';
 		//this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
-		this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
+		this.index.timeLeft.style.fontSize = Math.min(120, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
 	}
 
 	dimensionCanvas() { this.canvas.dimension(); }

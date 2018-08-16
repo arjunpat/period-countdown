@@ -17,12 +17,12 @@ class Analytics {
 			await this.sleep(1);
 
 		let data = {};
-		if (this.pathname === '/' && typeof this.period === 'number' && this.period_name) { // index page
+		if ((this.pathname === '/' || this.pathname === 'extn') && typeof this.period === 'number' && this.period_name) { // index page or extn
 
 			data.prefs = {
 				theme: this.theme,
 				period: this.period
-			};
+			}
 			if (this.period !== this.period_name)
 				data.prefs.period_name = this.period_name;
 

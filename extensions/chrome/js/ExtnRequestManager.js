@@ -69,6 +69,17 @@ class ExtnRequestManager {
 		}).then(res => res.json);
 	}
 
+	static sendAnalytics(data) {
+		return this.ajax({
+			url: '/api/v1/write/analytics',
+			method: 'POST',
+			data: {
+				device_id: Storage.getDeviceId(),
+				data: data
+			}
+		}).then(res => res.json);
+	}
+
 	static sendError(data) {
 		console.error(data);
 		return this.ajax({
