@@ -88,6 +88,10 @@ class ExtnView {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
 			this.index.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
+		} else {
+			this.index.googleSignin.querySelector('button').style.display = '';
+			this.index.googleSignin.querySelector('div > img').src = '';
+			this.index.googleSignin.querySelector('div > img').style.display = '';
 		}
 
 	}

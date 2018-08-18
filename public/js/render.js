@@ -38,7 +38,7 @@ render.index = () => {
 
 			if (firstRun) {
 				view.updateScreen(time, true);
-				view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
+				view.updateScheduleTable(timingEngine.getUpcomingPeriods(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
 
 				analytics.setPeriod(time.period);
 				analytics.setPeriodName(time.period_name);
@@ -65,6 +65,7 @@ render.index = () => {
 		let [presets, calendar] = values;
 
 		Logger.time('render', 'full timer init');
+		
 		scheduleBuilder.init(presets, calendar);
 		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
 		Logger.timeEnd('render', 'full timer init');
@@ -76,7 +77,8 @@ render.index = () => {
 		Logger.timeEnd('render', 'index');
 
 	}).catch(err => {
-		//view.showErrorScreen();
+		view.switchTo('error');
+
 		RequestManager.sendError({
 			where: 'browser',
 			type: 'client_page_load',
@@ -130,6 +132,12 @@ render.index = () => {
 			window.location.reload();
 		});
 	}
+
+	if (window.chrome && !window.localStorage.chrome_extension_installed) {
+		setTimeout(() => {
+			view.notify('Install the <a style="display: inline;" target="_blank" href="https://www.mvhs.club/u/bell-extn">Chrome Extension</a>');
+		}, 3000);
+	}
 };
 
 
@@ -178,8 +186,9 @@ render.settings = () => {
 						render.showPrefs();
 					}, 2e3);
 				else
-					// TODO
-					window.alert("Your preferences can not be saved at this time due to a server error. Try again later.");
+					view.showModal('modal-server-down');
+			}).catch(err => {
+				view.showModal('modal-server-down');
 			});
 
 		}

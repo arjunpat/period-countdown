@@ -37,6 +37,7 @@ class Storage {
 
 	static clearAllExceptDeviceId() {
 		delete window.localStorage.prefs;
+		delete window.localStorage.chrome_extension_installed;
 	}
 
 	static clearAll() {

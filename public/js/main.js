@@ -10,8 +10,8 @@ load(window.location.pathname);
 RequestManager.init().then(data => {
 
 	if (typeof data !== 'object') {
-		window.alert('It looks like our servers are having trouble. Try again later.');
-		throw "Device id was not established";
+		view.showModal('modal-server-down');
+		return;
 	}
 
 	if (data.email) {
@@ -25,12 +25,13 @@ RequestManager.init().then(data => {
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeNum());
-	} else
+	} else {
+		view.showModal('modal-server-down');
 		throw 'Device id was not established';
+	}
 }).catch(err => {
-
-	//view.showOffline();
-
+	view.showModal('modal-server-down');
+	
 	RequestManager.sendError({
 		where: 'client_page_load',
 		description: err.stack
@@ -46,6 +47,7 @@ analytics.setPathname(window.location.pathname);
 // add service workers
 /*if (navigator.serviceWorker) {
 	navigator.serviceWorker.register('/sw.js').then((reg) => {
+		console.log(reg);
 		Logger.log('main', 'service worker registered');
 	}).catch(err => {
 		Logger.log('main', 'service worker registration failed');
@@ -78,27 +80,23 @@ function googleApiDidLoad() {
 					profile_pic: data.Paa
 				}
 
-				//prefManager.setGoogleAccount(account);
-
 				RequestManager.login(account).then(res => {
 					if (res.data.status === 'returning_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
 						view.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
-						// OTHER CASE
 					} else {
-						// OTHER CASE
-						window.alert('Our servers are having a bad day. Please try again another time.');
+						view.showModal('modal-server-down');
 					}
 
 					render.showPrefs();
 				}).catch(err => {
-					// OTHER CASE
+					view.showModal('modal-server-down');
 				});
 			}
 
-			let gFail = () => window.alert('There was a problem signing you in. Please try again later.');
+			let gFail = () => window.alert('Google had trouble signing you in. Please try again later.');
 
 			for (let element of document.getElementsByClassName('google-login-button'))
 				GoogleAuth.attachClickHandler(element, {}, gSuccess, gFail);

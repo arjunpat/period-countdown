@@ -89,6 +89,8 @@
 #settings #save-settings-button {
 	width: 160px;
 	transition: all ease 0.5s;
+	margin: auto;
+	display: block;
 }
 
 #settings .container {

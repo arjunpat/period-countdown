@@ -42,8 +42,8 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 	let { device_id } = req;
 
+	Storage.clearAll();
 	if (!device_id) {
-		Storage.clearAll();
 		window.open(URL_PREFIX);
 	}
 

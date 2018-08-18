@@ -2,4 +2,6 @@
 	const EXTN_ID = 'ckplaaeibdiaacanpnlbfpbnfahpfecg';
 
 	chrome.runtime.sendMessage(EXTN_ID, { device_id: window.localStorage.device_id }, res => {});
+	
+	window.localStorage.chrome_extension_installed = 'true';
 </script>

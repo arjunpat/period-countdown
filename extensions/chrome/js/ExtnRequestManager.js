@@ -60,13 +60,37 @@ class ExtnRequestManager {
 	static getPresets() {
 		return this.ajax({
 			url: '/api/presets'
-		}).then(res => res.json);
+		}).then(res => {
+			chrome.storage.sync.set({
+				presets: res.json
+			}, () => Logger.log('ExtnRequestManager', 'saved presets in chrome.storage'));
+
+			return res.json
+		}).catch(err => {
+			return new Promise((resolve, reject) => {
+				chrome.storage.sync.get(['presets'], vals => {
+					resolve(vals.presets);
+				});
+			});
+		});
 	}
 
 	static getCalendar() {
 		return this.ajax({
 			url: '/api/calendar'
-		}).then(res => res.json);
+		}).then(res => {
+			chrome.storage.sync.set({
+				calendar: res.json
+			}, () => Logger.log('ExtnRequestManager', 'saved calendar in chrome.storage'));
+
+			return res.json;
+		}).catch(err => {
+			return new Promise((resolve, reject) => {
+				chrome.storage.sync.get(['calendar'], vals => {
+					resolve(vals.calendar);
+				});
+			});
+		});
 	}
 
 	static sendAnalytics(data) {

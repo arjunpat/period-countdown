@@ -11,12 +11,13 @@
 	"icons": {
 		"1024": "/images/1024.png"
 	},
-	"permissions": [],
+	"permissions": [
+		"storage"
+	],
 	"externally_connectable": {
 		"matches": [
 			"https://bell.mvhs.club/*",
 			"*://localhost:*/*"
 		]
-	},
-	"permissions": []
+	}
 }

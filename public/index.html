@@ -9,10 +9,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="mobile-web-app-capable" content="yes">
 		<meta name="theme-color" content="#fccb0b">
-		<link rel="manifest" href="/manifest.json">
-		<link rel="shortcut icon" href="/images/1024.png">
+		<link rel="manifest" href="/manifest.json?v=0.4.2">
+		<link rel="shortcut icon" href="/images/1024.png?v=0.4.2">
 
-		<link rel="apple-touch-icon" sizes="1024x1024" href="/images/1024_square.png">
+		<link rel="apple-touch-icon" sizes="1024x1024" href="/images/1024_square.png?v=0.4.2">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-title" content="Countdown">
@@ -21,11 +21,13 @@
 
 		<link href="https://fonts.googleapis.com/css?family=Roboto:400,700|Material+Icons|Product+Sans" rel="stylesheet">
 
-		<link rel="stylesheet" type="text/css" href="/css/main.css">
-		<link rel="stylesheet" type="text/css" href="/css/index.css">
-		<link rel="stylesheet" type="text/css" href="/css/not-found.css">
-		<link rel="stylesheet" type="text/css" href="/css/settings.css">
-		<link rel="stylesheet" type="text/css" href="/css/modal.css">
+		<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.2">
+		<link rel="stylesheet" type="text/css" href="/css/index.css?v=0.4.2">
+		<link rel="stylesheet" type="text/css" href="/css/not-found.css?v=0.4.2">
+		<link rel="stylesheet" type="text/css" href="/css/settings.css?v=0.4.2">
+		<link rel="stylesheet" type="text/css" href="/css/modal.css?v=0.4.2">
+		<link rel="stylesheet" type="text/css" href="/css/notifications.css?v=0.4.2">
+		<link rel="stylesheet" type="text/css" href="/css/error.css?v=0.4.2">
 	</head>
 	<body>
 		<div id="preloader">
@@ -149,6 +151,7 @@
 					<span class="unsaved-setting-changes">Wait!</span>
 					<span class="modal-logout">Are you sure?</span>
 					<span class="modal-login">Log in with Google</span>
+					<span class="modal-server-down">There&#8217;s a problem</span>
 				</div>
 				<div id="modal-body">
 					<div class="log-in-first">
@@ -169,22 +172,37 @@
 						After logging in with Google, you will gain a whole host of new features including the ability to have personalized period names and custom themes.<br><br>
 						<a class="google-login-button">Click here</a> to log in with your Google Account.
 					</div>
+					<div class="modal-server-down">
+						It looks like our servers are currently down. Please try again later.
+					</div>
 				</div>
 				<div id="modal-footer">
 					<a>Close</a>
 				</div>
 			</div>
+			<div id="error">
+				<div style="max-width: 750px; margin: 0 auto; margin-top: 25px;">
+					<h1 style="font-size: 75px; padding-bottom: 12px; font-weight: bold;">There was an error.</h1>
+					<h2 style="font-size: 20px; padding-left: 10px;">It&#8217;s possible the error was with our servers. Please try again later.</h2>
+				</div>
+			</div>
 		</div>
-		<script type="text/javascript" src="/js/PrefManager.js"></script>
-		<script type="text/javascript" src="/js/Analytics.js"></script>
-		<script type="text/javascript" src="/js/View.js"></script>
-		<script type="text/javascript" src="/js/Canvas.js"></script>
-		<script type="text/javascript" src="/js/RequestManager.js"></script>
-		<script type="text/javascript" src="/js/Logger.js"></script>
-		<script type="text/javascript" src="/js/Storage.js"></script>
-		<script type="text/javascript" src="/js/ScheduleBuilder.js"></script>
-		<script type="text/javascript" src="/js/TimingEngine.js"></script>
-		<script type="text/javascript" src="/js/render.js"></script>
-		<script type="text/javascript" src="/js/main.js"></script>
+		<div id="notifications">
+			<p>
+				<span></span>
+				<span>Close</span>
+			</p>
+		</div>
+		<script type="text/javascript" src="/js/PrefManager.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/Analytics.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/View.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/Canvas.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/RequestManager.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/Logger.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/Storage.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/ScheduleBuilder.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/TimingEngine.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/render.js?v=0.4.2"></script>
+		<script type="text/javascript" src="/js/main.js?v=0.4.2"></script>
 	</body>
 </html>

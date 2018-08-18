@@ -10,6 +10,8 @@ class View {
 
 		this.preloader = document.getElementById('preloader');
 
+		this.notifications = document.getElementById('notifications');
+
 		this.index = {
 			mainCanvas: document.getElementById('main-canvas'),
 			mainCanvasOverlay: document.getElementById('main-canvas-overlay'),
@@ -325,6 +327,21 @@ class View {
 		}
 
 		return names;
+	}
+
+	notify(html) {
+		this.notifications.querySelector('span').innerHTML = html;
+		this.notifications.style.bottom = '15px';
+		this.notifications.querySelectorAll('span')[1].onclick = () => view.hideNotification();
+	}
+
+	hideNotification() {
+		this.notifications.style.bottom = '';
+	}
+
+	notifyAndHide(html, seconds) {
+		this.notify(html);
+		setTimeout(this.hideNotification, 5000);
 	}
 
 	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }
