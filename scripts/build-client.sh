@@ -22,10 +22,12 @@ cat public/css/index.css >> client-dist/css/bundle.css
 cat public/css/not-found.css >> client-dist/css/bundle.css
 cat public/css/settings.css >> client-dist/css/bundle.css
 cat public/css/modal.css >> client-dist/css/bundle.css
+cat public/css/notifications.css >> client-dist/css/bundle.css
 
 # html & others ------------------------
 
 cat public/index.html > client-dist/index.html
+cat public/extension-connection.html > client-dist/extension-connection.html
 cat public/manifest.json > client-dist/manifest.json
 cp -rf public/images/ client-dist/images/
 

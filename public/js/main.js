@@ -52,7 +52,6 @@ analytics.setPathname(window.location.pathname);
 // add service workers
 /*if (navigator.serviceWorker) {
 	navigator.serviceWorker.register('/sw.js').then((reg) => {
-		console.log(reg);
 		Logger.log('main', 'service worker registered');
 	}).catch(err => {
 		Logger.log('main', 'service worker registration failed');

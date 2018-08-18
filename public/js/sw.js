@@ -87,7 +87,6 @@ this.onfetch = (e) => {
 			let resClone = res.clone();
 
 			if (FILES.some(val => pathname === val)) {
-				console.log('saved', pathname);
 				caches.open(APP_VERSION).then( cache => cache.put(pathname, resClone) );
 			}
 
@@ -95,10 +94,8 @@ this.onfetch = (e) => {
 		}).catch(err => {
 
 			if (FILES.some(val => pathname === val)) {
-				console.log('matched', pathname);
 				return caches.match(e.request);
 			} else {
-				console.log('not matched', pathname);
 				return err;
 			}
 
