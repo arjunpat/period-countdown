@@ -16,7 +16,7 @@ const load = (path, shouldPushHistory = false) => {
 			render.notFound();
 			break;
 	}
-};
+}
 
 const render = {};
 
@@ -134,13 +134,7 @@ render.index = () => {
 			window.location.reload();
 		});
 	}
-
-	if (window.chrome && !window.localStorage.chrome_extension_installed) {
-		setTimeout(() => {
-			view.notify('Install the <a style="display: inline;" target="_blank" href="https://www.mvhs.club/u/bell-extn">Chrome Extension</a>');
-		}, 3000);
-	}
-};
+}
 
 
 render.settings = () => {
@@ -213,6 +207,8 @@ render.settings = () => {
 			view.showThemeColorExamples(prefManager.getThemeFromNum(val));
 		}
 
+		view.settings.foundBug.onclick = () => view.showModal('modal-found-bug')
+
 		for (let element of view.settings.inputs) {
 			let period_num = view.getIdFromInputElem(element);
 
@@ -248,7 +244,7 @@ render.settings = () => {
 	view.hidePreloader();
 
 	Logger.timeEnd('render', 'settings');
-};
+}
 
 
 render.notFound = () => {
@@ -259,7 +255,7 @@ render.notFound = () => {
 	view.hidePreloader();
 
 	Logger.timeEnd('render', 'not-found');
-};
+}
 
 
 render.showPrefs = () => {
@@ -271,4 +267,4 @@ render.showPrefs = () => {
 		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
 		view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
 	}
-};
+}

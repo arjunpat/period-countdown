@@ -29,6 +29,8 @@ RequestManager.init().then(data => {
 		view.showModal('modal-server-down');
 		throw 'Device id was not established';
 	}
+
+	view.fillDeviceIds();
 }).catch(err => {	
 	RequestManager.sendError({
 		where: 'client_page_load',
@@ -57,6 +59,12 @@ analytics.setPathname(window.location.pathname);
 		console.error(err);
 	})
 }*/
+
+if (window.chrome && !window.localStorage.chrome_extension_installed) {
+	setTimeout(() => {
+		view.notify('Install the <a style="display: inline;" target="_blank" href="https://www.mvhs.club/u/bell-extn">Chrome Extension</a>');
+	}, 3000);
+}
 
 // welcome, cause what else is the computer going to do?
 let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خوش آمدی', 'Bienvenue', 'желанный', 'Bem vinda', 'Benvenuto', 'Gratus mihi venis', 'Welkom', 'ברוך הבא', 'ようこそ'][Math.floor(Math.random() * 13)];

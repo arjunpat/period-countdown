@@ -31,6 +31,7 @@ class View {
 			themeSelector: document.getElementById('theme-selector'),
 			themeExamples: document.getElementsByClassName('theme-example'),
 			saveSettingsButton: document.getElementById('save-settings-button'),
+			foundBug: document.getElementById('found-bug'),
 			saved: true
 		}
 		this.modal = {
@@ -42,6 +43,7 @@ class View {
 
 		this.canvas = new Canvas(this.index.mainCanvas);
 		this.modal.footer.querySelector('a').onclick = this.closeModal;
+		this.fillDeviceIds();
 
 		Logger.timeEnd('View', 'grabbed-elements');
 
@@ -342,6 +344,17 @@ class View {
 	notifyAndHide(html, seconds) {
 		this.notify(html);
 		setTimeout(this.hideNotification, 5000);
+	}
+
+	fillDeviceIds() {
+		if (!Storage.deviceIdExists())
+			return;
+
+		let d = Storage.getDeviceId();
+
+		for (let ele of document.getElementsByClassName('device-id')) {
+			ele.innerText = d;
+		}
 	}
 
 	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }
