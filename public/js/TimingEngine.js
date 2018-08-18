@@ -176,34 +176,6 @@ class TimingEngine {
 		this.calendar[dateString].parsed = true;
 	}
 
-	parseCalendar(calendar) {
-		let parsed = {};
-
-		for (let i = 0; i < calendar.length; i++) {
-			let cache = calendar[i];
-
-			if (cache.date) {
-
-				parsed[cache.date] = cache.content;
-
-			} else if (cache.from && cache.to) {
-
-				let date = cache.from;
-				let to = this.getNextDayDateString(cache.to);
-
-				do {
-
-					parsed[date] = cache.content;
-					date = this.getNextDayDateString(date);
-
-				} while (date !== to);
-
-			}
-		}
-
-		return parsed;
-	}
-
 	calculateOffset(numOfRequests = 5) {
 
 		//Logger.log('TimingEngine', 'calculating offset');
@@ -234,7 +206,35 @@ class TimingEngine {
 	}
 
 
-	// helper methods
+	/* helper methods below */
+
+	parseCalendar(calendar) {
+		let parsed = {};
+
+		for (let i = 0; i < calendar.length; i++) {
+			let cache = calendar[i];
+
+			if (cache.date) {
+
+				parsed[cache.date] = cache.content;
+
+			} else if (cache.from && cache.to) {
+
+				let date = cache.from;
+				let to = this.getNextDayDateString(cache.to);
+
+				do {
+
+					parsed[date] = cache.content;
+					date = this.getNextDayDateString(date);
+
+				} while (date !== to);
+
+			}
+		}
+
+		return parsed;
+	}
 
 	ensureTwoItemsInSchedule() { while (this.schedule.length < 2) this.addAnotherDayToSchedule(); }
 

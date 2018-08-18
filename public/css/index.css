@@ -146,3 +146,9 @@
 	font-size: 15px;
 	color: #000;
 }
+
+@media (max-width: 375px) {
+	#index #google-signin {
+		padding: 25px;
+	}
+}

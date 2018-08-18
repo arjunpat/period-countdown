@@ -30,3 +30,13 @@
 	text-transform: uppercase;
 	cursor: pointer;
 }
+
+@media (max-width: 375px) {
+	#notifications {
+		width: 225px;
+	}
+
+	#notifications > p {
+		font-size: 12px;
+	}
+}

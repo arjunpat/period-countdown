@@ -29,13 +29,16 @@ RequestManager.init().then(data => {
 		view.showModal('modal-server-down');
 		throw 'Device id was not established';
 	}
-}).catch(err => {
-	view.showModal('modal-server-down');
-	
+}).catch(err => {	
 	RequestManager.sendError({
 		where: 'client_page_load',
 		description: err.stack
 	});
+	
+	if (!Storage.deviceIdExists()) {
+		view.switchTo('error');
+	}
+
 });
 
 // makes sure that back and forwards buttons work
