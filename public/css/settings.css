@@ -36,29 +36,30 @@
 	color: #636262;
 }
 
-#settings .underlineAnimation {
-	background-image: linear-gradient(120deg, #fccb0b 0%, #fc590bad 100%);
-	/*background-image: linear-gradient(120deg, #fccb0b 0%, #fccb0b 100%);*/
-	background-repeat: no-repeat;
-	background-size: 100% 20px;
-	background-position: 0 86%;
-	animation: settingsUnderlineAnimate 2s cubic-bezier(0.67, 0.24, 0.22, 0.96);
-}
-
-@keyframes settingsUnderlineAnimate {
+@keyframes settingsUnderlineAnimation {
 	0% {
 		background-size: 0 0;
 	}
 	30% {
 		background-size: 0 0;
 	}
-	60%, 90% {
+	60% {
 		background-size: 100% 100%;
-
+	}
+	90% {
+		background-size: 100% 100%;
 	}
 	100% {
 		background-size: 100% 20px;
 	}
+}
+
+#settings .underlineAnimation {
+	background-image: linear-gradient(120deg, #fccb0b 0%, #fc590bad 100%);
+	background-repeat: no-repeat;
+	background-size: 100% 20px;
+	background-position: 0 86%;
+	animation: settingsUnderlineAnimation 2s cubic-bezier(0.67, 0.24, 0.22, 0.96);
 }
 
 

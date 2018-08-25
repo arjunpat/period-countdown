@@ -180,7 +180,7 @@ class TimingEngine {
 
 		//Logger.log('TimingEngine', 'calculating offset');
 
-		var offsets = [];
+		let offsets = [];
 		for (let i = 0; i < numOfRequests; i++) {
 
 			setTimeout(() => RequestManager.getTime().then(time => {
@@ -196,7 +196,7 @@ class TimingEngine {
 			}), 1000 * i);
 		}
 
-		setTimeout(this.calculateOffset, 900000); // does every 15 minutes
+		setTimeout(this.calculateOffset, 5 * 60 * 1000); // does every 5 minutes
 	}
 
 	addAnotherDayToSchedule() {

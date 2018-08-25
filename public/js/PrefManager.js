@@ -6,10 +6,10 @@ class PrefManager {
 		this.initVars();
 
 		this.themeOptions = {
-			completed: ['#fee581','#262626','#d9d9d9','#262626','#262626'],
-			background: ['#fccb0b','#000000','#fff','#000','#000'],
-			text: ['#000','#fccb0b','#000','#7cfc00','#ff3b9e'],
-			name: ['MVHS Light','MVHS Dark','Grey','Alien Green','Purple']
+			completed: ['#fee581','#262626','#d9d9d9','#262626','#262626','#aae6e6'],
+			background: ['#fccb0b','#000000','#fff','#000','#000','#bdffff'],
+			text: ['#000','#fccb0b','#000','#7cfc00','#ff3b9e', '#000'],
+			name: ['MVHS Light','MVHS Dark','Grey','Alien Green','Purple', 'Light Blue']
 		}
 
 		if (Storage.prefsExist())

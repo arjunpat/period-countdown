@@ -226,14 +226,21 @@ class View {
 
 	updateScreenDimensions() {
 		let dimension = window.innerWidth;
-		this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
-		this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
-		this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
+
 		this.index.settingsButton.style.padding = Math.min(45, dimension / 18) + 'px';
 		this.index.settingsButton.querySelector('div').style.padding = Math.min(18, dimension / 28) + 'px';
+		this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
+		this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
 
-		if (window.innerHeight > 800 && dimension > 900)
-			document.body.style.overflow = 'hidden'; // locks screen
+		if (dimension > 450) {
+			this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
+			
+			if (window.innerHeight > 800 && dimension > 900)
+				document.body.style.overflow = 'hidden'; // locks screen
+		} else {
+			// mobile sizing
+			this.index.timeLeft.style.fontSize = Math.min(120, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
+		}
 	}
 
 	setLockScreenState(state) {
