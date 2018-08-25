@@ -1,8 +1,20 @@
-const timingEngine = new TimingEngine(),
-	view = new View(),
-	analytics = new Analytics,
-	prefManager = new PrefManager,
-	scheduleBuilder = new ScheduleBuilder();
+import PrefManager from './PrefManager.js';
+import Analytics from './Analytics.js';
+import View from './View.js';
+import RequestManager from './RequestManager.js';
+import Logger from './Logger.js';
+import Storage from './Storage.js';
+import ScheduleBuilder from './ScheduleBuilder.js';
+import TimingEngine from './TimingEngine.js';
+
+import {render, load} from './render.js';
+
+window.timingEngine = new TimingEngine();
+window.view = new View();
+window.analytics = new Analytics;
+window.prefManager = new PrefManager;
+window.scheduleBuilder = new ScheduleBuilder();
+window.RequestManager = RequestManager;
 
 // inital page render
 load(window.location.pathname);
@@ -70,7 +82,7 @@ let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خو
 console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
 
 // has to be global for google
-function googleApiDidLoad() {
+window.googleApiDidLoad = () => {
 
 	gapi.load('auth2', () => {
 		gapi.auth2.init({
@@ -115,4 +127,4 @@ function googleApiDidLoad() {
 		});
 	});
 
-};
+}

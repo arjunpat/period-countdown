@@ -1,6 +1,6 @@
-'use strict';
+import Logger from './Logger.js';
 
-class Analytics {
+export default class Analytics {
 	constructor() {
 		this.sent = false;
 	}

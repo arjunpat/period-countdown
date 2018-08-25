@@ -1,6 +1,10 @@
-'use strict';
+import Logger from './Logger.js';
+import Storage from './Storage.js';
+import RequestManager from './RequestManager.js';
 
-const load = (path, shouldPushHistory = false) => {
+export const render = {};
+
+export function load(path, shouldPushHistory = false) {
 
 	if (shouldPushHistory)
 		window.history.pushState({}, '', path);
@@ -17,8 +21,6 @@ const load = (path, shouldPushHistory = false) => {
 			break;
 	}
 }
-
-const render = {};
 
 render.index = () => {
 	Logger.time('render', 'index');

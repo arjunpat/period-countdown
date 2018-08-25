@@ -1,6 +1,6 @@
-'use strict';
+import Storage from './Storage.js';
 
-class RequestManager {
+export default class RequestManager {
 
 	static ajax(params) {
 

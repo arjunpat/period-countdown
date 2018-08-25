@@ -1,6 +1,6 @@
-'use strict';
+import Storage from './Storage.js';
 
-class PrefManager {
+export default class PrefManager {
 
 	constructor() {
 		this.initVars();

@@ -5,7 +5,8 @@
 node_modules/
 
 # no need for this
-client-dist/
+bundle.js
+bundle.css
 
 .env
 
@@ -15,13 +16,5 @@ package-lock.json
 # extention copy stuff
 extensions/chrome/css/main.css
 extensions/chrome/css/index.css
-
-extensions/chrome/js/TimingEngine.js
-extensions/chrome/js/Canvas.js
-extensions/chrome/js/Logger.js
-extensions/chrome/js/ScheduleBuilder.js
-extensions/chrome/js/PrefManager.js
-extensions/chrome/js/Storage.js
-extensions/chrome/js/Analytics.js
 
 extensions/chrome/images/

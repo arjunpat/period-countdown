@@ -1,6 +1,8 @@
-'use strict';
+import Canvas from './Canvas.js';
+import Logger from './Logger.js';
+import Storage from './Storage.js';
 
-class View {
+export default class View {
 	constructor() {
 
 		Logger.time('View', 'grabbed-elements');

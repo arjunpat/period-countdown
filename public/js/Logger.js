@@ -1,6 +1,6 @@
 'use strict';
 
-var Logger = {
+const Logger = {
 	timings: {},
 	logLevel: 1,
 	log(from, what) {
@@ -58,3 +58,5 @@ var Logger = {
 		this.logLevel = num;
 	}
 }
+
+export default Logger;

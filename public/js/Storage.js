@@ -1,6 +1,6 @@
 'use strict';
 
-class Storage {
+export default class Storage {
 
 	static setDeviceId(x) {
 		if (!x)

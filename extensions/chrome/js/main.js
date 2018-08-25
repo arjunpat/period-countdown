@@ -1,10 +1,22 @@
-const timingEngine = new TimingEngine(),
-	view = new ExtnView(),
-	analytics = new Analytics(),
-	prefManager = new PrefManager(),
-	scheduleBuilder = new ScheduleBuilder(),
-	RequestManager = ExtnRequestManager,
-	URL_PREFIX = 'http://localhost:8080';
+import TimingEngine from '../../../public/js/TimingEngine.js';
+import Analytics from '../../../public/js/Analytics.js';
+import PrefManager from '../../../public/js/PrefManager.js';
+import ScheduleBuilder from '../../../public/js/ScheduleBuilder.js';
+
+import Logger from '../../../public/js/Logger.js';
+import Storage from '../../../public/js/Storage.js';
+window.Logger = Logger;
+
+import View from './ExtnView.js';
+import RequestManager from './ExtnRequestManager.js';
+
+window.timingEngine = new TimingEngine(),
+window.view = new View();
+window.analytics = new Analytics();
+window.prefManager = new PrefManager();
+window.scheduleBuilder = new ScheduleBuilder();
+window.RequestManager = RequestManager;
+window.URL_PREFIX = 'http://localhost:8080';
 
 function showPrefs() {
 	let prefs = prefManager.getAllPreferences();

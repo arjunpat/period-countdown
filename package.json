@@ -4,8 +4,10 @@
 	"description": "A countdown timer for MVHS's complicated schedules.",
 	"main": "server.js",
 	"scripts": {
-		"watch": "nodemon server.js",
-		"build-client": "./build-client.sh"
+		"watch-server": "nodemon server.js",
+		"watch-client": "webpack --watch --config webpack.dev.config.js",
+		"build-client": "webpack --config webpack.prod.config.js",
+		"build-extn": "webpack --config extensions/chrome/webpack.config.js"
 	},
 	"repository": {
 		"type": "git",
@@ -30,6 +32,8 @@
 		"mysql": "^2.16.0"
 	},
 	"devDependencies": {
-		"nodemon": "^1.18.3"
+		"nodemon": "^1.18.3",
+		"webpack": "^4.17.1",
+		"webpack-cli": "^3.1.0"
 	}
 }

@@ -1,6 +1,6 @@
-'use strict';
+import Storage from '../../../public/js/Storage.js';
 
-class ExtnRequestManager {
+export default class ExtnRequestManager {
 
 	static ajax(params) {
 

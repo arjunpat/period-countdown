@@ -1,6 +1,6 @@
-'use strict';
+import Canvas from '../../../public/js/Canvas.js';
 
-class ExtnView {
+export default class ExtnView {
 	constructor() {
 
 		Logger.time('View', 'grabbed-elements');

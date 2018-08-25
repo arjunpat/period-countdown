@@ -1,6 +1,6 @@
-'use strict';
+import Logger from './Logger.js';
 
-class ScheduleBuilder {
+export default class ScheduleBuilder {
 	constructor() {}
 
 	init(presets, calendar) {

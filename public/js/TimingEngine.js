@@ -1,6 +1,6 @@
-'use strict';
+import Logger from './Logger.js';
 
-class TimingEngine {
+export default class TimingEngine {
 
 	constructor() {}
 

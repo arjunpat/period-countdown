@@ -1,35 +1,16 @@
 # client-dist/js cannot exist! delete before running
 # written to run in root dir
 
-# javascript ---------------------------
-mkdir -p client-dist/js
-
-for filename in public/js/*; do
-	if [ $filename != "public/js/main.js" ] && [ $filename != "public/js/render.js" ] && [ $filename != "public/js/sw.js" ]; then
-		cat $filename >> client-dist/js/bundle.js
-	fi
-done
-
-cat public/js/render.js >> client-dist/js/bundle.js
-cat public/js/main.js >> client-dist/js/bundle.js
-cat public/js/sw.js > client-dist/js/sw.js
-
 # css ----------------------------------
-mkdir -p client-dist/css
 
-cat public/css/main.css >> client-dist/css/bundle.css
-cat public/css/index.css >> client-dist/css/bundle.css
-cat public/css/not-found.css >> client-dist/css/bundle.css
-cat public/css/settings.css >> client-dist/css/bundle.css
-cat public/css/modal.css >> client-dist/css/bundle.css
-cat public/css/notifications.css >> client-dist/css/bundle.css
+cat public/css/main.css >> public/css/bundle.css
+cat public/css/index.css >> public/css/bundle.css
+cat public/css/not-found.css >> public/css/bundle.css
+cat public/css/settings.css >> public/css/bundle.css
+cat public/css/modal.css >> public/css/bundle.css
+cat public/css/notifications.css >> public/css/bundle.css
 
 # html & others ------------------------
-
-cat public/index.html > client-dist/index.html
-cat public/extension-connection.html > client-dist/extension-connection.html
-cat public/manifest.json > client-dist/manifest.json
-cp -rf public/images/ client-dist/images/
 
 echo "Things to do:"
 echo "1. Update the <link> and <script> tags in index.html"
