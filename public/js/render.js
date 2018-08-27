@@ -191,15 +191,6 @@ render.settings = () => {
 
 		}
 
-		document.onkeydown = (e) => {
-			// support ctrl/cmd+s as saving
-			if (e.keyCode == 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
-				e.preventDefault();
-				if (view.settings.saveSettingsButton.disabled !== true)
-					view.settings.saveSettingsButton.onclick();
-			}
-		}
-
 		view.settings.themeSelector.onchange = () => {
 			let val = view.getSelectedThemeNum();
 
@@ -269,4 +260,33 @@ render.showPrefs = () => {
 		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
 		view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
 	}
+}
+
+document.onkeydown = (e) => {
+
+	if (window.location.pathname === '/') {
+
+		// support for s to open settings
+		if (e.keyCode === 83) {
+			e.preventDefault();
+			view.index.settingsButton.querySelector('div').click();
+		}
+
+
+	} else if (window.location.pathname === '/settings') {
+
+		// support ctrl/cmd + s as saving
+		if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+			e.preventDefault();
+			if (view.settings.saveSettingsButton.disabled !== true)
+				view.settings.saveSettingsButton.onclick();
+		}
+
+		// support for esc to close
+		if (e.keyCode === 27) {
+			e.preventDefault();
+			view.settings.closeButton.click();
+		}
+	}
+
 }
