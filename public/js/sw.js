@@ -17,17 +17,7 @@ const APP_VERSION = '0.4.2'; // needs to match index.html
 const FILES = [
 	`/`,
 	`/settings`,
-	`/js/Analytics.js?v=${APP_VERSION}`,
-	`/js/Canvas.js?v=${APP_VERSION}`,
-	`/js/Logger.js?v=${APP_VERSION}`,
-	`/js/main.js?v=${APP_VERSION}`,
-	`/js/PrefManager.js?v=${APP_VERSION}`,
-	`/js/render.js?v=${APP_VERSION}`,
-	`/js/RequestManager.js?v=${APP_VERSION}`,
-	`/js/ScheduleBuilder.js?v=${APP_VERSION}`,
-	`/js/Storage.js?v=${APP_VERSION}`,
-	`/js/TimingEngine.js?v=${APP_VERSION}`,
-	`/js/View.js?v=${APP_VERSION}`,
+	`/js/bundle.js?v=${APP_VERSION}`,
 	`/css/index.css?v=${APP_VERSION}`,
 	`/css/main.css?v=${APP_VERSION}`,
 	`/css/modal.css?v=${APP_VERSION}`,
@@ -59,7 +49,7 @@ var Logger = {
 
 this.oninstall = (e) => {
 	e.waitUntil(caches.open(APP_VERSION).then(cache => {
-		return cache.addAll(FILES);
+		return Promise.all(FILES.map(url => cache.add(url)));
 	}));
 
 	Logger.log('installed v' + APP_VERSION);
