@@ -9,7 +9,7 @@ export default class Analytics {
 
 		if (this.sent) return;
 
-		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || typeof this.newLoad !== 'boolean')
+		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || typeof this.newLoad !== 'boolean' || !this.version)
 			return;
 
 		this.sent = true;
@@ -44,7 +44,9 @@ export default class Analytics {
 			dns: speedInfo.domainLookupEnd - speedInfo.domainLookupStart,
 			ttfb: speedInfo.responseStart - speedInfo.navigationStart,
 			tti: speedInfo.domInteractive - speedInfo.domLoading
-		};
+		}
+
+		data.version = this.version;
 
 		if (this.registeredTo)
 			data.registered_to = this.registeredTo;
@@ -90,6 +92,11 @@ export default class Analytics {
 
 	setRegisteredTo(x) {
 		this.registeredTo = x;
+		this.a();
+	}
+
+	setVersion(x) {
+		this.version = x;
 		this.a();
 	}
 

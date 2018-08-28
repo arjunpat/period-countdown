@@ -72,6 +72,10 @@ this.onfetch = (e) => {
 	let requestUrl = new URL(e.request.url);
 	let pathname = requestUrl.pathname + requestUrl.search;
 
+	if (requestUrl.pathname === '/js/bundle.js' && requestUrl.search !== '?v=' + APP_VERSION) {
+		return e.respondWith(new Response('window.location.reload()')); // forces an update
+	}
+
 	e.respondWith(
 		fetch(e.request).then(res => {
 			let resClone = res.clone();

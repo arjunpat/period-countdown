@@ -58,7 +58,14 @@ RequestManager.init().then(data => {
 // makes sure that back and forwards buttons work
 window.onpopstate = () => load(window.location.pathname);
 
-// sends analytics
+// analytics stuff
+
+// gets version
+for (let node of document.querySelectorAll('script')) {
+	if (node.src.includes('/js/bundle.js?v='))
+		analytics.setVersion(node.src.substring(node.src.indexOf('?v=') + 3));
+}
+
 analytics.setPathname(window.location.pathname);
 
 // add service workers
@@ -80,6 +87,7 @@ if (window.chrome && !window.localStorage.chrome_extension_installed) {
 // welcome, cause what else is the computer going to do?
 let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خوش آمدی', 'Bienvenue', 'желанный', 'Bem vinda', 'Benvenuto', 'Gratus mihi venis', 'Welkom', 'ברוך הבא', 'ようこそ'][Math.floor(Math.random() * 13)];
 console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
+console.log('https://github.com/arjunpat/bell-countdown');
 
 // has to be global for google
 window.googleApiDidLoad = () => {

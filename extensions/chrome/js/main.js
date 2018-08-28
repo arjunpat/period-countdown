@@ -17,6 +17,7 @@ window.prefManager = new PrefManager();
 window.scheduleBuilder = new ScheduleBuilder();
 window.RequestManager = RequestManager;
 window.URL_PREFIX = 'http://localhost:8080';
+window.VERSION = '2.0.4';
 
 function showPrefs() {
 	let prefs = prefManager.getAllPreferences();
@@ -75,6 +76,7 @@ chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 
 		let analyticsTime = timingEngine.getRemainingTime();
 
+		analytics.setVersion(VERSION);
 		analytics.setPeriod(analyticsTime.period);
 		analytics.setPeriodName(prefManager.getPeriodName(analyticsTime.period) || analyticsTime.period);
 		analytics.setTheme(prefManager.getThemeNum());
