@@ -73,7 +73,7 @@ this.onfetch = (e) => {
 	let pathname = requestUrl.pathname + requestUrl.search;
 
 	if (requestUrl.pathname === '/js/bundle.js' && requestUrl.search !== '?v=' + APP_VERSION) {
-		return e.respondWith(new Response('window.location.reload()')); // forces an update
+		return e.respondWith(new Response('window.location.reload(true)')); // forces an update
 	}
 
 	e.respondWith(
