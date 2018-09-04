@@ -3,7 +3,7 @@ const path = require('path');
 // polyfill: https://github.com/babel/babel/issues/7254
 
 module.exports = {
-	entry: path.resolve(__dirname, 'js/main.js'),
+	entry: ['whatwg-fetch', path.resolve(__dirname, 'js/main.js')],
 	output: {
 		filename: 'bundle.js',
 		path: path.resolve(__dirname, 'js/')
