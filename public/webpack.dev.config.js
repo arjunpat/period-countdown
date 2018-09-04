@@ -9,9 +9,6 @@ module.exports = {
 	module: {
 		rules: []
 	},
-	resolve: {
-		extensions: []
-	},
 	devtool: 'inline-source-map',
 	mode: 'development'
 }

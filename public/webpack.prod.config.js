@@ -1,5 +1,7 @@
 const path = require('path');
 
+// polyfill: https://github.com/babel/babel/issues/7254
+
 module.exports = {
 	entry: path.resolve(__dirname, 'js/main.js'),
 	output: {
@@ -7,10 +9,15 @@ module.exports = {
 		path: path.resolve(__dirname, 'js/')
 	},
 	module: {
-		rules: []
-	},
-	resolve: {
-		extensions: []
+		rules: [
+			{
+				test: /\.js$/,
+				exclude: /(node_modules|bower_components)/,
+				use: {
+					loader: 'babel-loader'
+				}
+			}
+		]
 	},
 	mode: 'production'
 }
