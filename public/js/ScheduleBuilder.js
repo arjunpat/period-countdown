@@ -32,8 +32,7 @@ export default class ScheduleBuilder {
 		if (!this.isInitialized())
 			throw 'has not been initialized';
 
-		if (!this.free || Object.keys(this.free).length === 0)
-			return JSON.parse(this.presets);
+		let freePeriodsExist = (!this.free || Object.keys(this.free).length === 0) ? false : true;
 
 		Logger.time('ScheduleBuilder', 'parse-time');
 
@@ -46,7 +45,7 @@ export default class ScheduleBuilder {
 			let schedule = presets[key].s;
 
 			// removes free periods at the beginning of the day
-			while (schedule.length > 0) {
+			while (schedule.length > 0 && freePeriodsExist) {
 				let event = schedule[0];
 				if (typeof event.n === 'number' && !this.free[event.n])
 					break;
@@ -55,7 +54,7 @@ export default class ScheduleBuilder {
 			}
 
 			// add all passing periods
-			for (let i = 0; i < schedule.length; i++)
+			for (let i = 0; i < schedule.length; i++) {
 				if (typeof schedule[i].n === 'number') {
 					schedule.splice(i, 0, {
 						n: 'Passing',
@@ -63,22 +62,26 @@ export default class ScheduleBuilder {
 					});
 					i++;
 				}
+			}
 
-			let lastTime;
-			for (let i = schedule.length - 2; i >= 0; i--) { // subtract 2 because last is always free
-				let event = schedule[i];
-				if (typeof event.n === 'number')
-					if (this.free[event.n]) {
-						lastTime = event;
+			// removes free periods at end of day
+			if (freePeriodsExist) {
+				let lastTime;
+				for (let i = schedule.length - 2; i >= 0; i--) { // subtract 2 because last is always free
+					let event = schedule[i];
+					if (typeof event.n === 'number')
+						if (this.free[event.n]) {
+							lastTime = event;
+							schedule.splice(i, 1);
+						} else {
+							if (lastTime)
+								schedule[schedule.length - 1].f = lastTime.f;
+							break;
+						}
+					else {
 						schedule.splice(i, 1);
-					} else {
-						if (lastTime)
-							schedule[schedule.length - 1].f = lastTime.f;
-						break;
+						lastTime = event;
 					}
-				else {
-					schedule.splice(i, 1);
-					lastTime = event;
 				}
 			}
 
