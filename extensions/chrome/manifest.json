@@ -1,9 +1,9 @@
 {
 	"manifest_version": 2,
-	"name": "MVHS Bell Countdown",
+	"name": "Period Countdown",
 	"short_name": "Countdown",
 	"version": "2.0.4",
-	"description": "A Chrome Extension that accompanies the MVHS Bell Countdown (bell.mvhs.club) website.",
+	"description": "A Chrome extension that accompanies the Period Countdown (periods.io) website.",
 	"browser_action": {
 		"default_popup": "popup.html",
 		"default_icon": "/images/1024.png"
@@ -17,6 +17,7 @@
 	"externally_connectable": {
 		"matches": [
 			"https://bell.mvhs.club/*",
+			"https://periods.io/*"
 			"*://localhost:*/*"
 		]
 	}

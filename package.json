@@ -1,7 +1,7 @@
 {
-	"name": "bell-countdown",
+	"name": "period-countdown",
 	"version": "2.0.4",
-	"description": "A countdown timer for MVHS's complicated schedules.",
+	"description": "A simple way to keep track of the remaining time in class",
 	"main": "server.js",
 	"scripts": {
 		"watch:server": "nodemon server.js",
@@ -11,7 +11,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/arjunpat/bell-countdown.git"
+		"url": "git+https://github.com/arjunpat/period-countdown.git"
 	},
 	"keywords": [
 		"countdown",
@@ -19,14 +19,15 @@
 		"schedule",
 		"mvhs",
 		"school",
-		"mvla"
+		"mvla",
+		"period"
 	],
 	"author": "Arjun Patrawala",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/arjunpat/bell-countdown/issues"
+		"url": "https://github.com/arjunpat/period-countdown/issues"
 	},
-	"homepage": "https://github.com/arjunpat/bell-countdown#readme",
+	"homepage": "https://github.com/arjunpat/period-countdown#readme",
 	"dependencies": {
 		"dotenv": "^6.0.0",
 		"mysql": "^2.16.0"

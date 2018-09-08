@@ -243,7 +243,7 @@ render.settings = () => {
 render.notFound = () => {
 	Logger.time('render', 'not-found');
 
-	document.title = 'Not Found - Bell Countdown';
+	document.title = 'Not Found';
 	view.switchTo('not-found');
 	view.hidePreloader();
 

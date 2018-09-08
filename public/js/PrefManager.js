@@ -6,10 +6,10 @@ export default class PrefManager {
 		this.initVars();
 
 		this.themeOptions = {
-			completed: ['#fee581','#262626','#d9d9d9','#262626','#262626','#aae6e6'],
-			background: ['#fccb0b','#000000','#fff','#000','#000','#bdffff'],
-			text: ['#000','#fccb0b','#000','#7cfc00','#ff3b9e', '#000'],
-			name: ['MVHS Light','MVHS Dark','Grey','Alien Green','Purple', 'Light Blue']
+			completed: 	['#fee561','#262626','#d9d9d9','#262626','#262626','#aae6e6','#262626','#e29100','#7bce89'],
+			background: ['#fccb0b','#000000','#ffffff','#000000','#000000','#bdffff','#000000','#ffa300','#90e69e'],
+			text: 		['#000000','#fccb0b','#000000','#7cfc00','#ff3b9e','#000000','#ff0000','#000000','#000000']
+			// Yellow, Yellow on Black, Grey, Green on Black, Purple on Black, Light Blue, Red on Black, Orange, Green
 		}
 
 		if (Storage.prefsExist())
@@ -21,7 +21,7 @@ export default class PrefManager {
 		this.period_names = {};
 		this.google_account = {
 			signed_in: false
-		};
+		}
 	}
 
 	getAllPreferences() {
@@ -38,7 +38,7 @@ export default class PrefManager {
 			period_names: this.period_names,
 			google_account: this.google_account,
 			free_periods
-		};
+		}
 	}
 
 	setAllPreferences(values) {

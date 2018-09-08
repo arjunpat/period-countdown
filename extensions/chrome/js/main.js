@@ -50,6 +50,7 @@ Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(va
 	showPrefs();
 	mainLoop();
 	view.hidePreloader();
+	Storage.clearAll();
 });
 
 chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {

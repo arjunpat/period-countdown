@@ -1,11 +1,11 @@
 {
-	"name": "MVHS Bell Countdown",
+	"name": "Period Countdown",
 	"short_name": "Countdown",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#ffffff",
 	"theme_color": "#fccb0b",
-	"description": "A countdown timer for MVHS's complicated schedules.",
+	"description": "A simple way to keep track of the remaining time in class",
 	"lang": "en-US",
 	"orientation": "portrait-primary",
 	"icons": [

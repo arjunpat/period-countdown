@@ -1,2 +1,2 @@
-# bell-countdown
-A countdown timer for MVHS's complicated schedules.
+# period-countdown
+A simple way to keep track of the remaining time in class

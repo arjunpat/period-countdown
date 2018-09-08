@@ -1,5 +1,5 @@
 /**
- * bell-countdown
+ * period-countdown
  * Copyright(c) 2018 Arjun Patrawala
  * MIT Licensed
  */

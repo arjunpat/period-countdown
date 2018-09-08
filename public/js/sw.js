@@ -47,6 +47,32 @@ var Logger = {
 	}
 }
 
+/*function isNewerVersion(a, b) {
+	try {
+		a = a.split('.').join('');
+		b = b.split('.').join('');
+
+		let length = Math.max(a.length, b.length);
+
+		while (a.length < length) {
+			a += '0';
+		}
+
+		while (b.length < length) {
+			b += '0';
+		}
+
+		a = parseInt(a);
+		b = parseInt(b);
+
+		return a > b;
+
+	} catch (e) {
+		return false;
+	}
+
+}*/
+
 this.oninstall = (e) => {
 	e.waitUntil(caches.open(APP_VERSION).then(cache => {
 		return Promise.all(FILES.map(url => cache.add(url)));
@@ -72,9 +98,14 @@ this.onfetch = (e) => {
 	let requestUrl = new URL(e.request.url);
 	let pathname = requestUrl.pathname + requestUrl.search;
 
-	if (requestUrl.pathname === '/js/bundle.js' && requestUrl.search !== '?v=' + APP_VERSION) {
-		return e.respondWith(new Response('window.location.reload(true)')); // forces an update
-	}
+	/*if (requestUrl.pathname === '/js/bundle.js') {
+		let version = requestUrl.search.substring(3);
+
+		if (version !== APP_VERSION && !isNewerVersion(version, APP_VERSION)) {
+			
+			return e.respondWith(new Response('window.location.reload(true)')); // forces an update
+		}
+	}*/
 
 	e.respondWith(
 		fetch(e.request).then(res => {

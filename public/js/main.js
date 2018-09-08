@@ -87,7 +87,23 @@ if (window.chrome && !window.localStorage.chrome_extension_installed) {
 // welcome, cause what else is the computer going to do?
 let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خوش آمدی', 'Bienvenue', 'желанный', 'Bem vinda', 'Benvenuto', 'Gratus mihi venis', 'Welkom', 'ברוך הבא', 'ようこそ'][Math.floor(Math.random() * 13)];
 console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
-console.log('https://github.com/arjunpat/bell-countdown');
+console.log('https://github.com/arjunpat/period-countdown');
+
+
+// for the move to periods.io
+setTimeout(() => {
+	if (!window.localStorage.period_io_changes) {
+		view.showModal('modal-periods-io');
+		window.localStorage.period_io_changes = 'true';
+
+		// force them to read for 5 seconds
+		document.querySelector('#modal-footer').style.display = 'none';
+		setTimeout(() => {
+			document.querySelector('#modal-footer').style.display = 'block';
+		}, 5000);
+	}
+}, 2000);
+
 
 // has to be global for google
 window.googleApiDidLoad = () => {
