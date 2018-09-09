@@ -10,7 +10,9 @@ console.log('You have 5 seconds to exit out of this script before irreversible d
 console.log('We recommend you build right after cloning the latest version of this repo.');
 
 setTimeout(() => {
-
+	console.log('THE BUILDING HAS STARTED');
+	
+	
 	fs.writeFileSync('./public/css/bundle.css', '');
 	fs.appendFileSync('./public/css/bundle.css', fs.readFileSync('./public/css/main.css').toString());
 	fs.appendFileSync('./public/css/bundle.css', fs.readFileSync('./public/css/index.css').toString());
@@ -45,28 +47,40 @@ setTimeout(() => {
 		JSON.stringify(chromeManifest)
 	);
 
+	// index.html
+	fs.writeFileSync(
+		'./public/index.html',
+		fs.readFileSync('./public/index.html').toString().replace(/\?v=.*"/g, '?v=' + version + '"')
+	);
+
+
 	exec('npm run build:client', (err, out) => {
 		console.log(out);
-		exec('npm run build:extn', (err, out) => {
-			console.log(out);
+		exec('./scripts/update-extension.sh', () => {
+			exec('npm run build:extn', (err, out) => {
+				console.log(out);
 
-			// delete everything
+				// delete everything; hella cleanup
 
-			exec("find public/css/ -type f -not -name 'bundle.css' -delete", () => {});
+				exec("find public/css/ -type f -not -name 'bundle.css' -delete", () => {});
 
-			// delete all js other than sw.js and bundle.js
-			exec("find public/js/ -type f -not -name 'bundle.js' -not -name 'sw.js' -delete", () => {});
+				// delete all js other than sw.js and bundle.js
+				exec("find public/js/ -type f -not -name 'bundle.js' -not -name 'sw.js' -delete", () => {});
+				exec("find extensions/chrome/js -type f -not -name 'bundle.js' -delete", () => {});
 
-			exec('rm -rf .git', () => {});
-			exec('rm .gitignore && rm .babelrc && rm .env_sample && rm LICENSE && rm README.md', () => {});
-			// remove .babelrc
+				// removing git to make sure no person pushes a built repo
+				exec('rm -rf .git', () => {});
+				exec('rm -rf scripts', () => {});
+				exec('rm .gitignore && rm .babelrc && rm .env_sample && rm LICENSE && rm README.md && rm public/webpack.dev.config.js && rm public/webpack.prod.config.js && rm extensions/chrome/webpack.config.js', () => {});
+				// remove .babelrc
 
 
-			console.log('THINGS TO DO:');
-			console.log('1. Update the <link> and <script> tags in index.html');
-			console.log('2. Copy Google fonts into the css file');
-			console.log('3. Remove elements inside of div#root and add them in js');
-			console.log('4. Minify html, css, js');
+				console.log('THINGS TO DO:');
+				console.log('1. Update the <link> and <script> tags in index.html');
+				console.log('2. Copy Google fonts into the css file');
+				console.log('3. Remove elements inside of div#root and add them in js');
+				console.log('4. Minify html, css, js');
+			});
 		});
 	})
 
