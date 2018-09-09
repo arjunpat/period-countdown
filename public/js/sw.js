@@ -1,5 +1,5 @@
 const APP_VERSION = '0.4.2'; // needs to match index.html
-/*const FILES = [
+const FILES = [
 	`/`,
 	`/settings`,
 	`/js/bundle.js?v=${APP_VERSION}`,
@@ -10,11 +10,11 @@ const APP_VERSION = '0.4.2'; // needs to match index.html
 	`/manifest.json?v=${APP_VERSION}`,
 	'/api/presets',
 	'/api/calendar'
-];*/
+];
 
 
 // dev
-const FILES = [
+/*const FILES = [
 	`/`,
 	`/settings`,
 	`/js/bundle.js?v=${APP_VERSION}`,
@@ -31,7 +31,7 @@ const FILES = [
 	`/manifest.json?v=${APP_VERSION}`,
 	'/api/presets',
 	'/api/calendar'
-]
+]*/
 
 var Logger = {
 	logLevel: 1,

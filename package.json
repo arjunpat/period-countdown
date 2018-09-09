@@ -1,13 +1,14 @@
 {
 	"name": "period-countdown",
-	"version": "2.0.4",
+	"version": "2.1.0",
 	"description": "A simple way to keep track of the remaining time in class",
 	"main": "server.js",
 	"scripts": {
 		"watch:server": "nodemon server.js",
 		"watch:client": "webpack --watch --config public/webpack.dev.config.js",
 		"build:client": "webpack --config public/webpack.prod.config.js",
-		"build:extn": "webpack --config extensions/chrome/webpack.config.js"
+		"build:extn": "webpack --config extensions/chrome/webpack.config.js",
+		"build": "node scripts/build-all.js"
 	},
 	"repository": {
 		"type": "git",
