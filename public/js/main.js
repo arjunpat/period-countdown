@@ -90,21 +90,6 @@ console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padd
 console.log('https://github.com/arjunpat/period-countdown');
 
 
-// for the move to periods.io
-setTimeout(() => {
-	if (!window.localStorage.period_io_changes) {
-		view.showModal('modal-periods-io');
-		window.localStorage.period_io_changes = 'true';
-
-		// force them to read for 5 seconds
-		document.querySelector('#modal-footer').style.display = 'none';
-		setTimeout(() => {
-			document.querySelector('#modal-footer').style.display = 'block';
-		}, 5000);
-	}
-}, 2000);
-
-
 // has to be global for google
 window.googleApiDidLoad = () => {
 

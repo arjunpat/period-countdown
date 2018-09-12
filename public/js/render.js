@@ -182,7 +182,7 @@ render.settings = () => {
 						elem.innerHTML = currentText;
 						view.settingChangesSaved();
 						render.showPrefs();
-					}, 2e3);
+					}, 500);
 				else
 					view.showModal('modal-server-down');
 			}).catch(err => {

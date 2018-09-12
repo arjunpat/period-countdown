@@ -10,7 +10,7 @@
 	top: 50%;
 	margin: -200px 0 0 -175px;
 	transition: opacity .4s ease, transform .2s ease !important;
-	border-radius: 8px;
+	border-radius: 4px;
 	overflow: hidden;
 	transform: translateY(-500px);
 }
@@ -29,7 +29,7 @@
 }
 
 #modal #modal-footer {
-	background: #c8c8c8;
+	background: #d2d2d2;
 	padding: 20px;
 }
 

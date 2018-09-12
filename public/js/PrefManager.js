@@ -5,12 +5,32 @@ export default class PrefManager {
 	constructor() {
 		this.initVars();
 
-		this.themeOptions = {
-			completed: 	['#fee561','#262626','#d9d9d9','#262626','#262626','#aae6e6','#262626','#e29100','#7bce89'],
-			background: ['#fccb0b','#000000','#ffffff','#000000','#000000','#bdffff','#000000','#ffa300','#90e69e'],
-			text: 		['#000000','#fccb0b','#000000','#7cfc00','#ff3b9e','#000000','#ff0000','#000000','#000000']
-			// Yellow, Yellow on Black, Grey, Green on Black, Purple on Black, Light Blue, Red on Black, Orange, Green
-		}
+		this.themeOptions = [
+			// [background, completed, text]
+			['#fccb0b', '#fee561', '#000000'], // Yellow
+			['#000000', '#262626', '#fccb0b'], // Yellow on Black
+			['#ffffff', '#d9d9d9', '#000000'], // Grey
+			[ // Blue-green gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#40e078', '#40c8e6']
+				},
+				'rgba(0, 0, 0, .18)',
+				'#000000'
+			],
+			[ // Pink-blue gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#FC5C7D', '#6A82FB']
+				},
+				'rgba(0, 0, 0, .18)',
+				'#000000'
+			],
+			['#bdffff', '#aae6e6', '#000000'], // Light Blue
+			['#000000', '#262626', '#ff2a00'], // Red on Black
+			['#ffa300', '#e29100', '#000000'], // Orange
+			['#90e69e', '#7bce89', '#000000'], // Green
+		]
 
 		if (Storage.prefsExist())
 			this.setAllPreferences(Storage.getPrefs());
@@ -115,14 +135,14 @@ export default class PrefManager {
 	getThemeFromNum(num) {
 		return {
 			num,
-			completed: this.themeOptions.completed[num],
-			background: this.themeOptions.background[num],
-			text: this.themeOptions.text[num]
+			background: this.themeOptions[num][0],
+			completed: this.themeOptions[num][1],
+			text: this.themeOptions[num][2]
 		}
 	}
 
 	isValidThemeNum(num) {
-		if (this.themeOptions.text[num])
+		if (this.themeOptions[num])
 			return true;
 		return false;
 	}

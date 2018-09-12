@@ -34,6 +34,7 @@ export default class View {
 			themeExamples: document.getElementsByClassName('theme-example'),
 			saveSettingsButton: document.getElementById('save-settings-button'),
 			foundBug: document.getElementById('found-bug'),
+			gradientOnly: document.getElementById('gradient-only'),
 			saved: true
 		}
 		this.modal = {
@@ -77,9 +78,13 @@ export default class View {
 		}
 
 		if (showVisuals) {
-			if ((percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval) || (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99)) {
+			if (
+				(percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
+				|| (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99)
+				|| (!this.animationInterval && Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 5 && window.performance.now() > 5000)
+			) {
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
-			} else if (!this.canvas.animationInterval || Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 2) {
+			} else if (!this.canvas.animationInterval) {
 				this.canvas.animate(Math.floor(percent_completed) / 100);
 			}
 
@@ -115,7 +120,12 @@ export default class View {
 		this.canvas.updateColors(values.theme.background, values.theme.completed);
 		this.index.mainCanvasOverlay.style.color = values.theme.text;
 		this.index.settingsButton.querySelector('div').style.background = values.theme.text;
-		this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
+
+		if (typeof values.theme.background === 'object') { // if gradient background
+			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background.stops[values.theme.background.stops.length - 1];
+		} else {
+			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
+		}
 
 		this.showThemeColorExamples(values.theme);
 		this.settings.themeSelector.value = values.theme.num;
@@ -205,10 +215,24 @@ export default class View {
 	}
 
 	showThemeColorExamples(theme) {
-		this.settings.themeExamples[0].style.background = theme.completed;
-		this.settings.themeExamples[1].style.background = theme.background;
-		this.settings.themeExamples[0].style.color = theme.text;
-		this.settings.themeExamples[1].style.color = theme.text;
+
+		if (typeof theme.background === 'object') {
+			for (let input of this.settings.themeExamples) {
+				input.style.display = 'none';
+			}
+			this.settings.gradientOnly.style.display = 'block';
+
+		} else {
+			for (let input of this.settings.themeExamples) {
+				input.style.display = 'block';
+			}
+			this.settings.gradientOnly.style.display = 'none';
+			
+			this.settings.themeExamples[0].style.background = theme.completed;
+			this.settings.themeExamples[1].style.background = theme.background;
+			this.settings.themeExamples[0].style.color = theme.text;
+			this.settings.themeExamples[1].style.color = theme.text;
+		}
 	}
 
 	switchTo(screen) {

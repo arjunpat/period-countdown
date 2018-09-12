@@ -74,7 +74,25 @@ export default class Canvas {
 	redraw() { this.draw(this.props.decimalCompleted); }
 
 	updateColors(background, completed) {
-		this.props.colors.background = background;
+
+		if (typeof background === 'object') {
+			/*
+				{
+					type: 'linear_gradient',
+					stops: ['#fccb0b','#fc590b']
+				}
+			*/
+
+			let grd = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
+			for (let i = 0; i < background.stops.length; i++) {
+				grd.addColorStop(i, background.stops[i]);
+			}
+
+			this.props.colors.background = grd;
+		} else {
+			this.props.colors.background = background;
+		}
+
 		this.props.colors.completed = completed;
 		this.redraw();
 	}
