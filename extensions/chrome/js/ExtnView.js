@@ -82,7 +82,12 @@ export default class ExtnView {
 		this.canvas.updateColors(values.theme.background, values.theme.completed);
 		this.index.mainCanvasOverlay.style.color = values.theme.text;
 		this.index.settingsButton.querySelector('div').style.background = values.theme.text;
-		this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
+
+		if (typeof values.theme.background === 'object') {
+			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background.stops[values.theme.background.stops.length - 1];
+		} else {
+			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
+		}
 
 		if (values.google_account.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';

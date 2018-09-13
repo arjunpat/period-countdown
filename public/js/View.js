@@ -81,7 +81,6 @@ export default class View {
 			if (
 				(percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
 				|| (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99)
-				|| (!this.animationInterval && Math.abs(percent_completed - (100 * this.canvas.props.decimalAnimatingTowards)) > 5 && window.performance.now() > 5000)
 			) {
 				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
 			} else if (!this.canvas.animationInterval) {

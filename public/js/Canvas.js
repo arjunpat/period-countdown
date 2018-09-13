@@ -83,14 +83,11 @@ export default class Canvas {
 				}
 			*/
 
-			let grd = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
-			for (let i = 0; i < background.stops.length; i++) {
-				grd.addColorStop(i, background.stops[i]);
-			}
-
-			this.props.colors.background = grd;
+			this.props.colors.background = this.parseGradient(background);
+			this.props.colors.gradient = background;
 		} else {
 			this.props.colors.background = background;
+			this.props.colors.gradient = undefined;
 		}
 
 		this.props.colors.completed = completed;
@@ -100,7 +97,19 @@ export default class Canvas {
 	dimension() {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
+
+		if (this.props.colors.gradient)
+			this.props.colors.background = this.parseGradient(this.props.colors.gradient);
+
 		this.redraw();
+	}
+
+	parseGradient(obj) {
+		let grd = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
+		for (let i = 0; i < obj.stops.length; i++)
+			grd.addColorStop(i, obj.stops[i]);
+		
+		return grd;
 	}
 
 }

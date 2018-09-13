@@ -24,7 +24,7 @@ setTimeout(() => {
 	// service worker version and minification
 	fs.writeFileSync(
 		'./public/js/sw.js',
-		(`const APP_VERSION = '${version}';//` + fs.readFileSync('./public/js/sw.js').toString()).replace(/\/\*(\*(?!\/)|[^*])*\*\//g, '').replace(/\/\/[^\n\r]+?(?:\*\)|[\n\r])/g, '').replace(/[\n\t\r]/g, '')
+		(`const APP_VERSION = '${version}';//` + fs.readFileSync('./public/js/sw.js').toString()).replace(/\/\*(\*(?!\/)|[^*])*\*\//g, '').replace(/\/\/[^\n\r]+?(?:\*\)|[\n\r])/g, '').replace(/[\n\t\r]/g, '').replace(/this\./g, '\nthis.')
 	);
 
 	// extension connection
