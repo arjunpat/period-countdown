@@ -32,8 +32,6 @@ RequestManager.init().then(data => {
 		analytics.setRegisteredTo(data.email);
 	}
 
-	analytics.setNewLoad(!!data.device_id);
-
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeNum());
@@ -84,13 +82,25 @@ if (window.chrome && !window.localStorage.chrome_extension_installed) {
 	}, 3000);
 }
 
+// make sure computer update to pref changes on other computers
+window.setInterval(() => {
+	RequestManager.init().then(data => {
+
+		if (data.email) {
+			prefManager.setGoogleAccount(data);
+			render.showPrefs();
+		}
+		
+	});
+}, 5 * 60 * 1000 /* five minutes */);
+
 // welcome, cause what else is the computer going to do?
-let val = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خوش آمدی', 'Bienvenue', 'желанный', 'Bem vinda', 'Benvenuto', 'Gratus mihi venis', 'Welkom', 'ברוך הבא', 'ようこそ'][Math.floor(Math.random() * 13)];
-console.log(`%c${val}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
+let greeting = ['Welcome', '欢迎', 'स्वागत हे', 'Bienvenido', 'خوش آمدی', 'Bienvenue', 'желанный', 'Bem vinda', 'Benvenuto', 'Gratus mihi venis', 'Welkom', 'ברוך הבא', 'ようこそ'][Math.floor(Math.random() * 13)];
+console.log(`%c${greeting}`, 'background: #fccb0b; color: #000; font-size: 34px; padding: 6px 20px; font-family: \'sans-serif\'; border-radius: 4px;');
 console.log('https://github.com/arjunpat/period-countdown');
 
 
-// has to be global for google
+// has to be global for google api
 window.googleApiDidLoad = () => {
 
 	gapi.load('auth2', () => {

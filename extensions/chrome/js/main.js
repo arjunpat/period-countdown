@@ -82,7 +82,6 @@ chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 		analytics.setPeriodName(prefManager.getPeriodName(analyticsTime.period) || analyticsTime.period);
 		analytics.setTheme(prefManager.getThemeNum());
 		analytics.setPathname('extn');
-		analytics.setNewLoad(false);
 		analytics.setDeviceId(Storage.getDeviceId());
 	});
 });

@@ -150,7 +150,7 @@ export default class View {
 
 	}
 
-	showPeriodInput(element, isFree, value = null) {
+	showPeriodInput(element, isFree, value) {
 		let num = element.id.substring(6, 7);
 		let label = element.nextElementSibling;
 

@@ -225,7 +225,7 @@ render.settings = () => {
 
 				for (let elem of view.settings.inputs) {
 					let res = prefManager.isFreePeriodGivenContext(names, view.getIdFromInputElem(elem));
-					view.showPeriodInput(elem, res);
+					view.showPeriodInput(elem, res, null);
 				}
 
 			}
