@@ -30,7 +30,7 @@ setTimeout(() => {
 	// extension connection
 	fs.writeFileSync(
 		'./public/extension-connection.html',
-		fs.readFileSync('./public/extension-connection.html').toString().replace('ckplaaeibdiaacanpnlbfpbnfahpfecg', prodChromeExtn)
+		fs.readFileSync('./public/extension-connection.html').toString().replace('dplbnpbafckhkoeoplmjchidbmlilpnm', prodChromeExtn)
 	);
 
 	// update extension with version and host

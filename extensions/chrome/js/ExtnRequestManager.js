@@ -104,6 +104,15 @@ export default class ExtnRequestManager {
 		}).then(res => res.json);
 	}
 
+	static sendLeaveAnalytics() {
+		if (navigator.sendBeacon) {
+			navigator.sendBeacon(URL_PREFIX + '/api/v1/write/close_analytics', JSON.stringify({
+				device_id: Storage.getDeviceId(),
+				data: {}
+			}));
+		}
+	}
+
 	static sendError(data) {
 		console.error(data);
 		return this.ajax({

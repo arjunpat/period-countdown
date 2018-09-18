@@ -90,3 +90,8 @@ document.write(`<iframe src="${URL_PREFIX}/extension-connection.html?v=2" style=
 
 view.index.settingsButton.onclick = () => window.open(URL_PREFIX + '/settings');
 view.index.googleSignin.querySelector('button').onclick = () => window.open(URL_PREFIX);
+
+window.onbeforeunload = () => {
+	// only sometimes will this actually be called
+	analytics.leaving();
+}
