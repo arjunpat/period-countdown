@@ -56,7 +56,9 @@ RequestManager.init().then(data => {
 // makes sure that back and forwards buttons work
 window.onpopstate = () => load(window.location.pathname);
 
-// analytics stuff
+window.onbeforeunload = () => {
+	analytics.leaving();
+}
 
 // gets version
 for (let node of document.querySelectorAll('script')) {

@@ -119,6 +119,15 @@ export default class RequestManager {
 		}).then(res => res.json);
 	}
 
+	static sendLeaveAnalytics() {
+		if (navigator.sendBeacon) {
+			navigator.sendBeacon('/api/v1/write/close_analytics', JSON.stringify({
+				device_id: Storage.getDeviceId(),
+				data: {}
+			}));
+		}
+	}
+
 	static updatePreferences(period_names, theme) {
 		return this.ajax({
 			url: '/api/v1/update/preferences',

@@ -94,6 +94,11 @@ export default class Analytics {
 		this.a();
 	}
 
+	leaving() {
+		if (this.sent)
+			RequestManager.sendLeaveAnalytics();
+	}
+
 	sleep(seconds) {
 		return new Promise((resolve, reject) => setTimeout(() => resolve(), seconds * 1e3));
 	}

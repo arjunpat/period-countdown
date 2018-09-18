@@ -104,18 +104,16 @@ render.index = () => {
 		}, 500);
 	}
 
-	window.onresize = () => {
+	function resizeScreen() {
 		view.updateScreenDimensions();
 		view.dimensionCanvas();
 	}
 
+	window.onresize = resizeScreen;
+	window.screen.orientation.onchange = resizeScreen;
+
 	view.index.settingsButton.querySelector('div').onclick = () => {
 		load('/settings', true);
-
-		if (!prefManager.isLoggedIn()) {
-			view.addGoogleApi();
-			setTimeout(() => view.showModal('log-in-first'), 2000);
-		}
 	}
 
 	// login button
@@ -150,6 +148,11 @@ render.settings = () => {
 	// animation
 	view.settings.title.classList.remove('underlineAnimation');
 	setTimeout(() => view.settings.title.classList.add('underlineAnimation'), 20);
+
+	if (!prefManager.isLoggedIn()) {
+		view.addGoogleApi();
+		setTimeout(() => view.showModal('log-in-first'), 2000);
+	}
 
 	// form stuff
 	if (view.settings.closeButton.onclick === null) {
