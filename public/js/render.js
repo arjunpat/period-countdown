@@ -110,7 +110,6 @@ render.index = () => {
 	}
 
 	window.onresize = resizeScreen;
-	window.screen.orientation.onchange = resizeScreen;
 
 	view.index.settingsButton.querySelector('div').onclick = () => {
 		load('/settings', true);
