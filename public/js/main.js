@@ -87,7 +87,16 @@ window.setInterval(() => {
 		}
 		
 	});
-}, 5 * 60 * 1000 /* five minutes */);
+}, 5 * 60 * 1000 /* 5 minutes */);
+
+
+window.setInterval(() => {
+	RequestManager.getLatestVersion().then(version => {
+		if (version !== getVersion()) {
+			view.notify('Update available: <a onclick="window.location.reload(true)">click</a> to install');
+		}
+	});
+}, 30 * 60 * 1000 /* 30 minutes */);
 
 // welcome, cause what else is the computer going to do?
 greeting();

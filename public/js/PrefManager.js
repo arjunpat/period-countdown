@@ -16,7 +16,7 @@ export default class PrefManager {
 					stops: ['#40e078', '#40c8e6']
 				},
 				'rgba(0, 0, 0, .18)',
-				'#000000'
+				'#000'
 			],
 			[ // Pink-blue gradient
 				{
@@ -24,11 +24,18 @@ export default class PrefManager {
 					stops: ['#FC5C7D', '#6A82FB']
 				},
 				'rgba(0, 0, 0, .18)',
-				'#000000'
+				'#000'
 			],
 			['#bdffff', '#aae6e6', '#000000'], // Light Blue
 			['#000000', '#262626', '#ff2a00'], // Red on Black
-			['#ffa300', '#e29100', '#000000'], // Orange
+			[
+				{
+					type: 'linear_gradient',
+					stops: ['#F3904F', '#3B4371']
+				},
+				'rgba(0, 0, 0, .18)',
+				'#000'
+			], // Sunrise Gradient
 			['#90e69e', '#7bce89', '#000000'], // Green
 		]
 

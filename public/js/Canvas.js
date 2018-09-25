@@ -39,12 +39,12 @@ export default class Canvas {
 		window.cancelAnimationFrame(this.animationInterval); // just for fun!
 		delete this.animationInterval;
 
-		let reg = this.createSineAnimationRegression(this.props.decimalCompleted, to);
+		let reg = this.createSineRegression(this.props.decimalCompleted, to);
 
-		let startTime = Date.now();
+		let startTime = window.performance.now();
 
 		let func = () => {
-			let secondsPassed = (Date.now() - startTime) / 1e3;
+			let secondsPassed = (window.performance.now() - startTime) / 1e3;
 
 			this.draw(reg(secondsPassed));
 
@@ -63,7 +63,7 @@ export default class Canvas {
 
 	}
 
-	createSineAnimationRegression(from, to) {
+	createSineRegression(from, to) {
 		let amp = (to - from) / 2,
 			verticleShift = (from + to) / 2,
 			b = (2 * Math.PI) / (2 * this.props.animationLength);
@@ -107,7 +107,7 @@ export default class Canvas {
 	parseGradient(obj) {
 		let grd = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
 		for (let i = 0; i < obj.stops.length; i++)
-			grd.addColorStop(i, obj.stops[i]);
+			grd.addColorStop(i / (obj.stops.length - 1), obj.stops[i]);
 		
 		return grd;
 	}

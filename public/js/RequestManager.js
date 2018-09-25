@@ -150,6 +150,12 @@ export default class RequestManager {
 		});
 	}
 
+	static getLatestVersion() {
+		return this.ajax({
+			url: '/api/version'
+		}).then(res => res.json.data.version);
+	}
+
 	static getPresets() {
 		return this.ajax({
 			url: '/api/presets'
