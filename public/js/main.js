@@ -77,19 +77,6 @@ if (window.chrome && !window.localStorage.chrome_extension_installed) {
 	}, 3000);
 }
 
-// make sure computer update to pref changes on other computers
-window.setInterval(() => {
-	RequestManager.init().then(data => {
-
-		if (data.email) {
-			prefManager.setGoogleAccount(data);
-			render.showPrefs();
-		}
-		
-	});
-}, 5 * 60 * 1000 /* 5 minutes */);
-
-
 window.setInterval(() => {
 	RequestManager.getLatestVersion().then(version => {
 		if (version !== getVersion()) {
