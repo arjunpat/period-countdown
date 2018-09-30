@@ -1,4 +1,5 @@
-import Storage from './Storage.js';
+import Storage from './Storage';
+import RequestManager from './RequestManager';
 
 export default class PrefManager {
 
@@ -146,6 +147,16 @@ export default class PrefManager {
 			completed: this.themeOptions[num][1],
 			text: this.themeOptions[num][2]
 		}
+	}
+
+	async isASchool(school) {
+		if (!this.schools)
+			this.schools = await RequestManager.getSchools();
+
+
+		// todo. optimize this
+		// use the prefmanager school functionality
+		return this.schools.some(a => a === school);
 	}
 
 	isValidThemeNum(num) {

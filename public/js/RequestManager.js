@@ -156,15 +156,21 @@ export default class RequestManager {
 		}).then(res => res.json.data.version);
 	}
 
-	static getPresets() {
+	static getSchools() {
 		return this.ajax({
-			url: '/api/presets'
+			url: '/api/schools'
 		}).then(res => res.json);
 	}
 
-	static getCalendar() {
+	static getSchoolMeta(school) {
 		return this.ajax({
-			url: '/api/calendar'
+			url: `/api/school/${school}`
+		}).then(res => res.json);
+	}
+
+	static getSchoolSchedule(school) {
+		return this.ajax({
+			url: `/api/schedule/${school}`
 		}).then(res => res.json);
 	}
 

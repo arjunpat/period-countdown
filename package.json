@@ -1,6 +1,6 @@
 {
 	"name": "period-countdown",
-	"version": "2.1.8",
+	"version": "2.2.0",
 	"description": "A simple way to keep track of the remaining time in class",
 	"main": "server.js",
 	"scripts": {
@@ -34,13 +34,13 @@
 		"mysql": "^2.16.0"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.1.0",
+		"@babel/core": "^7.1.2",
 		"@babel/polyfill": "^7.0.0",
 		"@babel/preset-env": "^7.1.0",
-		"babel-loader": "^8.0.2",
+		"babel-loader": "^8.0.4",
 		"nodemon": "^1.18.4",
-		"webpack": "^4.19.1",
-		"webpack-cli": "^3.1.0",
+		"webpack": "^4.20.2",
+		"webpack-cli": "^3.1.2",
 		"whatwg-fetch": "^2.0.4"
 	}
 }

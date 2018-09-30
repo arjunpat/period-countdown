@@ -55,7 +55,7 @@ export default class View {
 	updateScreen(time, showVisuals) {
 
 		let returnVal = false;
-		let {percent_completed, hours, minutes, seconds, period_name, day_type} = time;
+		let {percentCompleted, hours, minutes, seconds, periodName, dayType} = time;
 
 		// make time human readable
 		seconds = padNum(seconds);
@@ -68,10 +68,7 @@ export default class View {
 
 		timeString += `${minutes}:${seconds}`;
 
-		if (typeof period_name === 'number')
-			period_name = formatPeriodNumber(period_name);
-
-		let documentTitle = `${timeString} \u2022 ${period_name}`;
+		let documentTitle = `${timeString} \u2022 ${periodName}`;
 		if (this.currentValues.documentTitle !== documentTitle) {
 			document.title = documentTitle;
 			this.currentValues.documentTitle = documentTitle;
@@ -79,28 +76,28 @@ export default class View {
 
 		if (showVisuals) {
 			if (
-				(percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
-				|| (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99)
+				(percentCompleted < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
+				|| (percentCompleted > 99 && this.canvas.props.decimalCompleted >= .99)
 			) {
-				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
+				this.canvas.draw(percentCompleted / 100); // more specific at the beginning or end
 			} else if (!this.canvas.animationInterval) {
-				this.canvas.animate(Math.floor(percent_completed) / 100);
+				this.canvas.animate(Math.floor(percentCompleted) / 100);
 			}
 
 
-			if (this.currentValues.dayTypeText !== day_type) {
-				this.index.dayType.innerText = day_type;
-				this.currentValues.dayTypeText = day_type;
+			if (this.currentValues.dayTypeText !== dayType) {
+				this.index.dayType.innerText = dayType;
+				this.currentValues.dayTypeText = dayType;
 				returnVal = true;
 			}
 
-			if (this.currentValues.currentPeriodText !== period_name) {
-				this.index.currentPeriodText.innerText = period_name;
+			if (this.currentValues.currentPeriodText !== periodName) {
+				this.index.currentPeriodText.innerText = periodName;
 
 				// animation
 				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
-				this.currentValues.currentPeriodText = period_name;
+				this.currentValues.currentPeriodText = periodName;
 				returnVal = true;
 			}
 
@@ -398,13 +395,6 @@ export default class View {
 }
 
 // helper functions
-function getOrdinalNumber(n) {
-	return n + (n > 0 ? ["th", "st", "nd", "rd"][n > 3 && 21 > n || n % 10 > 3 ? 0 : n % 10] : "");
-}
-
-function formatPeriodNumber(n) {
-	return getOrdinalNumber(n) + ' Period';
-}
 
 function padNum(n) {
 	if (n < 10)

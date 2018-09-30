@@ -17,6 +17,7 @@ window.analytics = new Analytics();
 window.prefManager = new PrefManager();
 window.scheduleBuilder = new ScheduleBuilder();
 window.RequestManager = RequestManager;
+window.render = render;
 
 // has to global fro google
 window.googleApiDidLoad = googleApiDidLoad(render);
