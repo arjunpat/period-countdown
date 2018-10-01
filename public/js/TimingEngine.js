@@ -24,11 +24,11 @@ export default class TimingEngine {
 	loadNewSchedule(presets, calendar, weeklyPresets) {
 		this.checkInit();
 
-		Logger.time('TimingEngine', 'new-preset');
+		Logger.time('TimingEngine', 'new-schedule');
 
 		this._init(presets, calendar, weeklyPresets);
 
-		Logger.timeEnd('TimingEngine', 'new-preset');
+		Logger.timeEnd('TimingEngine', 'new-schedule');
 	}
 
 	_init(presets, calendar, weeklyPresets) {

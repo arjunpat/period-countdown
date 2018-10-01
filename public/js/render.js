@@ -17,7 +17,7 @@ export const render = new class {
 
 }
 
-export function load(path, shouldPushHistory = false) {
+export function router(path, shouldPushHistory = false) {
 
 	if (shouldPushHistory) {
 		window.history.pushState({}, '', path);
@@ -29,9 +29,9 @@ export function load(path, shouldPushHistory = false) {
 	// path -> /
 	if (layers.length === 0) {
 		if (render.schoolId) {
-			return load(`/${render.schoolId}`, true);
+			return router(`/${render.schoolId}`, true);
 		}
-		return load('/mvhs', true);
+		return router('/mvhs', true);
 	}
 
 	// path -> /:school_id
@@ -98,6 +98,16 @@ render.stopLoop = () => {
 	}
 }
 
+render.showPrefs = () => {
+	let prefs = prefManager.getAllPreferences();
+	view.applyPreferencesToElements(prefs);
+	scheduleBuilder.setFreePeriods(prefs.free_periods);
+
+	if (scheduleBuilder.isNew() || render.newSchool) {
+		render.initTimer();
+	}
+}
+
 
 render.initTimer = async () => {
 
@@ -116,6 +126,7 @@ render.initTimer = async () => {
 	}
 
 	render.stopLoop();
+	render.newSchool = false;
 	render.startLoop();
 
 	Logger.timeEnd('render', 'full timer init');
@@ -134,6 +145,9 @@ render.index = () => {
 	render.initTimer().then(() => {
 		render.showPrefs();
 		view.hidePreloader();
+
+		Logger.timeEnd('render', 'index');
+
 	}).catch(err => {
 		view.switchTo('error');
 
@@ -168,7 +182,7 @@ render.index = () => {
 	window.onresize = resizeScreen;
 
 	view.index.settingsButton.querySelector('div').onclick = () => {
-		load('/settings', true);
+		router('/settings', true);
 	}
 
 	// login button
@@ -191,13 +205,12 @@ render.index = () => {
 	}
 }
 
+render.notFound = () => {
+	Logger.time('render', 'not-found');
 
-render.showPrefs = () => {
-	let prefs = prefManager.getAllPreferences();
-	view.applyPreferencesToElements(prefs);
-	scheduleBuilder.setFreePeriods(prefs.free_periods);
+	document.title = 'Not Found';
+	view.switchTo('not-found');
+	view.hidePreloader();
 
-	if (scheduleBuilder.isNew() || render.newSchool) {
-		render.initTimer();
-	}
+	Logger.timeEnd('render', 'not-found');
 }

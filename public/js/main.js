@@ -7,7 +7,7 @@ import Storage from './Storage.js';
 import ScheduleBuilder from './ScheduleBuilder.js';
 import TimingEngine from './TimingEngine.js';
 
-import { render, load } from './render.js';
+import { render, router } from './render.js';
 import { addServiceWorker, googleApiDidLoad, greeting, getVersion } from './extras.js';
 
 
@@ -17,13 +17,14 @@ window.analytics = new Analytics();
 window.prefManager = new PrefManager();
 window.scheduleBuilder = new ScheduleBuilder();
 window.RequestManager = RequestManager;
+window.router = router;
 window.render = render;
 
 // has to global fro google
 window.googleApiDidLoad = googleApiDidLoad(render);
 
 // inital page render
-load(window.location.pathname);
+router(window.location.pathname);
 
 RequestManager.init().then(data => {
 
@@ -60,7 +61,7 @@ RequestManager.init().then(data => {
 });
 
 // makes sure that back and forwards buttons work
-window.onpopstate = () => load(window.location.pathname);
+window.onpopstate = () => router(window.location.pathname);
 
 window.onbeforeunload = () => {
 	analytics.leaving();
