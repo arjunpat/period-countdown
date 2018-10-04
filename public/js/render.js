@@ -1,6 +1,6 @@
-import Logger from './Logger.js';
-import Storage from './Storage.js';
-import RequestManager from './RequestManager.js';
+import Logger from './Logger';
+import Storage from './Storage';
+import RequestManager from './RequestManager';
 
 export const render = new class {
 	constructor() {
@@ -40,7 +40,7 @@ export function router(path, shouldPushHistory = false) {
 		if (layers[0] === 'settings')
 			return render.settings();
 
-		return prefManager.isASchool(layers[0]).then(val => {
+		return prefManager.isASchoolId(layers[0]).then(val => {
 			if (val) {
 				render.setSchoolId(layers[0]);
 				return render.index();

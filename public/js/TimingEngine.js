@@ -1,4 +1,4 @@
-import Logger from './Logger.js';
+import Logger from './Logger';
 
 function clone(obj) {
 	return JSON.parse(JSON.stringify(obj));

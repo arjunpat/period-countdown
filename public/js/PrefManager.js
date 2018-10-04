@@ -149,14 +149,18 @@ export default class PrefManager {
 		}
 	}
 
-	async isASchool(school) {
-		if (!this.schools)
+	async isASchoolId(schoolId) {
+		if (!this.schools) {
 			this.schools = await RequestManager.getSchools();
+			this.schools.sort((a, b) => {
+				return a.id > b.id;
+			});
+		}
 
 
-		// todo. optimize this
+		// TODO: optimize this
 		// use the prefmanager school functionality
-		return this.schools.some(a => a === school);
+		return this.schools.some(a => a.id === schoolId);
 	}
 
 	isValidThemeNum(num) {

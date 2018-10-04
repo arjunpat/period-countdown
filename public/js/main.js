@@ -1,14 +1,14 @@
-import PrefManager from './PrefManager.js';
-import Analytics from './Analytics.js';
-import View from './View.js';
-import RequestManager from './RequestManager.js';
-import Logger from './Logger.js';
-import Storage from './Storage.js';
-import ScheduleBuilder from './ScheduleBuilder.js';
-import TimingEngine from './TimingEngine.js';
+import PrefManager from './PrefManager';
+import Analytics from './Analytics';
+import View from './View';
+import RequestManager from './RequestManager';
+import Logger from './Logger';
+import Storage from './Storage';
+import ScheduleBuilder from './ScheduleBuilder';
+import TimingEngine from './TimingEngine';
 
-import { render, router } from './render.js';
-import { addServiceWorker, googleApiDidLoad, greeting, getVersion } from './extras.js';
+import { render, router } from './render';
+import { addServiceWorker, googleApiDidLoad, greeting, getVersion } from './extras';
 
 
 window.timingEngine = new TimingEngine();

@@ -1,6 +1,6 @@
-import Canvas from './Canvas.js';
-import Logger from './Logger.js';
-import Storage from './Storage.js';
+import Canvas from './Canvas';
+import Logger from './Logger';
+import Storage from './Storage';
 
 export default class View {
 	constructor() {
@@ -187,8 +187,8 @@ export default class View {
 				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== currentDate)
 					continue;
 
-				if (typeof p.n === 'number') {
-					p.n = periodNames[p.n] || formatPeriodNumber(p.n);
+				if (scheduleBuilder.isPeriod(p.n)) {
+					p.n = periodNames[p.n]
 				}
 
 				html += `

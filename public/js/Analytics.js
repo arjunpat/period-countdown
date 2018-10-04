@@ -1,4 +1,4 @@
-import Logger from './Logger.js';
+import Logger from './Logger';
 
 export default class Analytics {
 	constructor() {
