@@ -84,7 +84,7 @@ export default class ScheduleBuilder {
 		return {
 			presets: this.generatePresets(),
 			...JSON.parse(this.schedule)
-		};
+		}
 	}
 
 	setFreePeriods(obj) {

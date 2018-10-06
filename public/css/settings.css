@@ -140,7 +140,4 @@
 	#settings .third:nth-child(3) {
 		border-left: 2px solid #ccc;
 	}
-	#settings .third:nth-child(2) {
-		margin-top: 71px;
-	}
 }

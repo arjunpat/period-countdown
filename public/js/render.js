@@ -205,6 +205,49 @@ render.index = () => {
 	}
 }
 
+
+render.settings = () => {
+	Logger.time('render', 'settings');
+
+	// webpage display
+	document.title = 'Settings';
+	view.switchTo('settings');
+
+	// animation
+	view.settings.title.classList.remove('underlineAnimation');
+	setTimeout(() => view.settings.title.classList.add('underlineAnimation'), 20);
+
+	if (!prefManager.isLoggedIn()) {
+		view.addGoogleApi();
+		setTimeout(() => view.showModal('log-in-first'), 2000);
+	}
+
+	if (view.settings.closeButton.onclick === null) {
+		
+		view.settings.closeButton.onclick = () => {
+			if (view.settings.saved) {
+				load('/', true);
+			} else {
+				window.scrollTo(0, document.body.scrollHeight);
+				view.showModal('unsaved-setting-changes');
+				document.querySelector('.unsaved-setting-changes > a').onclick = () => {
+					load('/', true);
+				}
+			}
+		}
+
+
+
+	}
+
+
+	render.showPrefs();
+	view.hidePreloader();
+
+	Logger.timeEnd('render', 'settings');
+}
+
+
 render.notFound = () => {
 	Logger.time('render', 'not-found');
 

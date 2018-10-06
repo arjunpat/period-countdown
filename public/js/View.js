@@ -188,7 +188,7 @@ export default class View {
 					continue;
 
 				if (scheduleBuilder.isPeriod(p.n)) {
-					p.n = periodNames[p.n]
+					p.n = periodNames[p.n] || p.n;
 				}
 
 				html += `
