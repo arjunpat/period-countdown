@@ -34,7 +34,7 @@ export default class ExtnRequestManager {
 
 	static init() {
 		return this.ajax({
-			url: '/api/v1/init',
+			url: '/api/v2/init',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -101,7 +101,7 @@ export default class ExtnRequestManager {
 
 	static sendAnalytics(data) {
 		return this.ajax({
-			url: '/api/v1/write/analytics',
+			url: '/api/v2/write/analytics',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -112,7 +112,7 @@ export default class ExtnRequestManager {
 
 	static sendLeaveAnalytics() {
 		if (navigator.sendBeacon) {
-			navigator.sendBeacon(URL_PREFIX + '/api/v1/write/close_analytics', JSON.stringify({
+			navigator.sendBeacon(URL_PREFIX + '/api/v2/write/close_analytics', JSON.stringify({
 				device_id: Storage.getDeviceId(),
 				data: {}
 			}));
@@ -122,7 +122,7 @@ export default class ExtnRequestManager {
 	static sendError(data) {
 		console.error(data);
 		return this.ajax({
-			url: '/api/v1/write/error',
+			url: '/api/v2/write/error',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),

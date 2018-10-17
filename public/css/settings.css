@@ -137,7 +137,7 @@
 }
 
 @media (min-width: 750px) {
-	#settings .third:nth-child(3) {
+	#settings .third:nth-child(2) {
 		border-left: 2px solid #ccc;
 	}
 }

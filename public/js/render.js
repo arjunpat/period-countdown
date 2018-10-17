@@ -4,15 +4,21 @@ import RequestManager from './RequestManager';
 
 export const render = new class {
 	constructor() {
-		this.newSchool = false;
-		this.loopHasStarted = false;
+		this.state = {
+			newSchool: false,
+			loopHasStarted: false
+		}
 	}
 
 	setSchoolId(id) {
-		if (this.schoolId !== id) {
-			this.schoolId = id;
-			this.newSchool = true;
+		if (this.state.schoolId !== id) {
+			this.state.schoolId = id;
+			this.state.newSchool = true;
 		}
+	}
+
+	init(schoolId) {
+		this.state.schoolId = schoolId;
 	}
 
 }
@@ -28,10 +34,7 @@ export function router(path, shouldPushHistory = false) {
 
 	// path -> /
 	if (layers.length === 0) {
-		if (render.schoolId) {
-			return router(`/${render.schoolId}`, true);
-		}
-		return router('/mvhs', true);
+		return router(`/${render.state.schoolId}`, true);
 	}
 
 	// path -> /:school_id
@@ -40,14 +43,11 @@ export function router(path, shouldPushHistory = false) {
 		if (layers[0] === 'settings')
 			return render.settings();
 
-		return prefManager.isASchoolId(layers[0]).then(val => {
-			if (val) {
-				render.setSchoolId(layers[0]);
-				return render.index();
-			}
-			
-			return render.notFound();
-		});
+		if (prefManager.isASchoolId(layers[0])) {
+			render.setSchoolId(layers[0]);
+			return render.index();
+		}
+		return render.notFound();
 	}
 
 	// 404
@@ -55,18 +55,18 @@ export function router(path, shouldPushHistory = false) {
 }
 
 render.startLoop = () => {
-	if (render.loopHasStarted)
+	if (render.state.loopHasStarted)
 		return;
 
 	render.loop(true);
 
-	render.loopHasStarted = true;
+	render.state.loopHasStarted = true;
 }
 
 render.loop = (firstRun = false) => {
 
-	if (window.location.pathname !== `/${render.schoolId}`)
-		return render.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
+	if (window.location.pathname !== `/${render.state.schoolId}`)
+		return render.state.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
 
 	let time = timingEngine.getRemainingTime();
 	time.periodName = prefManager.getPeriodName(time.period) || time.period;
@@ -76,34 +76,41 @@ render.loop = (firstRun = false) => {
 		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
 
 		window.onresize();
-		return render.timeoutId = window.setTimeout(render.loop, 50);
+		return render.state.timeoutId = window.setTimeout(render.loop, 50);
 	}
 
 	if (!document.hidden || document.hasFocus()) {
 		if (view.updateScreen(time, true)) {
 			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
 		}
-		return render.timeoutId = window.setTimeout(render.loop, 50);
+		return render.state.timeoutId = window.setTimeout(render.loop, 50);
 	}
 
 	view.updateScreen(time, false);
 
-	return render.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
+	return render.state.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
 }
 
 render.stopLoop = () => {
-	if (typeof render.timeoutId !== "undefined") {
-		window.clearTimeout(render.timeoutId);
-		render.loopHasStarted = false;
+	if (typeof render.state.timeoutId !== 'undefined') {
+		window.clearTimeout(render.state.timeoutId);
+		render.state.loopHasStarted = false;
 	}
 }
 
 render.showPrefs = () => {
 	let prefs = prefManager.getAllPreferences();
-	view.applyPreferencesToElements(prefs);
-	scheduleBuilder.setFreePeriods(prefs.free_periods);
 
-	if (scheduleBuilder.isNew() || render.newSchool) {
+	let periods = render.state.school && render.state.school.periods;
+	if (!periods) {
+		periods = [];
+	}
+	view.updateViewWithState(prefs, { periods });
+	
+
+	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
+
+	if (scheduleBuilder.isNew() || render.state.newSchool) {
 		render.initTimer();
 	}
 }
@@ -111,8 +118,9 @@ render.showPrefs = () => {
 
 render.initTimer = async () => {
 
-	let { schoolId } = render;
+	let { schoolId } = render.state;
 	let [ school, schedule ] = await Promise.all([RequestManager.getSchoolMeta(schoolId), RequestManager.getSchoolSchedule(schoolId)]);
+	render.state.school = school;
 
 	Logger.time('render', 'full timer init');
 
@@ -126,7 +134,7 @@ render.initTimer = async () => {
 	}
 
 	render.stopLoop();
-	render.newSchool = false;
+	render.state.newSchool = false;
 	render.startLoop();
 
 	Logger.timeEnd('render', 'full timer init');
@@ -138,9 +146,11 @@ render.index = () => {
 	Logger.time('render', 'index');
 
 	view.switchTo('index');
+	document.body.style.overflow = 'hidden';
 
-	if (render.loopHasStarted)
-		return;
+	if (render.state.loopHasStarted) {
+		return Logger.timeEnd('render', 'index');
+	}
 
 	render.initTimer().then(() => {
 		render.showPrefs();
@@ -212,6 +222,7 @@ render.settings = () => {
 	// webpage display
 	document.title = 'Settings';
 	view.switchTo('settings');
+	document.body.style.overflow = '';
 
 	// animation
 	view.settings.title.classList.remove('underlineAnimation');
@@ -226,17 +237,42 @@ render.settings = () => {
 		
 		view.settings.closeButton.onclick = () => {
 			if (view.settings.saved) {
-				load('/', true);
+				router('/', false);
 			} else {
 				window.scrollTo(0, document.body.scrollHeight);
 				view.showModal('unsaved-setting-changes');
 				document.querySelector('.unsaved-setting-changes > a').onclick = () => {
-					load('/', true);
+					router('/', false);
 				}
 			}
 		}
 
+		view.settings.saveSettingsButton.onclick = () => {
+			let elem = view.settings.saveSettingsButton;
+			let currentText = elem.innerHTML;
+			elem.innerHTML = 'Saving...';
+			elem.disabled = 'true';
 
+			let school = view.settings.schoolSelector.getSelection();
+			let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
+			let theme = view.getSelectedThemeNum();
+
+			prefManager.setPreferences(periodNames, theme, school).then(res => {
+				if (res) {
+					setTimeout(() => {
+						elem.disabled = '';
+						elem.innerHTML = currentText;
+						view.settingChangesSaved();
+						render.showPrefs();
+					}, 500);
+				} else {
+					view.showModal('modal-server-down');
+				}
+			}).catch(err => {
+				view.showModal('modal-server-down');
+			});
+
+		}
 
 	}
 

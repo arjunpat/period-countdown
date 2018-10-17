@@ -1,6 +1,9 @@
-import Canvas from './Canvas';
 import Logger from './Logger';
 import Storage from './Storage';
+
+import Canvas from './components/Canvas';
+import SchoolSelector from './components/SchoolSelector';
+import PeriodNameEnterArea from './components/PeriodNameEnterArea';
 
 export default class View {
 	constructor() {
@@ -35,6 +38,8 @@ export default class View {
 			saveSettingsButton: document.getElementById('save-settings-button'),
 			foundBug: document.getElementById('found-bug'),
 			gradientOnly: document.getElementById('gradient-only'),
+			schoolSelector: new SchoolSelector(document.getElementById('school-selector')),
+			periodNameEnterArea: new PeriodNameEnterArea(document.getElementById('period-name-enter-area')),
 			saved: true
 		}
 		this.modal = {
@@ -111,64 +116,36 @@ export default class View {
 		return returnVal;
 	}
 
-	applyPreferencesToElements(values) {
+	updateViewWithState(preferences, meta) {
 		// theme stuff
-		this.canvas.updateColors(values.theme.background, values.theme.completed);
-		this.index.mainCanvasOverlay.style.color = values.theme.text;
-		this.index.settingsButton.querySelector('div').style.background = values.theme.text;
+		this.canvas.updateColors(preferences.theme.background, preferences.theme.completed);
+		this.index.mainCanvasOverlay.style.color = preferences.theme.text;
+		this.index.settingsButton.querySelector('div').style.background = preferences.theme.text;
 
-		if (typeof values.theme.background === 'object') { // if gradient background
-			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background.stops[values.theme.background.stops.length - 1];
+		if (typeof preferences.theme.background === 'object') { // if gradient background
+			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.background.stops[preferences.theme.background.stops.length - 1];
 		} else {
-			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
+			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.background;
 		}
 
-		this.showThemeColorExamples(values.theme);
-		this.settings.themeSelector.value = values.theme.num;
+		this.showThemeColorExamples(preferences.theme);
+		this.settings.themeSelector.value = preferences.theme.num;
 
-		if (values.google_account.signed_in) {
+		this.settings.schoolSelector.setSchoolOptions(preferences.schoolOptions);
+		this.settings.periodNameEnterArea.setPeriods(meta.periods);
+
+		if (preferences.googleAccount.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
-			this.index.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
+			this.index.googleSignin.querySelector('div > img').src = preferences.googleAccount.profile_pic + '?sz=70';
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
+
+			this.settings.periodNameEnterArea.setDisabled(false);
+			this.settings.periodNameEnterArea.setPreferences(preferences.periodNames);
+			this.settings.schoolSelector.setSelection(preferences.school);
 
 			this.settings.themeSelector.disabled = '';
 			this.settings.saveSettingsButton.disabled = '';
 			this.settingChangesSaved();
-
-			for (let element of this.settings.inputs)
-				element.disabled = '';
-		}
-
-		if (values.period_names)
-			for (let element of this.settings.inputs) {
-				let num = this.getIdFromInputElem(element);
-				this.showPeriodInput(element, values.free_periods[num], values.period_names[num])
-			}
-
-	}
-
-	showPeriodInput(element, isFree, value) {
-		let num = element.id.substring(6, 7);
-		let label = element.nextElementSibling;
-
-		element.classList.remove('free-period');
-		label.innerHTML = label.innerHTML.replace(' - removed from schedule', '');
-
-		if (isFree) {
-			element.classList.add('free-period');
-			if (!label.innerHTML.includes(' - removed from schedule'))
-				label.innerHTML += ' - removed from schedule';
-		}
-
-		if (value === null)
-			return;
-
-		if (typeof value === 'string') {
-			element.value = value;
-			element.classList.add('has-value');
-		} else {
-			element.value = '';
-			element.classList.remove('has-value');
 		}
 
 	}
@@ -257,9 +234,6 @@ export default class View {
 
 		if (dimension > 450) {
 			this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
-			
-			if (window.innerHeight > 800 && dimension > 900)
-				document.body.style.overflow = 'hidden'; // locks screen
 		} else {
 			// mobile sizing
 			this.index.timeLeft.style.fontSize = Math.min(120, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
@@ -351,15 +325,6 @@ export default class View {
 		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
 	}
 
-	getValuesFromAllPeriodInputs() {
-		let names = {};
-		for (let element of this.settings.inputs) {
-			let num = this.getIdFromInputElem(element);
-			names[num] = element.value.trim();
-		}
-
-		return names;
-	}
 
 	notify(html) {
 		this.notifications.querySelector('span').innerHTML = html;
@@ -386,8 +351,6 @@ export default class View {
 			ele.innerText = d;
 		}
 	}
-
-	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }
 
 	getSelectedThemeNum() { return parseInt(this.settings.themeSelector.value); }
 

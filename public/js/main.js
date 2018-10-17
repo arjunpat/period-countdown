@@ -20,8 +20,11 @@ window.RequestManager = RequestManager;
 window.router = router;
 window.render = render;
 
-// has to global fro google
+// has to global for google
 window.googleApiDidLoad = googleApiDidLoad(render);
+
+// inital preferences before starting timer
+render.init(prefManager.getSchoolId());
 
 // inital page render
 router(window.location.pathname);
@@ -73,7 +76,7 @@ analytics.setPathname(window.location.pathname);
 
 //addServiceWorker('/sw.js');
 
-if (window.chrome && !window.localStorage.chrome_extension_installed) {
+if (window.chrome && !Storage.chromeExtensionInstalled()) {
 	setTimeout(() => {
 		view.notify('Install the <a style="display: inline;" target="_blank" href="https://www.mvhs.club/u/bell-extn">Chrome Extension</a>');
 	}, 3000);

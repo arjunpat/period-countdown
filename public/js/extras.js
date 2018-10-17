@@ -44,6 +44,7 @@ export function googleApiDidLoad(render) {
 
 					render.showPrefs();
 				}).catch(err => {
+					console.log(err);
 					view.showModal('modal-server-down');
 				});
 			}
@@ -69,4 +70,12 @@ export function getVersion() {
 		if (node.src.includes('/js/bundle.js?v='))
 			return node.src.substring(node.src.indexOf('?v=') + 3);
 	}
+}
+
+export function isFreePeriod(name) {
+	if (typeof name !== 'string')
+		return false;
+	
+	name = name.trim().toLowerCase();
+	return ['free', 'none', 'nothin'].some(a => name.includes(a));
 }
