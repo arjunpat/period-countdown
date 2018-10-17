@@ -95,3 +95,12 @@ window.onbeforeunload = () => {
 	// only sometimes will this actually be called
 	analytics.leaving();
 }
+
+
+RequestManager.getLatestVersion().then(version => {
+	if (version !== VERSION) {
+		view.hidePreloader();
+		view.switchTo('update-extn');
+		document.querySelector('a[href="chrome://extensions"]').onclick = () => chrome.tabs.create({url: 'chrome://extensions'});
+	}
+});

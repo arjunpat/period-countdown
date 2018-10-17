@@ -124,6 +124,20 @@ export default class ExtnView {
 	}
 
 	dimensionCanvas() { this.canvas.dimension(); }
+
+	switchTo(id) {
+		let screens = this.root.children;
+
+		for (let i = 0; i < screens.length; i++) {
+			if (screens[i].id === id) {
+				screens[i].style.display = 'block';
+				setTimeout(() => { screens[i].style.opacity = '1'; }, 20);
+			} else {
+				screens[i].style.opacity = '0';
+				setTimeout(() => { screens[i].style.display = 'none'; }, 200);
+			}
+		}
+	}
 }
 
 // helper functions

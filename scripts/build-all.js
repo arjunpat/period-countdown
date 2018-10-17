@@ -20,6 +20,8 @@ setTimeout(() => {
 	fs.appendFileSync('./public/css/bundle.css', fs.readFileSync('./public/css/settings.css').toString());
 	fs.appendFileSync('./public/css/bundle.css', fs.readFileSync('./public/css/modal.css').toString());
 	fs.appendFileSync('./public/css/bundle.css', fs.readFileSync('./public/css/notifications.css').toString());
+	fs.appendFileSync('./public/css/bundle.css', fs.readFileSync('./public/css/error.css').toString());
+
 
 	// service worker version and minification
 	fs.writeFileSync(

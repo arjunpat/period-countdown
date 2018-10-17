@@ -49,6 +49,12 @@ export default class ExtnRequestManager {
 		});
 	}
 
+	static getLatestVersion() {
+		return this.ajax({
+			url: '/api/version'
+		}).then(res => res.json.data.version);
+	}
+
 	static getTime() {
 		return this.ajax({
 			url: '/api/time'
