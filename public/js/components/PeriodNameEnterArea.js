@@ -29,6 +29,8 @@ export default class PeriodNameEnterArea extends Component {
 
 			html += '</div>';
 
+		} else {
+			return '<span style="font-size: 20px;">Loading...</span>';
 		}
 
 		return html;

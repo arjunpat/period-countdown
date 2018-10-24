@@ -232,6 +232,7 @@ render.index = () => {
 			window.location.reload();
 		});
 	}
+
 }
 
 
@@ -251,10 +252,6 @@ render.settings = () => {
 		view.addGoogleApi();
 		setTimeout(() => view.showModal('log-in-first'), 2000);
 	}
-
-	render.loadSchool(render.state.schoolId).then(() => {
-		render.showPrefs();
-	});
 
 	if (view.settings.closeButton.onclick === null) {
 		
@@ -296,6 +293,30 @@ render.settings = () => {
 			});
 
 		}
+
+		view.settings.themeSelector.onchange = () => {
+			let val = view.getSelectedThemeNum();
+
+			if (val !== prefManager.getThemeNum())
+				view.settingChangesNotSaved();
+
+			view.showThemeColorExamples(prefManager.getThemeFromNum(val));
+		}
+
+		view.settings.schoolSelector.onchange = () => {
+			let val = view.settings.schoolSelector.getSelection();
+
+			if (val !== prefManager.getSchoolId())
+				view.settingChangesNotSaved();
+
+			view.settings.periodNameEnterArea.setPeriods(null);
+			render.loadSchool(val).then(() => {
+				view.settings.periodNameEnterArea.setPeriods(render.state.schoolData[val].school.periods);
+			});
+
+		}
+
+		view.settings.foundBug.onclick = () => view.showModal('modal-found-bug');
 
 	}
 

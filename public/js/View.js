@@ -86,7 +86,7 @@ export default class View {
 			) {
 				this.canvas.draw(percentCompleted / 100); // more specific at the beginning or end
 			} else if (!this.canvas.animationInterval) {
-				this.canvas.animate(Math.floor(percentCompleted) / 100);
+				this.canvas.animate(Math.floor(percentCompleted) / 100, 2);
 			}
 
 

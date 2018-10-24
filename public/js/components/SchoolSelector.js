@@ -28,6 +28,14 @@ export default class SchoolSelector extends Component {
 		this.getElement().value = id;
 	}
 
+	set onchange(func) {
+		this.getElement().onchange = func;
+	}
+
+	get onchange() {
+		return this.getElement().onchange;
+	}
+
 	setSchoolOptions(arr) {
 		this.props.schoolOptions = arr;
 		this.redraw();

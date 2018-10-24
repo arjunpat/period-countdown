@@ -10,7 +10,6 @@ export default class Canvas {
 				completed: '#fff'
 			},
 			decimalCompleted: 0,
-			animationLength: 2,
 			decimalAnimatingTowards: 0
 		}
 		this.animationInterval; // j to remind myself this is a thing
@@ -31,7 +30,7 @@ export default class Canvas {
 		this.props.decimalCompleted = to;
 	}
 
-	animate(to) {
+	animate(to, length) {
 
 		if (to === this.props.decimalAnimatingTowards) return;
 
@@ -39,7 +38,7 @@ export default class Canvas {
 		window.cancelAnimationFrame(this.animationInterval); // just for fun!
 		delete this.animationInterval;
 
-		let reg = this.createSineRegression(this.props.decimalCompleted, to);
+		let reg = this.createSineRegression(this.props.decimalCompleted, to, length);
 
 		let startTime = window.performance.now();
 
@@ -48,7 +47,7 @@ export default class Canvas {
 
 			this.draw(reg(secondsPassed));
 
-			if (this.props.animationLength < secondsPassed) {
+			if (length < secondsPassed) {
 				window.cancelAnimationFrame(this.animationInterval);
 				delete this.animationInterval;
 				this.draw(this.props.decimalAnimatingTowards);
@@ -60,15 +59,14 @@ export default class Canvas {
 
 		this.animationInterval = window.requestAnimationFrame(func);
 
-
 	}
 
-	createSineRegression(from, to) {
+	createSineRegression(from, to, length) {
 		let amp = (to - from) / 2,
 			verticleShift = (from + to) / 2,
-			b = (2 * Math.PI) / (2 * this.props.animationLength);
+			b = (2 * Math.PI) / (2 * length);
 
-		return x => (amp * (Math.sin(b * (x - (this.props.animationLength / 2))))) + verticleShift;
+		return x => (amp * (Math.sin(b * (x - (length / 2))))) + verticleShift;
 	}
 
 	redraw() { this.draw(this.props.decimalCompleted); }
