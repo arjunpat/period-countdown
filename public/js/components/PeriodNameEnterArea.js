@@ -48,7 +48,7 @@ export default class PeriodNameEnterArea extends Component {
 					style="border-bottom-style: ${dis ? 'dotted' : 'solid'}; border-color: ${dis ? '#a0a0a0' : ''}"
 					value="${ escapeHTML(value) }"
 				>
-				<label for="${id}">
+				<label for="${ id }">
 					${ this.props.periods[i] }${isFree ? ' - removed from schedule' : ''}
 				</label>
 			</div>
@@ -101,18 +101,10 @@ export default class PeriodNameEnterArea extends Component {
 	}
 
 	getPeriodNames() {
-		let map = {
-			names: {},
-			free: []
-		}
+		let map = {};
 
 		for (let input of this.getElement().querySelectorAll('input')) {
-			let name = this._decodePeriodNameId(input.id);
-			map.names[name] = input.value;
-
-			if (isFreePeriod(input.value)) {
-				map.free.push(name);
-			}
+			map[ this._decodePeriodNameId(input.id) ] = input.value;
 		}
 
 		return map;

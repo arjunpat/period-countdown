@@ -47,7 +47,7 @@ const server = http.createServer((req, res) => {
 		}).catch((err) => {
 			console.log(err);
 			// handle 404 errors
-			cache.getFile('/').then(file => { res.writeHead(404, utils.mergeHeaders(file.headers));res.end(file.content) });
+			cache.getFile('/').then(file => { res.writeHead(200, utils.mergeHeaders(file.headers)); res.end(file.content); });
 		});
 	}
 

@@ -48,22 +48,27 @@ export default class PrefManager {
 			[
 				'lahs',
 				'Los Altos High School'
+			],
+			[
+				'paly',
+				'Palo Alto High School'
 			]
 		]
 
-		if (Storage.prefsExist())
+		if (Storage.prefsExist()) {
 			this.setAllPreferences(Storage.getPrefs());
+		}
 		
 		this.initVars();
 	}
 
 	initVars() {
-		// set to deault values (school and theme)
+		// set to default values (school and theme)
 
 		this.themeNum = this.themeNum || 0;
 		this.periodNames = this.periodNames || {};
 		this.googleAccount = this.googleAccount || { signed_in: false }
-		this.school = this.school || 'mvhs';
+		this.school = (this.isASchoolId(this.school) && this.school) || 'mvhs';
 	}
 
 	getAllPreferences() {
@@ -93,8 +98,8 @@ export default class PrefManager {
 	save() {
 		Storage.setPrefs({
 			theme: this.themeNum,
-			period_names: this.periodNames,
-			google_account: this.googleAccount,
+			periodNames: this.periodNames,
+			googleAccount: this.googleAccount,
 			school: this.school
 		});
 	}
@@ -115,6 +120,9 @@ export default class PrefManager {
 				this.periodNames = values.settings.period_names;
 			if (typeof values.settings.theme === 'number')
 				this.setTheme(values.settings.theme);
+			if (typeof values.settings.school === 'string') {
+				this.setSchoolId(values.settings.school);
+			}
 			// do other loading stuff here
 		}
 
@@ -128,10 +136,11 @@ export default class PrefManager {
 		if (!this.isValidThemeNum(theme))
 			theme = 0;
 
-		return RequestManager.updatePreferences(periodNames.names, theme, school).then(data => {
+		return RequestManager.updatePreferences(periodNames, theme, school).then(data => {
 			if (data.success) {
 				this.setTheme(theme);
-				this.periodNames = periodNames.names;
+				this.periodNames = periodNames;
+				this.setSchoolId(school);
 				return true;
 			} else {
 				return false;
@@ -148,7 +157,7 @@ export default class PrefManager {
 		this.save();
 	}
 
-	setSchool(id) {
+	setSchoolId(id) {
 		if (!this.isASchoolId(id))
 			return;
 

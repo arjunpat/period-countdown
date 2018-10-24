@@ -6,11 +6,12 @@ export const render = new class {
 	constructor() {
 		this.state = {
 			newSchool: false,
-			loopHasStarted: false
+			loopHasStarted: false,
+			schoolData: {}
 		}
 	}
 
-	setSchoolId(id) {
+	async setSchoolId(id) {
 		if (this.state.schoolId !== id) {
 			this.state.schoolId = id;
 			this.state.newSchool = true;
@@ -19,6 +20,19 @@ export const render = new class {
 
 	init(schoolId) {
 		this.state.schoolId = schoolId;
+	}
+
+
+	async loadSchool(id) {
+
+		if (!render.state.schoolData[id]) {
+			let [ school, schedule ] = await Promise.all([RequestManager.getSchoolMeta(id), RequestManager.getSchoolSchedule(id)]);
+			render.state.schoolData[id] = {
+				school,
+				schedule
+			}
+		}
+
 	}
 
 }
@@ -73,7 +87,7 @@ render.loop = (firstRun = false) => {
 
 	if (firstRun) {
 		view.updateScreen(time, true);
-		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
+		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 
 		window.onresize();
 		return render.state.timeoutId = window.setTimeout(render.loop, 50);
@@ -81,7 +95,7 @@ render.loop = (firstRun = false) => {
 
 	if (!document.hidden || document.hasFocus()) {
 		if (view.updateScreen(time, true)) {
-			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
+			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 		}
 		return render.state.timeoutId = window.setTimeout(render.loop, 50);
 	}
@@ -98,15 +112,20 @@ render.stopLoop = () => {
 	}
 }
 
-render.showPrefs = () => {
+render.showPrefs = async () => {
 	let prefs = prefManager.getAllPreferences();
+	let { schoolId } = render.state;
 
-	let periods = render.state.school && render.state.school.periods;
-	if (!periods) {
-		periods = [];
+	if (prefs.school !== schoolId) {
+		render.setSchoolId(prefs.school);
+		schoolId = prefs.school;
 	}
+
+	await render.loadSchool(schoolId);
+
+	let periods = (render.state.schoolData[schoolId] && render.state.schoolData[schoolId].school.periods) || [];
+
 	view.updateViewWithState(prefs, { periods });
-	
 
 	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
 
@@ -119,12 +138,12 @@ render.showPrefs = () => {
 render.initTimer = async () => {
 
 	let { schoolId } = render.state;
-	let [ school, schedule ] = await Promise.all([RequestManager.getSchoolMeta(schoolId), RequestManager.getSchoolSchedule(schoolId)]);
-	render.state.school = school;
+
+	await render.loadSchool(schoolId);
 
 	Logger.time('render', 'full timer init');
 
-	scheduleBuilder.init(school, schedule);
+	scheduleBuilder.init(render.state.schoolData[schoolId].school, render.state.schoolData[schoolId].schedule);
 	let {presets, calendar, weekly_presets} = scheduleBuilder.buildAll();
 
 	if (timingEngine.isInitialized()) {
@@ -233,6 +252,10 @@ render.settings = () => {
 		setTimeout(() => view.showModal('log-in-first'), 2000);
 	}
 
+	render.loadSchool(render.state.schoolId).then(() => {
+		render.showPrefs();
+	});
+
 	if (view.settings.closeButton.onclick === null) {
 		
 		view.settings.closeButton.onclick = () => {
@@ -292,4 +315,33 @@ render.notFound = () => {
 	view.hidePreloader();
 
 	Logger.timeEnd('render', 'not-found');
+}
+
+document.onkeydown = (e) => {
+
+	if (window.location.pathname === `/${render.state.schoolId}`) {
+
+		// support for s to open settings
+		if (e.keyCode === 83) {
+			e.preventDefault();
+			view.index.settingsButton.querySelector('div').click();
+		}
+
+
+	} else if (window.location.pathname === '/settings') {
+
+		// support ctrl/cmd + s as saving
+		if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+			e.preventDefault();
+			if (view.settings.saveSettingsButton.disabled !== true)
+				view.settings.saveSettingsButton.click();
+		}
+
+		// support for esc to close
+		if (e.keyCode === 27) {
+			e.preventDefault();
+			view.settings.closeButton.click();
+		}
+	}
+
 }
