@@ -58,6 +58,7 @@ export function router(path, shouldPushHistory = false) {
 			return render.settings();
 
 		if (prefManager.isASchoolId(layers[0])) {
+			prefManager.setSchoolId()
 			render.setSchoolId(layers[0]);
 			return render.index();
 		}
@@ -66,15 +67,6 @@ export function router(path, shouldPushHistory = false) {
 
 	// 404
 	return render.notFound();
-}
-
-render.startLoop = () => {
-	if (render.state.loopHasStarted)
-		return;
-
-	render.loop(true);
-
-	render.state.loopHasStarted = true;
 }
 
 render.loop = (firstRun = false) => {
@@ -105,6 +97,15 @@ render.loop = (firstRun = false) => {
 	return render.state.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
 }
 
+render.startLoop = () => {
+	if (render.state.loopHasStarted)
+		return;
+
+	render.loop(true);
+
+	render.state.loopHasStarted = true;
+}
+
 render.stopLoop = () => {
 	if (typeof render.state.timeoutId !== 'undefined') {
 		window.clearTimeout(render.state.timeoutId);
@@ -118,6 +119,11 @@ render.showPrefs = async () => {
 
 	if (prefs.school !== schoolId) {
 		render.setSchoolId(prefs.school);
+
+		if (window.location.pathname === `/${schoolId}`) {
+			router(`/${prefs.school}`, true);
+		}
+
 		schoolId = prefs.school;
 	}
 
@@ -162,6 +168,10 @@ render.initTimer = async () => {
 
 
 render.index = () => {
+
+	if (Logger.timingExists('render', 'index'))
+		return;
+
 	Logger.time('render', 'index');
 
 	view.switchTo('index');

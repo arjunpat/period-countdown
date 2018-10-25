@@ -120,8 +120,8 @@ export default class PrefManager {
 				this.periodNames = values.settings.period_names;
 			if (typeof values.settings.theme === 'number')
 				this.setTheme(values.settings.theme);
-			if (typeof values.settings.school === 'string') {
-				this.setSchoolId(values.settings.school);
+			if (typeof values.school === 'string') {
+				this.setSchoolId(values.school);
 			}
 			// do other loading stuff here
 		}

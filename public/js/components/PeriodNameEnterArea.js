@@ -16,12 +16,12 @@ export default class PeriodNameEnterArea extends Component {
 		if (this.props.periods) {
 			let firstCol = Math.ceil(this.props.periods.length / 2);
 
-			html += '<div style="flex: 1; padding: 0 1.5%;">';
+			html += '<div style="flex: 1; padding: 0 1.5%; min-width: 250px;">';
 			for (let i = 0; i < firstCol; i++) {
 				html += this._generatePeriodInputHTML(i);
 			}
 
-			html += '</div><div style="flex: 1; padding: 0 1.5%;">';
+			html += '</div><div style="flex: 1; padding: 0 1.5%; min-width: 250px;">';
 
 			for (let i = firstCol; i < this.props.periods.length ; i++) {
 				html += this._generatePeriodInputHTML(i);
@@ -47,7 +47,7 @@ export default class PeriodNameEnterArea extends Component {
 			<div class="material-input-group">
 				<input ${dis ? 'disabled' : ''} type="text" id="${ id }" maxlength="20" autocomplete="off"
 					class="material-form-control${value ? ' has-value' : ''}"
-					style="border-bottom-style: ${dis ? 'dotted' : 'solid'}; border-color: ${dis ? '#a0a0a0' : ''}"
+					style="border-bottom-style: ${dis ? 'dotted' : 'solid'};${dis ? 'border-color: #a0a0a0;' : ''}"
 					value="${ escapeHTML(value) }"
 				>
 				<label for="${ id }">

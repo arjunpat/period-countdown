@@ -17,7 +17,12 @@ const Logger = {
 		this.timings[from + action] = {
 			start: window.performance.now(),
 			from
-		};
+		}
+	},
+	timingExists(from, action) {
+		if (this.timings[from + action])
+			return true;
+		return false;
 	},
 	timeEnd(from, action) {
 		if (!from || !action) throw new TypeError('invalid arguments');
