@@ -9,7 +9,7 @@ export default class Analytics {
 
 		if (this.sent) return;
 
-		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || !this.version)
+		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || !this.version || !this.school)
 			return;
 
 		this.sent = true;
@@ -36,6 +36,7 @@ export default class Analytics {
 
 		data.pathname = this.pathname;
 		data.referrer = window.document.referrer;
+		data.school = this.school;
 		data.speed = {
 			page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
 			response_time: speedInfo.responseEnd - speedInfo.requestStart,
@@ -91,6 +92,11 @@ export default class Analytics {
 
 	setVersion(x) {
 		this.version = x;
+		this.a();
+	}
+
+	setSchool(x) {
+		this.school = x;
 		this.a();
 	}
 

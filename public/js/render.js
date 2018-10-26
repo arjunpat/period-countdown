@@ -67,6 +67,9 @@ render.loop = (firstRun = false) => {
 		view.updateScreen(time, true);
 		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 
+		analytics.setPeriod(time.period);
+		analytics.setPeriodName(time.periodName);
+
 		window.onresize();
 		return render.state.timeoutId = window.setTimeout(render.loop, 50);
 	}

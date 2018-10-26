@@ -250,19 +250,23 @@ export default class View {
 	showModal(screen) {
 		let screens = this.modal.body.children;
 
-		for (let i = 0; i < screens.length; i++)
-			if (screens[i].classList.contains(screen))
+		for (let i = 0; i < screens.length; i++) {
+			if (screens[i].classList.contains(screen)) {
 				screens[i].style.display = 'block';
-			else
+			} else {
 				screens[i].style.display = 'none';
+			}
+		}
 
 		let titles = this.modal.title.children;
 
-		for (let i = 0; i < titles.length; i++)
-			if (titles[i].classList.contains(screen))
+		for (let i = 0; i < titles.length; i++) {
+			if (titles[i].classList.contains(screen)) {
 				titles[i].style.display = 'block';
-			else
+			} else {
 				titles[i].style.display = 'none';
+			}
+		}
 
 		let modalStyle = this.root.querySelector('#modal').style;
 		modalStyle.display = 'block';

@@ -45,6 +45,7 @@ RequestManager.init().then(data => {
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeNum());
+		analytics.setSchool(prefManager.getSchoolId());
 	} else {
 		view.showModal('modal-server-down');
 		throw 'Device id was not established';
