@@ -5,6 +5,7 @@ export default class SchoolSelector extends Component {
 	constructor(element, schoolOptions) {
 		super(element);
 		this.draw();
+		this.setDisabled(true);
 	}
 
 	render() {
@@ -39,6 +40,10 @@ export default class SchoolSelector extends Component {
 	setSchoolOptions(arr) {
 		this.props.schoolOptions = arr;
 		this.redraw();
+	}
+
+	setDisabled(bool) {
+		this.getElement().disabled = bool;
 	}
 
 }

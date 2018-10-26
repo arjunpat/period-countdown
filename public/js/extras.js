@@ -79,3 +79,7 @@ export function isFreePeriod(name) {
 	name = name.trim().toLowerCase();
 	return ['free', 'none', 'nothin'].some(a => name.includes(a));
 }
+
+export function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}

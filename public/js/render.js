@@ -43,35 +43,21 @@ export function router(path, shouldPushHistory = false) {
 		window.history.pushState({}, '', path);
 	}
 
-	let layers = path.split('/').filter(val => val !== '');
-
-
-	// path -> /
-	if (layers.length === 0) {
-		return router(`/${render.state.schoolId}`, true);
+	switch (path) {
+		case '/':
+			render.index();
+			break;
+		case '/settings':
+			render.settings();
+			break;
+		default:
+			render.notFound();
 	}
-
-	// path -> /:school_id
-	if (layers.length === 1) {
-
-		if (layers[0] === 'settings')
-			return render.settings();
-
-		if (prefManager.isASchoolId(layers[0])) {
-			prefManager.setSchoolId()
-			render.setSchoolId(layers[0]);
-			return render.index();
-		}
-		return render.notFound();
-	}
-
-	// 404
-	return render.notFound();
 }
 
 render.loop = (firstRun = false) => {
 
-	if (window.location.pathname !== `/${render.state.schoolId}`)
+	if (window.location.pathname !== '/')
 		return render.state.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
 
 	let time = timingEngine.getRemainingTime();
@@ -119,11 +105,6 @@ render.showPrefs = async () => {
 
 	if (prefs.school !== schoolId) {
 		render.setSchoolId(prefs.school);
-
-		if (window.location.pathname === `/${schoolId}`) {
-			router(`/${prefs.school}`, true);
-		}
-
 		schoolId = prefs.school;
 	}
 
@@ -267,12 +248,12 @@ render.settings = () => {
 		
 		view.settings.closeButton.onclick = () => {
 			if (view.settings.saved) {
-				router('/', false);
+				router('/', true);
 			} else {
 				window.scrollTo(0, document.body.scrollHeight);
 				view.showModal('unsaved-setting-changes');
 				document.querySelector('.unsaved-setting-changes > a').onclick = () => {
-					router('/', false);
+					router('/', true);
 				}
 			}
 		}
@@ -350,7 +331,7 @@ render.notFound = () => {
 
 document.onkeydown = (e) => {
 
-	if (window.location.pathname === `/${render.state.schoolId}`) {
+	if (window.location.pathname === '/') {
 
 		// support for s to open settings
 		if (e.keyCode === 83) {

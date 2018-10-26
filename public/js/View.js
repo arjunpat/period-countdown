@@ -141,6 +141,7 @@ export default class View {
 
 			this.settings.periodNameEnterArea.setDisabled(false);
 			this.settings.periodNameEnterArea.setPreferences(preferences.periodNames);
+			this.settings.schoolSelector.setDisabled(false);
 			this.settings.schoolSelector.setSelection(preferences.school);
 
 			this.settings.themeSelector.disabled = '';
