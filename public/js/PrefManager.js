@@ -10,7 +10,7 @@ export default class PrefManager {
 			// [background, completed, text]
 			['#fccb0b', '#fee561', '#000000'], // Yellow
 			['#000000', '#262626', '#fccb0b'], // Yellow on Black
-			['#ffffff', '#d9d9d9', '#000000'], // Grey
+			['#eaeaea', '#d0d0d0', '#000000'], // Grey
 			[ // Blue-green gradient
 				{
 					type: 'linear_gradient',
@@ -103,7 +103,7 @@ export default class PrefManager {
 			school: this.school
 		});
 	}
-
+	
 	// settage and gettage of settings
 
 	setGoogleAccount(values) {

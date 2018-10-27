@@ -32,7 +32,7 @@ export default class TimingEngine {
 		this.presets = presets;
 		this.calendar = this.parseCalendar(calendar);
 		this.weeklyPresets = weeklyPresets;
-		this.timeline= [];
+		this.timeline = [];
 		this.stats = {};
 
 		if (this.weeklyPresets.length !== 7) {
@@ -117,8 +117,8 @@ export default class TimingEngine {
 
 		// remove all events that have already passed
 		let now = this.getCurrentTime();
-		while (this.schedule.length > 1 && this.schedule[0].f < now && this.schedule[1].f < now) {
-			this.schedule.splice(0, 1);
+		while (this.timeline.length > 1 && this.timeline[0].f < now && this.timeline[1].f < now) {
+			this.timeline.splice(0, 1);
 		}
 
 		this.ensureTwoItemsInSchedule();

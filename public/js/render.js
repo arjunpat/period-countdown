@@ -119,7 +119,7 @@ render.showPrefs = async () => {
 
 	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
 
-	if (scheduleBuilder.isNew() || render.state.newSchool) {
+	if ((scheduleBuilder.isNew() || render.state.newSchool) && render.state.loopHasStarted) {
 		render.initTimer();
 	}
 }

@@ -22,7 +22,6 @@ export default class PeriodNameEnterArea extends Component {
 			}
 
 			html += '</div><div style="flex: 1; padding: 0 1.5%; min-width: 250px;">';
-
 			for (let i = firstCol; i < this.props.periods.length ; i++) {
 				html += this._generatePeriodInputHTML(i);
 			}
@@ -74,32 +73,35 @@ export default class PeriodNameEnterArea extends Component {
 		this.props.periods = periods;
 		this.redraw();
 
-		for (let ele of this.getElement().querySelectorAll('input')) {
+		// timeout to allow for DOM to be parsed
+		window.setTimeout(() => {
+			for (let ele of this.getElement().querySelectorAll('input')) {
 
-			ele.onblur = () => {
-				ele.onkeyup();
-			}
-
-			ele.onkeyup = () => {
-				let value = ele.value;
-
-				if (value.length > 0) {
-					ele.classList.add('has-value');
-				} else {
-					ele.classList.remove('has-value');
+				ele.onblur = () => {
+					ele.onkeyup();
 				}
 
-				let label = ele.parentNode.querySelector('label');
-				if (isFreePeriod(value)) {
-					if (!label.innerHTML.includes(' - removed from schedule')) {
-						label.innerHTML += ' - removed from schedule';
+				ele.onkeyup = () => {
+					let value = ele.value;
+
+					if (value.length > 0) {
+						ele.classList.add('has-value');
+					} else {
+						ele.classList.remove('has-value');
 					}
-				} else {
-					label.innerHTML = label.innerHTML.replace(' - removed from schedule', '');
-				}
-			}
 
-		}
+					let label = ele.parentNode.querySelector('label');
+					if (isFreePeriod(value)) {
+						if (!label.innerHTML.includes(' - removed from schedule')) {
+							label.innerHTML += ' - removed from schedule';
+						}
+					} else {
+						label.innerHTML = label.innerHTML.replace(' - removed from schedule', '');
+					}
+				}
+
+			}
+		}, 50);
 	}
 
 	getPeriodNames() {
