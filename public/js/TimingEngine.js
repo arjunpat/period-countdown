@@ -125,10 +125,8 @@ export default class TimingEngine {
 
 		// remove all events that have already passed
 		let now = this.getCurrentTime();
-		for (let i = 0; i < this.schedule.length - 1;) {
-			if (this.schedule[0].f < now && !(this.schedule[1].f > now))
-				this.schedule.splice(0, 1);
-			else break;
+		while (this.schedule.length > 1 && this.schedule[0].f < now && this.schedule[1].f < now) {
+			this.schedule.splice(0, 1);
 		}
 
 		this.ensureTwoItemsInSchedule();
@@ -253,11 +251,15 @@ export default class TimingEngine {
 	getDateObjectFromDateString(dateString) { return new Date(dateString); }
 
 	getNextDayDateString(dateString) {
-		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() + 8.64e7));
+		let d = this.getDateObjectFromDateString(dateString);
+		d.setDate(d.getDate() + 1);
+		return this.getDateStringFromDateObject(d);
 	}
 
 	getPreviousDayDateString(dateString) {
-		return this.getDateStringFromDateObject(new Date(this.getDateObjectFromDateString(dateString).getTime() - 8.64e7));
+		let d = this.getDateObjectFromDateString(dateString);
+		d.setDate(d.getDate() - 1);
+		return this.getDateStringFromDateObject(d);
 	}
 
 	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())); }
