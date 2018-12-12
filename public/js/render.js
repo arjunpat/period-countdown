@@ -22,7 +22,6 @@ export const render = new class {
 		this.state.schoolId = schoolId;
 	}
 
-
 	async loadSchool(id) {
 
 		if (!render.state.schoolData[id]) {
@@ -32,9 +31,7 @@ export const render = new class {
 				schedule
 			}
 		}
-
 	}
-
 }
 
 export function router(path, shouldPushHistory = false) {
@@ -124,7 +121,6 @@ render.showPrefs = async () => {
 	}
 }
 
-
 render.initTimer = async () => {
 
 	let { schoolId } = render.state;
@@ -149,7 +145,6 @@ render.initTimer = async () => {
 	Logger.timeEnd('render', 'full timer init');
 
 }
-
 
 render.index = () => {
 
@@ -250,7 +245,10 @@ render.settings = () => {
 	if (view.settings.closeButton.onclick === null) {
 		
 		view.settings.closeButton.onclick = () => {
-			if (view.settings.saved) {
+			if (
+				view.getSelectedThemeNum() === prefManager.getThemeNum()
+				&& view.settings.schoolSelector.getSelection() === prefManager.getSchoolId()
+			) {
 				router('/', true);
 			} else {
 				window.scrollTo(0, document.body.scrollHeight);
@@ -276,7 +274,6 @@ render.settings = () => {
 					setTimeout(() => {
 						elem.disabled = '';
 						elem.innerHTML = currentText;
-						view.settingChangesSaved();
 						render.showPrefs();
 					}, 500);
 				} else {
@@ -291,17 +288,11 @@ render.settings = () => {
 		view.settings.themeSelector.onchange = () => {
 			let val = view.getSelectedThemeNum();
 
-			if (val !== prefManager.getThemeNum())
-				view.settingChangesNotSaved();
-
 			view.showThemeColorExamples(prefManager.getThemeFromNum(val));
 		}
 
 		view.settings.schoolSelector.onchange = () => {
 			let val = view.settings.schoolSelector.getSelection();
-
-			if (val !== prefManager.getSchoolId())
-				view.settingChangesNotSaved();
 
 			view.settings.periodNameEnterArea.setPeriods(null);
 			render.loadSchool(val).then(() => {
@@ -313,7 +304,6 @@ render.settings = () => {
 		view.settings.foundBug.onclick = () => view.showModal('modal-found-bug');
 
 	}
-
 
 	render.showPrefs();
 	view.hidePreloader();
@@ -342,14 +332,14 @@ document.onkeydown = (e) => {
 			view.index.settingsButton.querySelector('div').click();
 		}
 
-
 	} else if (window.location.pathname === '/settings') {
 
 		// support ctrl/cmd + s as saving
 		if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
 			e.preventDefault();
-			if (view.settings.saveSettingsButton.disabled !== true)
+			if (view.settings.saveSettingsButton.disabled !== true) {
 				view.settings.saveSettingsButton.click();
+			}
 		}
 
 		// support for esc to close

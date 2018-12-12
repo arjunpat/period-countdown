@@ -29,7 +29,6 @@ export default class View {
 		}
 		this.settings = {
 			title: document.querySelector('#settings #title'),
-			changesSaved: document.getElementById('changes-saved'),
 			chooseSettings: document.getElementById('choose-settings'),
 			inputs: document.querySelectorAll('#choose-settings input'),
 			closeButton: document.getElementById('settings-close'),
@@ -37,10 +36,8 @@ export default class View {
 			themeExamples: document.getElementsByClassName('theme-example'),
 			saveSettingsButton: document.getElementById('save-settings-button'),
 			foundBug: document.getElementById('found-bug'),
-			gradientOnly: document.getElementById('gradient-only'),
 			schoolSelector: new SchoolSelector(document.getElementById('school-selector')),
-			periodNameEnterArea: new PeriodNameEnterArea(document.getElementById('period-name-enter-area')),
-			saved: true
+			periodNameEnterArea: new PeriodNameEnterArea(document.getElementById('period-name-enter-area'))
 		}
 		this.modal = {
 			open: false,
@@ -146,7 +143,6 @@ export default class View {
 
 			this.settings.themeSelector.disabled = '';
 			this.settings.saveSettingsButton.disabled = '';
-			this.settingChangesSaved();
 		}
 
 	}
@@ -191,21 +187,25 @@ export default class View {
 	showThemeColorExamples(theme) {
 
 		if (typeof theme.background === 'object') {
-			for (let input of this.settings.themeExamples) {
-				input.style.display = 'none';
-			}
-			this.settings.gradientOnly.style.display = 'block';
+
+			this.settings.themeExamples[0].innerText = 'Beginning color';
+			this.settings.themeExamples[1].innerText = 'End color';
+
+			this.settings.themeExamples[0].style.background = theme.background.stops[0];
+			this.settings.themeExamples[1].style.background = theme.background.stops[theme.background.stops.length - 1];
+			this.settings.themeExamples[0].style.color = theme.text;
+			this.settings.themeExamples[1].style.color = theme.text;
 
 		} else {
-			for (let input of this.settings.themeExamples) {
-				input.style.display = 'block';
-			}
-			this.settings.gradientOnly.style.display = 'none';
+
+			this.settings.themeExamples[0].innerText = 'Overlay color';
+			this.settings.themeExamples[1].innerText = 'Background color';
 			
 			this.settings.themeExamples[0].style.background = theme.completed;
 			this.settings.themeExamples[1].style.background = theme.background;
 			this.settings.themeExamples[0].style.color = theme.text;
 			this.settings.themeExamples[1].style.color = theme.text;
+
 		}
 	}
 
@@ -315,21 +315,6 @@ export default class View {
 		}
 
 	}
-
-	settingChangesNotSaved() {
-		this.settings.saved = false;
-		this.settings.changesSaved.style.background = '#464646';
-		this.settings.changesSaved.querySelector('span').style.color = '#fff';
-		this.settings.changesSaved.querySelector('span').innerHTML = 'Click save to save changes';
-	}
-
-	settingChangesSaved() {
-		this.settings.saved = true;
-		this.settings.changesSaved.style.background = '';
-		this.settings.changesSaved.querySelector('span').style.color = '';
-		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
-	}
-
 
 	notify(html) {
 		this.notifications.querySelector('span').innerHTML = html;

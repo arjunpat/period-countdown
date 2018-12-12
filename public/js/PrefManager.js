@@ -8,7 +8,14 @@ export default class PrefManager {
 
 		this.themeOptions = [
 			// [background, completed, text]
-			['#fccb0b', '#fee561', '#000000'], // Yellow
+			[ // Yellow gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#fccb0b', 'rgba(252, 89, 11, 0.68)']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#000'
+			],
 			['#000000', '#262626', '#fccb0b'], // Yellow on Black
 			['#eaeaea', '#d0d0d0', '#000000'], // Grey
 			[ // Blue-green gradient
@@ -16,7 +23,7 @@ export default class PrefManager {
 					type: 'linear_gradient',
 					stops: ['#40e078', '#40c8e6']
 				},
-				'rgba(0, 0, 0, .18)',
+				'rgba(0, 0, 0, 0.18)',
 				'#000'
 			],
 			[ // Pink-blue gradient
@@ -24,20 +31,49 @@ export default class PrefManager {
 					type: 'linear_gradient',
 					stops: ['#FC5C7D', '#6A82FB']
 				},
-				'rgba(0, 0, 0, .18)',
+				'rgba(0, 0, 0, 0.18)',
 				'#000'
 			],
-			['#bdffff', '#aae6e6', '#000000'], // Light Blue
-			['#000000', '#262626', '#ff2a00'], // Red on Black
-			[
+			[ // Chalkboard gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#232526', '#414345']
+				},
+				'rgba(5, 6, 7, 0.22)',
+				'#cfcfcf'
+			],
+			[ // Twitch purple gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#6441A5', '#2a0845']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#cfcfcf'
+			],
+			[ // Sunrise gradient
 				{
 					type: 'linear_gradient',
 					stops: ['#F3904F', '#3B4371']
 				},
-				'rgba(0, 0, 0, .18)',
+				'rgba(0, 0, 0, 0.18)',
 				'#000'
-			], // Sunrise Gradient
-			['#90e69e', '#7bce89', '#000000'], // Green
+			],
+			[ // Greek gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#3D7EAA', '#FFE47A']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#000'
+			],
+			[ // Netflix red gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#8e0e00', '#1f1c18']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#cfcfcf'
+			],
 		]
 
 		this.schoolOptions = [
