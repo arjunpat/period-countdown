@@ -13,7 +13,7 @@ export default class PrefManager {
 					type: 'linear_gradient',
 					stops: ['#fccb0b', 'rgba(252, 89, 11, 0.68)']
 				},
-				'rgba(0, 0, 0, 0.18)',
+				'rgba(70, 0, 70, 0.18)',
 				'#000'
 			],
 			['#000000', '#262626', '#fccb0b'], // Yellow on Black

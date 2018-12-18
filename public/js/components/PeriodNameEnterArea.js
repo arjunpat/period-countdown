@@ -115,7 +115,6 @@ export default class PeriodNameEnterArea extends Component {
 	}
 
 	setPreferences(periodNamePrefs) {
-		this.props.periodNamePrefs = periodNamePrefs;
-		this.redraw();
+		this.setProp('periodNamePrefs', periodNamePrefs);
 	}
 }

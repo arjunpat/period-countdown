@@ -104,8 +104,10 @@ export default class Canvas {
 
 	parseGradient(obj) {
 		let grd = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
-		for (let i = 0; i < obj.stops.length; i++)
+		
+		for (let i = 0; i < obj.stops.length; i++) {
 			grd.addColorStop(i / (obj.stops.length - 1), obj.stops[i]);
+		}
 		
 		return grd;
 	}

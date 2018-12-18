@@ -86,7 +86,7 @@
 
 #index #settings-button > div:hover {
 	box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14),0 3px 14px 2px rgba(0,0,0,0.12),0 5px 5px -3px rgba(0,0,0,0.2);
-	opacity: .85;
+	opacity: .88;
 }
 
 #index #settings-button > div > i {
@@ -104,8 +104,7 @@
 	border-radius: 8px;
 	bottom: 95%;
 	z-index: 10;
-	box-shadow: 0 0 300vmax 300vmax rgba(0,0,0,0.6);
-	/*box-shadow: 2px 2px 8px 3px rgba(0, 0, 0, 0.06);*/
+	box-shadow: 0 0 100vmax 100vmax rgba(0,0,0,0.6);
 	padding: 20px;
 	white-space: nowrap;
 	transition: opacity 0.4s ease;

@@ -130,6 +130,17 @@
 	font-family: 'Product Sans';
 }
 
+#settings #please-sign-in {
+	padding: 8px;
+	background: #e0e0e0;
+	border-radius: 4px;
+	display: inline-block;
+	margin: 16px 0 0 0;
+	color: #525252;
+	font-size: 14px;
+	margin-left: 1.5%;
+}
+
 @media (max-width: 750px) {
 	#settings .container {
 		flex-direction: column;

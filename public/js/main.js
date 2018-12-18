@@ -7,7 +7,7 @@ import Storage from './Storage';
 import ScheduleBuilder from './ScheduleBuilder';
 import TimingEngine from './TimingEngine';
 
-import { render, router } from './render';
+import { render, router, timingManager } from './render';
 import { addServiceWorker, googleApiDidLoad, greeting, getVersion } from './extras';
 
 
@@ -24,7 +24,7 @@ window.render = render;
 window.googleApiDidLoad = googleApiDidLoad(render);
 
 // inital preferences before starting timer
-render.init(prefManager.getSchoolId());
+timingManager.init(prefManager.getSchoolId());
 
 // inital page render
 router(window.location.pathname);

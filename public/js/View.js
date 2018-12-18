@@ -28,6 +28,7 @@ export default class View {
 			scheduleTable: document.getElementById('schedule-table')
 		}
 		this.settings = {
+			pleaseSignIn: document.getElementById('please-sign-in'),
 			title: document.querySelector('#settings #title'),
 			chooseSettings: document.getElementById('choose-settings'),
 			inputs: document.querySelectorAll('#choose-settings input'),
@@ -143,6 +144,8 @@ export default class View {
 
 			this.settings.themeSelector.disabled = '';
 			this.settings.saveSettingsButton.disabled = '';
+
+			this.settings.pleaseSignIn.style.display = 'none';
 		}
 
 	}

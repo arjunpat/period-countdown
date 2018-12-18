@@ -7,6 +7,7 @@
 		"watch:server": "nodemon server.js",
 		"watch:client": "webpack --watch --config public/webpack.dev.config.js",
 		"build:client": "webpack --config public/webpack.prod.config.js",
+		"watch:extn": "webpack --watch --config extensions/chrome/webpack.config.js",
 		"build:extn": "webpack --config extensions/chrome/webpack.config.js",
 		"build": "node scripts/build-all.js"
 	},

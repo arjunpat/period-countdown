@@ -1,67 +1,90 @@
-import TimingEngine from '../../../public/js/TimingEngine.js';
-import Analytics from '../../../public/js/Analytics.js';
-import PrefManager from '../../../public/js/PrefManager.js';
-import ScheduleBuilder from '../../../public/js/ScheduleBuilder.js';
+import TimingEngine from '../../../public/js/TimingEngine';
+import Analytics from '../../../public/js/Analytics';
+import PrefManager from '../../../public/js/PrefManager';
+import ScheduleBuilder from '../../../public/js/ScheduleBuilder';
+import TimingManager from '../../../public/js/TimingManager';
 
-import Logger from '../../../public/js/Logger.js';
-import Storage from '../../../public/js/Storage.js';
-window.Logger = Logger;
-
-import View from './ExtnView.js';
-import RequestManager from './ExtnRequestManager.js';
+import Logger from '../../../public/js/Logger';
+import Storage from '../../../public/js/Storage';
+import View from './ExtnView';
+import RequestManager from './ExtnRequestManager';
 
 window.timingEngine = new TimingEngine(),
 window.view = new View();
+window.Logger = Logger;
 window.analytics = new Analytics();
 window.prefManager = new PrefManager();
 window.scheduleBuilder = new ScheduleBuilder();
 window.RequestManager = RequestManager;
 window.URL_PREFIX = 'http://localhost:8080';
-window.VERSION = '2.0.4';
+window.VERSION = '0.4.2';
+window.timingManager = new TimingManager();
 
-function showPrefs() {
+async function showPrefs() {
+
 	let prefs = prefManager.getAllPreferences();
-	view.applyPreferencesToElements(prefs);
-	scheduleBuilder.setFreePeriods(prefs.free_periods);
+	let schoolId = timingManager.getSchoolId();
 
-	if (scheduleBuilder.isNew()) {
-		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
+	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
+
+	if (prefs.school !== schoolId) {
+		timingManager.setSchoolId(prefs.school);
+		schoolId = prefs.school;
 	}
 
+	if ((scheduleBuilder.isNew() || timingManager.isNewSchool()) && timingManager.hasLoopStarted()) {
+		await timingManager.initTimer();
+	}
+
+	view.updateViewWithState(prefs);
 	view.updateScreenDimensions();
 }
 
-function mainLoop() {
+timingManager.init(prefManager.getSchoolId());
+timingManager.setTimerPrepareMethod((school, schedule) => {
+
+	scheduleBuilder.init(school, schedule);
+	
+	let {presets, calendar, weekly_presets} = scheduleBuilder.buildAll();
+
+	if (timingEngine.isInitialized()) {
+		timingEngine.loadNewSchedule(presets, calendar, weekly_presets);
+	} else {
+		timingEngine.init(presets, calendar, weekly_presets);
+	}
+
+});
+
+timingManager.setLoop((firstRun = false) => {
 
 	let time = timingEngine.getRemainingTime();
-	time.period_name = prefManager.getPeriodName(time.period) || time.period;
+	time.periodName = prefManager.getPeriodName(time.period) || time.period;
 
 	view.updateScreen(time);
 
-	return window.setTimeout(mainLoop, 50);
-}
+	if (firstRun) {
+		analytics.setPeriod(time.period);
+		analytics.setPeriodName(time.periodName);
+	}
 
-Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
-	let [presets, calendar] = values;
+	return timingManager.state.timeoutId = window.setTimeout(timingManager.loop, 50);
 
-	scheduleBuilder.init(presets, calendar);
-	timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
+});
 
-	showPrefs();
-	mainLoop();
+timingManager.initTimer().then(() => {
 	view.hidePreloader();
-	Storage.clearAll();
+	showPrefs()
 });
 
 chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
-	let { device_id } = req;
+	let { deviceId } = req;
 
 	Storage.clearAll();
-	if (!device_id) {
+	if (!deviceId) {
 		window.open(URL_PREFIX);
 	}
 
-	Storage.setDeviceId(device_id);
+	Storage.setDeviceId(deviceId);
 	RequestManager.init().then(values => {
 
 		if (!values) {
@@ -83,10 +106,12 @@ chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 		analytics.setTheme(prefManager.getThemeNum());
 		analytics.setPathname('extn');
 		analytics.setDeviceId(Storage.getDeviceId());
+
 	});
+
 });
 
-document.write(`<iframe src="${URL_PREFIX}/extension-connection.html?v=2" style="display: none;"></iframe>`);
+document.write(`<iframe src="${URL_PREFIX}/extension-connection.html?v=3" style="display: none;"></iframe>`);
 
 view.index.settingsButton.onclick = () => window.open(URL_PREFIX + '/settings');
 view.index.googleSignin.querySelector('button').onclick = () => window.open(URL_PREFIX);

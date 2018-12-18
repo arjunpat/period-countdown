@@ -32,8 +32,10 @@ export default class Component {
 	}
 
 	setProp(key, value) {
-		if (!this.props[key] || this.props[key] !== value)
+		if (!this.props[key] || this.props[key] !== value) {
+			this.props[key] = value;
 			this.draw();
+		}
 	}
 
 	getElement() { return this.element; }

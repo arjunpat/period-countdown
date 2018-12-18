@@ -1,38 +1,57 @@
 import Logger from './Logger';
 import Storage from './Storage';
 import RequestManager from './RequestManager';
+import TimingManager from './TimingManager';
 
-export const render = new class {
-	constructor() {
-		this.state = {
-			newSchool: false,
-			loopHasStarted: false,
-			schoolData: {}
+export const timingManager = new TimingManager();
+
+timingManager.setTimerPrepareMethod((school, schedule) => {
+
+	scheduleBuilder.init(school, schedule);
+	
+	let {presets, calendar, weekly_presets} = scheduleBuilder.buildAll();
+
+	if (timingEngine.isInitialized()) {
+		timingEngine.loadNewSchedule(presets, calendar, weekly_presets);
+	} else {
+		timingEngine.init(presets, calendar, weekly_presets);
+	}
+
+});
+
+timingManager.setLoop((firstRun = false) => {
+
+	let tm = timingManager; // alias
+
+	if (window.location.pathname !== '/')
+		return tm.state.timeoutId = window.setTimeout(tm.loop, 500); // .5s when user not on the page; helps with cpu usage
+
+	let time = timingEngine.getRemainingTime();
+	time.periodName = prefManager.getPeriodName(time.period) || time.period;
+
+	if (firstRun) {
+		view.updateScreen(time, true);
+		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
+
+		analytics.setPeriod(time.period);
+		analytics.setPeriodName(time.periodName);
+
+		window.onresize();
+		return tm.state.timeoutId = window.setTimeout(tm.loop, 50);
+	}
+
+	if (!document.hidden || document.hasFocus()) {
+		if (view.updateScreen(time, true)) {
+			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 		}
+		return tm.state.timeoutId = window.setTimeout(tm.loop, 50);
 	}
 
-	async setSchoolId(id) {
-		if (this.state.schoolId !== id) {
-			this.state.schoolId = id;
-			this.state.newSchool = true;
-		}
-	}
+	view.updateScreen(time, false);
 
-	init(schoolId) {
-		this.state.schoolId = schoolId;
-	}
+	return tm.state.timeoutId = window.setTimeout(tm.loop, 500); // .5s when user not on the page; helps with cpu usage
 
-	async loadSchool(id) {
-
-		if (!render.state.schoolData[id]) {
-			let [ school, schedule ] = await Promise.all([RequestManager.getSchoolMeta(id), RequestManager.getSchoolSchedule(id)]);
-			render.state.schoolData[id] = {
-				school,
-				schedule
-			}
-		}
-	}
-}
+});
 
 export function router(path, shouldPushHistory = false) {
 
@@ -52,97 +71,29 @@ export function router(path, shouldPushHistory = false) {
 	}
 }
 
-render.loop = (firstRun = false) => {
-
-	if (window.location.pathname !== '/')
-		return render.state.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
-
-	let time = timingEngine.getRemainingTime();
-	time.periodName = prefManager.getPeriodName(time.period) || time.period;
-
-	if (firstRun) {
-		view.updateScreen(time, true);
-		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
-
-		analytics.setPeriod(time.period);
-		analytics.setPeriodName(time.periodName);
-
-		window.onresize();
-		return render.state.timeoutId = window.setTimeout(render.loop, 50);
-	}
-
-	if (!document.hidden || document.hasFocus()) {
-		if (view.updateScreen(time, true)) {
-			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
-		}
-		return render.state.timeoutId = window.setTimeout(render.loop, 50);
-	}
-
-	view.updateScreen(time, false);
-
-	return render.state.timeoutId = window.setTimeout(render.loop, 500); // .5s when user not on the page; helps with cpu usage
-}
-
-render.startLoop = () => {
-	if (render.state.loopHasStarted)
-		return;
-
-	render.loop(true);
-
-	render.state.loopHasStarted = true;
-}
-
-render.stopLoop = () => {
-	if (typeof render.state.timeoutId !== 'undefined') {
-		window.clearTimeout(render.state.timeoutId);
-		render.state.loopHasStarted = false;
-	}
-}
+export const render = {};
 
 render.showPrefs = async () => {
 	let prefs = prefManager.getAllPreferences();
-	let { schoolId } = render.state;
-
-	if (prefs.school !== schoolId) {
-		render.setSchoolId(prefs.school);
-		schoolId = prefs.school;
-	}
-
-	await render.loadSchool(schoolId);
-
-	let periods = (render.state.schoolData[schoolId] && render.state.schoolData[schoolId].school.periods) || [];
-
-	view.updateViewWithState(prefs, { periods });
+	let schoolId = timingManager.getSchoolId();
 
 	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
 
-	if ((scheduleBuilder.isNew() || render.state.newSchool) && render.state.loopHasStarted) {
-		render.initTimer();
-	}
-}
-
-render.initTimer = async () => {
-
-	let { schoolId } = render.state;
-
-	await render.loadSchool(schoolId);
-
-	Logger.time('render', 'full timer init');
-
-	scheduleBuilder.init(render.state.schoolData[schoolId].school, render.state.schoolData[schoolId].schedule);
-	let {presets, calendar, weekly_presets} = scheduleBuilder.buildAll();
-
-	if (timingEngine.isInitialized()) {
-		timingEngine.loadNewSchedule(presets, calendar, weekly_presets);
-	} else {
-		timingEngine.init(presets, calendar, weekly_presets);
+	if (prefs.school !== schoolId) {
+		timingManager.setSchoolId(prefs.school);
+		schoolId = prefs.school;
 	}
 
-	render.stopLoop();
-	render.state.newSchool = false;
-	render.startLoop();
+	// needs to happen hear for the settings page
+	await timingManager.loadSchool(schoolId);
 
-	Logger.timeEnd('render', 'full timer init');
+	let periods = (timingManager.getSchoolData(schoolId) && timingManager.getSchoolData(schoolId).school.periods) || [];
+
+	view.updateViewWithState(prefs, { periods });
+
+	if ((scheduleBuilder.isNew() || timingManager.isNewSchool()) && timingManager.hasLoopStarted()) {
+		await timingManager.initTimer();
+	}
 
 }
 
@@ -156,11 +107,11 @@ render.index = () => {
 	view.switchTo('index');
 	document.body.style.overflow = 'hidden';
 
-	if (render.state.loopHasStarted) {
+	if (timingManager.hasLoopStarted()) {
 		return Logger.timeEnd('render', 'index');
 	}
 
-	render.initTimer().then(() => {
+	timingManager.initTimer().then(() => {
 		render.showPrefs();
 		view.hidePreloader();
 
@@ -245,9 +196,24 @@ render.settings = () => {
 	if (view.settings.closeButton.onclick === null) {
 		
 		view.settings.closeButton.onclick = () => {
+
+			function newPeriodNames() {
+
+				let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
+
+				for (let period in periodNames) {
+					if (periodNames[period] !== prefManager.getPeriodName(period)) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			if (
 				view.getSelectedThemeNum() === prefManager.getThemeNum()
 				&& view.settings.schoolSelector.getSelection() === prefManager.getSchoolId()
+				&& !newPeriodNames()
 			) {
 				router('/', true);
 			} else {
@@ -295,8 +261,8 @@ render.settings = () => {
 			let val = view.settings.schoolSelector.getSelection();
 
 			view.settings.periodNameEnterArea.setPeriods(null);
-			render.loadSchool(val).then(() => {
-				view.settings.periodNameEnterArea.setPeriods(render.state.schoolData[val].school.periods);
+			timingManager.loadSchool(val).then(() => {
+				view.settings.periodNameEnterArea.setPeriods(timingManager.getSchoolData().school.periods);
 			});
 
 		}

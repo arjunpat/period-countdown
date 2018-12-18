@@ -69,7 +69,7 @@ textarea {
 	margin: 0;
 	padding: 0;
 	display: block;
-	transition: opacity 2s ease;
+	transition: opacity .8s ease;
 }
 
 #preloader > div {
@@ -257,6 +257,7 @@ textarea {
 	cursor: text;
 	user-select: none;
 }
+
 .material-form-button {
 	background-color: var(--main-yellow-color);
 	color: #000;

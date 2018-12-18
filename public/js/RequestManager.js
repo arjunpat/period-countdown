@@ -35,7 +35,7 @@ export default class RequestManager {
 	static init() {
 		if (Storage.deviceIdExists())
 			return this.ajax({
-				url: '/api/v2/init',
+				url: '/api/v3/init',
 				method: 'POST',
 				data: {
 					device_id: Storage.getDeviceId(),
@@ -68,7 +68,7 @@ export default class RequestManager {
 					browser[val] = true;
 
 			return this.ajax({
-				url: '/api/v2/init',
+				url: '/api/v3/init',
 				method: 'POST',
 				data: {
 					data: {
@@ -88,7 +88,7 @@ export default class RequestManager {
 
 	static login(account) {
 		return this.ajax({
-			url: '/api/v2/write/login',
+			url: '/api/v3/write/login',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -99,7 +99,7 @@ export default class RequestManager {
 
 	static logout() {
 		return this.ajax({
-			url: '/api/v2/write/logout',
+			url: '/api/v3/write/logout',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -110,7 +110,7 @@ export default class RequestManager {
 
 	static sendAnalytics(data) {
 		return this.ajax({
-			url: '/api/v2/write/analytics',
+			url: '/api/v3/write/analytics',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -121,7 +121,7 @@ export default class RequestManager {
 
 	static sendLeaveAnalytics() {
 		if (navigator.sendBeacon) {
-			navigator.sendBeacon('/api/v2/write/close-analytics', JSON.stringify({
+			navigator.sendBeacon('/api/v3/write/close-analytics', JSON.stringify({
 				device_id: Storage.getDeviceId(),
 				data: {}
 			}));
@@ -130,7 +130,7 @@ export default class RequestManager {
 
 	static updatePreferences(period_names, theme, school) {
 		return this.ajax({
-			url: '/api/v2/update/preferences',
+			url: '/api/v3/update/preferences',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -178,7 +178,7 @@ export default class RequestManager {
 	static sendError(data) {
 		console.error(data);
 		return this.ajax({
-			url: '/api/v2/write/error',
+			url: '/api/v3/write/error',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),

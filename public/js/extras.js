@@ -35,7 +35,6 @@ export function googleApiDidLoad(render) {
 				RequestManager.login(account).then(res => {
 					if (res.data.status === 'returning_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
-						view.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
 					} else {
@@ -51,10 +50,11 @@ export function googleApiDidLoad(render) {
 
 			let gFail = () => window.alert('Google had trouble signing you in. Please try again later.');
 
-			document.querySelector('#modal-body .modal-login').innerHTML = 'After logging in with Google, you will gain a whole host of new features including the ability to have personalized period names and custom themes.<br><br><a class="google-login-button">Click here</a> to log in with your Google Account.';
+			document.querySelector('#modal-body .modal-login').innerHTML = 'After logging in with Google, you will gain access to numerous features including the ability to have personalized period names and custom themes.<br><br><a class="google-login-button">Click here</a> to log in with your Google Account.';
 
-			for (let element of document.getElementsByClassName('google-login-button'))
+			for (let element of document.getElementsByClassName('google-login-button')) {
 				GoogleAuth.attachClickHandler(element, {}, gSuccess, gFail);
+			}
 		});
 	});
 }
