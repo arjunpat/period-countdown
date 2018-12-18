@@ -35,14 +35,18 @@ export default class Storage {
 		return !!window.localStorage.prefs;
 	}
 
+	static chromeExtensionInstalled() {
+		return !!window.localStorage.chrome_extension_installed;
+	}
+
 	static clearAllExceptDeviceId() {
-		delete window.localStorage.prefs;
-		delete window.localStorage.chrome_extension_installed;
+		let deviceId = this.getDeviceId();
+		window.localStorage.clear();
+		window.localStorage.device_id = deviceId;
 	}
 
 	static clearAll() {
-		this.clearAllExceptDeviceId();
-		delete window.localStorage.device_id;
+		window.localStorage.clear();
 	}
 
 }

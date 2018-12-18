@@ -1,30 +1,30 @@
-import Logger from './Logger.js';
+import Logger from './Logger';
 
 export default class ScheduleBuilder {
 	constructor() {}
 
-	init(presets, calendar) {
+	init(school, schedule) {
 
 		// moves all inline calendar schedules to presets
-		let cal = calendar.schedule;
-		for (let i = 0; i < cal.length; i++) {
-			if (cal[i].content.schedule) {
+		let c = schedule.calendar;
+		for (let i = 0; i < c.length; i++) {
+			if (c[i].content.schedule) {
 				let presetName = 'preset-' + Math.random();
 
-				presets[presetName] = {
-					n: cal[i].content.name,
-					s: cal[i].content.schedule
+				school.presets[presetName] = {
+					n: c[i].content.name,
+					s: c[i].content.schedule
 				}
 
-				delete cal[i].content.schedule;
-				cal[i].content.type = presetName;
+				delete c[i].content.schedule;
+				c[i].content.type = presetName;
 			}
 		}
 
-		this.presets = JSON.stringify(presets);
-		this.calendar = JSON.stringify(calendar);
+		this.school = JSON.stringify(school);
+		this.periods = school.periods;
+		this.schedule = JSON.stringify(schedule);
 		this.initialized = true;
-		this.passing_time = 5;
 	}
 
 	generatePresets() {
@@ -35,53 +35,40 @@ export default class ScheduleBuilder {
 		let freePeriodsExist = (!this.free || Object.keys(this.free).length === 0) ? false : true;
 
 		Logger.time('ScheduleBuilder', 'parse-time');
-
-		let presets = JSON.parse(this.presets);
+		let presets = JSON.parse(this.school).presets;
 
 		for (let key in presets) {
-			if (!presets.hasOwnProperty(key))
+			if (!presets.hasOwnProperty(key) || !freePeriodsExist)
 				continue;
 
 			let schedule = presets[key].s;
 
 			// removes free periods at the beginning of the day
-			while (schedule.length > 0 && freePeriodsExist) {
-				let event = schedule[0];
-				if (typeof event.n === 'number' && !this.free[event.n])
+			while (schedule.length > 0) {
+				if (this.isPeriod(schedule[0].n) && !this.free[schedule[0].n]) {
 					break;
-				else
+				} else {
 					schedule.splice(0, 1);
-			}
-
-			// add all passing periods
-			for (let i = 0; i < schedule.length; i++) {
-				if (typeof schedule[i].n === 'number') {
-					schedule.splice(i, 0, {
-						n: 'Passing',
-						f: this.addToStandardTime(schedule[i].f, -this.passing_time)
-					});
-					i++;
 				}
 			}
 
-			// removes free periods at end of day
-			if (freePeriodsExist) {
-				let lastTime;
-				for (let i = schedule.length - 2; i >= 0; i--) { // subtract 2 because last is always free
-					let event = schedule[i];
-					if (typeof event.n === 'number')
-						if (this.free[event.n]) {
-							lastTime = event;
-							schedule.splice(i, 1);
-						} else {
-							if (lastTime)
-								schedule[schedule.length - 1].f = lastTime.f;
-							break;
-						}
-					else {
+			// remove periods at the end of the day
+			let lastEvent;
+			while (schedule.length > 1) {
+				let i = schedule.length - 2;
+				if (this.isPeriod(schedule[i].n)) {
+					if (this.free[schedule[i].n]) {
+						lastEvent = schedule[i];
 						schedule.splice(i, 1);
-						lastTime = event;
+					} else {
+						if (lastEvent) {
+							schedule[schedule.length - 1].f = lastEvent.f;
+						}
+						break;
 					}
+				} else {
+					schedule.splice(i, 1);
+					lastEvent = schedule[i];
 				}
 			}
 
@@ -91,6 +78,13 @@ export default class ScheduleBuilder {
 
 		this.new = false;
 		return presets;
+	}
+
+	buildAll() {
+		return {
+			presets: this.generatePresets(),
+			...JSON.parse(this.schedule)
+		}
 	}
 
 	setFreePeriods(obj) {
@@ -115,30 +109,13 @@ export default class ScheduleBuilder {
 			delete this.free; // just treats it like a normal schedule
 	}
 
-	addToStandardTime(standardTime, minutes) {
-		let [h, m] = standardTime.split(':');
-		h = parseInt(h);
-		m = parseInt(m);
+	isPeriod(name) {
 
-		m += minutes;
-
-		if (m >= 60) {
-			h++;
-			m -= 60;
-		} else if (m < 0) {
-			h--;
-			m += 60;
-		}
-
-		if (m < 10)
-			m = '0' + m;
-
-		return `${h}:${m}`;
+		// TODO optimize and figure out where to put
+		return this.periods.some(a => a === name);
 	}
 
 	isNew() { return !!this.new && this.isInitialized(); }
-
-	getCalendar() { return JSON.parse(this.calendar); }
 
 	isInitialized() { return !!this.initialized; }
 }

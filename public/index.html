@@ -70,72 +70,33 @@
 				<div id="settings-close" tooltip="Close (esc)"><i class="material-icons">close</i></div>
 				<span id="title">Your Settings</span>
 				<br>
-				<div id="changes-saved">
-					<span><span style="text-transform: none;"><a class="google-login-button">Click here</a> to sign into Google and change settings</span></span>
-				</div>
+				<div id="please-sign-in">You must <a class="google-login-button">sign in</a> with your Google account to edit settings</div>
 				<div id="choose-settings">
 					<form class="material-form">
 						<div class="container">
-							<div class="third">
-								<h1 style="font-weight: bold; font-size: 36px; margin-bottom: 30px;">Period names</h1>
-								<div class="material-input-group">
-									<input disabled type="text" id="period0_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period0_name">Period 0</label>
-								</div>
-								<div class="material-input-group">
-									<input disabled type="text" id="period1_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period1_name">Period 1</label>
-								</div>
-								<div class="material-input-group">
-									<input disabled type="text" id="period2_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period2_name">Period 2</label>
-								</div>
-								<div class="material-input-group" style="margin-bottom: 30px;">
-									<input disabled type="text" id="period3_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period3_name">Period 3</label>
-								</div>
-							</div>
-							<div class="third">
-								<div class="material-input-group">
-									<input disabled type="text" id="period4_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period4_name">Period 4</label>
-								</div>
-								<div class="material-input-group">
-									<input disabled type="text" id="period5_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period5_name">Period 5</label>
-								</div>
-								<div class="material-input-group">
-									<input disabled type="text" id="period6_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period6_name">Period 6</label>
-								</div>
-								<div class="material-input-group" style="margin-bottom: 30px;">
-									<input disabled type="text" id="period7_name" maxlength="20" autocomplete="off" class="material-form-control">
-									<label for="period7_name">Period 7</label>
-								</div>
+							<div class="third" style="flex: 2;">
+								<h1 class="section-title">Period names</h1>
+								<div id="period-name-enter-area" style="display: flex; flex-wrap: wrap;"></div>
 							</div>
 							<div class="third" id="theme-selector-container">
-								<h1 style="font-weight: bold; font-size: 36px; margin-bottom: 30px;">Theme</h1>
+								<h1 class="section-title">Theme</h1>
 								<br>
 								<select disabled id="theme-selector">
-									<option value="0" default>Yellow</option>
-									<option value="5">Light Blue</option>
-									<option value="8">Green</option>
-									<option value="2">Grey</option>
+									<option value="0" default>Yellow gradient</option>
+									<option value="8">Greek gradient</option>
+									<option value="9">Netflix red gradient</option>
+									<option value="6">Twitch purple gradient</option>
+									<option value="5">Chalkboard gradient</option>
 									<option value="7">Sunrise gradient</option>
 									<option value="3">Green-blue gradient</option>
 									<option value="4">Pink-blue gradient</option>
+									<option value="2">Grey</option>
 									<option value="1">Yellow on black</option>
-									<option value="6">Red on black</option>
 								</select>
-								<div class="theme-example">
-									Overlay Color
-								</div>
-								<div class="theme-example">
-									Background Color
-								</div>
-								<span id="gradient-only" style="font-size: 16px; margin: 16px 0;">Save and navigate back to the main clock to see the gradient.</span>
+								<div class="theme-example"></div>
+								<div class="theme-example"></div>
 								<br>
-								<h1 style="font-weight: bold; font-size: 36px; margin-bottom: 30px;">School</h1>
+								<h1 class="section-title">School</h1>
 								<select id="school-selector">
 									<option value="0" default>Mountain View High School</option>
 									<option disabled>More coming soon</option>
@@ -156,7 +117,7 @@
 					<h1 style="font-size: 75px; padding-bottom: 12px; font-weight: bold;">404. That&#8217;s an error.</h1>
 					<h2 style="font-size: 35px;">The server literally just can&#8217;t even.</h2>
 					<h3><span id="location-uri">This link</span> is either outdated, inaccurate, or the server is just not having it today.</h3>
-					<p>Click <a onclick="load('/', true)">here</a> to go back to the main site.</p>
+					<p>Click <a onclick="router('/', true)">here</a> to go back to the main site.</p>
 				</div>
 			</div>
 			<div id="modal">
@@ -166,7 +127,7 @@
 					<span class="modal-logout">Are you sure?</span>
 					<span class="modal-login">Log in with Google</span>
 					<span class="modal-server-down">There&#8217;s a problem</span>
-					<span class="modal-found-bug">Found a bug?</span>
+					<span class="modal-found-bug">Report a bug</span>
 				</div>
 				<div id="modal-body">
 					<div class="log-in-first">
@@ -193,7 +154,10 @@
 						Thanks for taking time to report a bug. To report it, do the following:<br><br>
 						1. Send an email to <a href="mailto:help@periods.io">help@periods.io</a> detailing the problem.<br><br>
 						2. Make sure to include the following device code in your email:<br><br>
-						<span class="device-id" style="background: #cccccc9e; padding: 5px; border-radius: 4px;"></span><br><br>
+						<div style="background: #cccccc9e; padding: 5px; border-radius: 4px; display: inline-block;">
+							<span class="device-id"></span>
+						</div>
+						<br><br>
 						The code helps us fix the bug rapidly.
 					</div>
 				</div>

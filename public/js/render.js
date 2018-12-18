@@ -1,13 +1,63 @@
-import Logger from './Logger.js';
-import Storage from './Storage.js';
-import RequestManager from './RequestManager.js';
+import Logger from './Logger';
+import Storage from './Storage';
+import RequestManager from './RequestManager';
+import TimingManager from './TimingManager';
 
-export const render = {};
+export const timingManager = new TimingManager();
 
-export function load(path, shouldPushHistory = false) {
+timingManager.setTimerPrepareMethod((school, schedule) => {
 
-	if (shouldPushHistory)
+	scheduleBuilder.init(school, schedule);
+	
+	let {presets, calendar, weekly_presets} = scheduleBuilder.buildAll();
+
+	if (timingEngine.isInitialized()) {
+		timingEngine.loadNewSchedule(presets, calendar, weekly_presets);
+	} else {
+		timingEngine.init(presets, calendar, weekly_presets);
+	}
+
+});
+
+timingManager.setLoop((firstRun = false) => {
+
+	let tm = timingManager; // alias
+
+	if (window.location.pathname !== '/')
+		return tm.state.timeoutId = window.setTimeout(tm.loop, 500); // .5s when user not on the page; helps with cpu usage
+
+	let time = timingEngine.getRemainingTime();
+	time.periodName = prefManager.getPeriodName(time.period) || time.period;
+
+	if (firstRun) {
+		view.updateScreen(time, true);
+		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
+
+		analytics.setPeriod(time.period);
+		analytics.setPeriodName(time.periodName);
+
+		window.onresize();
+		return tm.state.timeoutId = window.setTimeout(tm.loop, 50);
+	}
+
+	if (!document.hidden || document.hasFocus()) {
+		if (view.updateScreen(time, true)) {
+			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
+		}
+		return tm.state.timeoutId = window.setTimeout(tm.loop, 50);
+	}
+
+	view.updateScreen(time, false);
+
+	return tm.state.timeoutId = window.setTimeout(tm.loop, 500); // .5s when user not on the page; helps with cpu usage
+
+});
+
+export function router(path, shouldPushHistory = false) {
+
+	if (shouldPushHistory) {
 		window.history.pushState({}, '', path);
+	}
 
 	switch (path) {
 		case '/':
@@ -18,62 +68,51 @@ export function load(path, shouldPushHistory = false) {
 			break;
 		default:
 			render.notFound();
-			break;
 	}
 }
 
+export const render = {};
+
+render.showPrefs = async () => {
+	let prefs = prefManager.getAllPreferences();
+	let schoolId = timingManager.getSchoolId();
+
+	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
+
+	if (prefs.school !== schoolId) {
+		timingManager.setSchoolId(prefs.school);
+		schoolId = prefs.school;
+	}
+
+	// needs to happen hear for the settings page
+	await timingManager.loadSchool(schoolId);
+
+	let periods = (timingManager.getSchoolData(schoolId) && timingManager.getSchoolData(schoolId).school.periods) || [];
+
+	view.updateViewWithState(prefs, { periods });
+
+	if ((scheduleBuilder.isNew() || timingManager.isNewSchool()) && timingManager.hasLoopStarted()) {
+		await timingManager.initTimer();
+	}
+
+}
+
 render.index = () => {
+
+	if (Logger.timingExists('render', 'index'))
+		return;
+
 	Logger.time('render', 'index');
 
 	view.switchTo('index');
+	document.body.style.overflow = 'hidden';
 
-	if (timingEngine.isInitialized())
+	if (timingManager.hasLoopStarted()) {
 		return Logger.timeEnd('render', 'index');
-
-	let firstRun = true;
-	function mainLoop() {
-		
-		if (window.location.pathname === '/') {
-
-			let time = timingEngine.getRemainingTime();
-			time.period_name = prefManager.getPeriodName(time.period) || time.period;
-
-			if (firstRun) {
-				view.updateScreen(time, true);
-				view.updateScheduleTable(timingEngine.getUpcomingPeriods(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
-
-				analytics.setPeriod(time.period);
-				analytics.setPeriodName(time.period_name);
-
-				window.onresize();
-				firstRun = false;
-				return window.setTimeout(mainLoop, 50);
-			}
-
-			if (!document.hidden || document.hasFocus()) {
-				if (view.updateScreen(time, true)) {
-					view.updateScheduleTable(timingEngine.getUpcomingPeriods(), prefManager.getAllPreferences().period_names, timingEngine.getCurrentTime());
-				}
-				return window.setTimeout(mainLoop, 50);
-			}
-
-			view.updateScreen(time, false);
-		}
-		return window.setTimeout(mainLoop, 500); // .5s when user not on the page; helps with cpu usage
 	}
 
-	// startup the actually timer; only happens when u actually go to the index page
-	Promise.all([RequestManager.getPresets(), RequestManager.getCalendar()]).then(values => {
-		let [presets, calendar] = values;
-
-		Logger.time('render', 'full timer init');
-
-		scheduleBuilder.init(presets, calendar);
-		timingEngine.init(scheduleBuilder.generatePresets(), scheduleBuilder.getCalendar());
-		Logger.timeEnd('render', 'full timer init');
-
+	timingManager.initTimer().then(() => {
 		render.showPrefs();
-		mainLoop();
 		view.hidePreloader();
 
 		Logger.timeEnd('render', 'index');
@@ -87,7 +126,7 @@ render.index = () => {
 			description: err.stack
 		});
 
-		throw new Error();
+		throw err;
 	});
 
 	view.index.dayType.onmouseover = () => {
@@ -112,7 +151,7 @@ render.index = () => {
 	window.onresize = resizeScreen;
 
 	view.index.settingsButton.querySelector('div').onclick = () => {
-		load('/settings', true);
+		router('/settings', true);
 	}
 
 	// login button
@@ -133,16 +172,17 @@ render.index = () => {
 			window.location.reload();
 		});
 	}
+
 }
 
 
 render.settings = () => {
-
 	Logger.time('render', 'settings');
 
 	// webpage display
 	document.title = 'Settings';
 	view.switchTo('settings');
+	document.body.style.overflow = '';
 
 	// animation
 	view.settings.title.classList.remove('underlineAnimation');
@@ -153,17 +193,34 @@ render.settings = () => {
 		setTimeout(() => view.showModal('log-in-first'), 2000);
 	}
 
-	// form stuff
 	if (view.settings.closeButton.onclick === null) {
-
+		
 		view.settings.closeButton.onclick = () => {
-			if (view.settings.saved)
-				load('/', true);
-			else {
+
+			function newPeriodNames() {
+
+				let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
+
+				for (let period in periodNames) {
+					if (periodNames[period] !== prefManager.getPeriodName(period) && !(!periodNames[period] && !prefManager.getPeriodName(period))) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+
+			if (
+				view.getSelectedThemeNum() === prefManager.getThemeNum()
+				&& view.settings.schoolSelector.getSelection() === prefManager.getSchoolId()
+				&& !newPeriodNames()
+			) {
+				router('/', true);
+			} else {
 				window.scrollTo(0, document.body.scrollHeight);
 				view.showModal('unsaved-setting-changes');
 				document.querySelector('.unsaved-setting-changes > a').onclick = () => {
-					load('/', true);
+					router('/', true);
 				}
 			}
 		}
@@ -174,19 +231,20 @@ render.settings = () => {
 			elem.innerHTML = 'Saving...';
 			elem.disabled = 'true';
 
+			let school = view.settings.schoolSelector.getSelection();
+			let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
 			let theme = view.getSelectedThemeNum();
-			let names = view.getValuesFromAllPeriodInputs();
 
-			prefManager.setPreferences(names, theme).then(val => {
-				if (val)
+			prefManager.setPreferences(periodNames, theme, school).then(res => {
+				if (res) {
 					setTimeout(() => {
 						elem.disabled = '';
 						elem.innerHTML = currentText;
-						view.settingChangesSaved();
 						render.showPrefs();
 					}, 500);
-				else
+				} else {
 					view.showModal('modal-server-down');
+				}
 			}).catch(err => {
 				view.showModal('modal-server-down');
 			});
@@ -196,43 +254,21 @@ render.settings = () => {
 		view.settings.themeSelector.onchange = () => {
 			let val = view.getSelectedThemeNum();
 
-			if (val !== prefManager.getThemeNum())
-				view.settingChangesNotSaved();
-
 			view.showThemeColorExamples(prefManager.getThemeFromNum(val));
 		}
 
-		view.settings.foundBug.onclick = () => view.showModal('modal-found-bug')
+		view.settings.schoolSelector.onchange = () => {
+			let val = view.settings.schoolSelector.getSelection();
 
-		for (let element of view.settings.inputs) {
-			let period_num = view.getIdFromInputElem(element);
-
-			element.onblur = () => {
-				element.onkeyup();
-			}
-
-			element.onkeyup = () => {
-				let val = element.value.trim();
-
-				if (val !== prefManager.getPeriodName(period_num) && !(val === '' && prefManager.getPeriodName(period_num) === undefined)) {
-					if (val.length > 0)
-						element.classList.add('has-value');
-					else
-						element.classList.remove('has-value');
-
-					view.settingChangesNotSaved();
-				}
-
-				let names = view.getValuesFromAllPeriodInputs();
-
-				for (let elem of view.settings.inputs) {
-					let res = prefManager.isFreePeriodGivenContext(names, view.getIdFromInputElem(elem));
-					view.showPeriodInput(elem, res, null);
-				}
-
-			}
+			view.settings.periodNameEnterArea.setPeriods(null);
+			timingManager.loadSchool(val).then(() => {
+				view.settings.periodNameEnterArea.setPeriods(timingManager.getSchoolData(val).school.periods);
+			});
 
 		}
+
+		view.settings.foundBug.onclick = () => view.showModal('modal-found-bug');
+
 	}
 
 	render.showPrefs();
@@ -252,18 +288,6 @@ render.notFound = () => {
 	Logger.timeEnd('render', 'not-found');
 }
 
-
-render.showPrefs = () => {
-	let prefs = prefManager.getAllPreferences();
-	view.applyPreferencesToElements(prefs);
-	scheduleBuilder.setFreePeriods(prefs.free_periods);
-
-	if (scheduleBuilder.isNew()) {
-		timingEngine.loadNewPresets(scheduleBuilder.generatePresets());
-		view.updateScheduleTable(timingEngine.getUpcomingPeriods(), timingEngine.getCurrentTime());
-	}
-}
-
 document.onkeydown = (e) => {
 
 	if (window.location.pathname === '/') {
@@ -274,14 +298,14 @@ document.onkeydown = (e) => {
 			view.index.settingsButton.querySelector('div').click();
 		}
 
-
 	} else if (window.location.pathname === '/settings') {
 
 		// support ctrl/cmd + s as saving
 		if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
 			e.preventDefault();
-			if (view.settings.saveSettingsButton.disabled !== true)
-				view.settings.saveSettingsButton.onclick();
+			if (view.settings.saveSettingsButton.disabled !== true) {
+				view.settings.saveSettingsButton.click();
+			}
 		}
 
 		// support for esc to close

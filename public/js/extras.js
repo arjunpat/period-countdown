@@ -1,4 +1,4 @@
-import Logger from './Logger.js';
+import Logger from './Logger';
 
 export function addServiceWorker(path) {
 	if (navigator.serviceWorker) {
@@ -35,7 +35,6 @@ export function googleApiDidLoad(render) {
 				RequestManager.login(account).then(res => {
 					if (res.data.status === 'returning_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
-						view.settingChangesSaved();
 					} else if (res.data.status === 'new_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
 					} else {
@@ -44,16 +43,18 @@ export function googleApiDidLoad(render) {
 
 					render.showPrefs();
 				}).catch(err => {
+					console.log(err);
 					view.showModal('modal-server-down');
 				});
 			}
 
 			let gFail = () => window.alert('Google had trouble signing you in. Please try again later.');
 
-			document.querySelector('#modal-body .modal-login').innerHTML = 'After logging in with Google, you will gain a whole host of new features including the ability to have personalized period names and custom themes.<br><br><a class="google-login-button">Click here</a> to log in with your Google Account.';
+			document.querySelector('#modal-body .modal-login').innerHTML = 'After logging in with Google, you will gain access to numerous features including the ability to have personalized period names and custom themes.<br><br><a class="google-login-button">Click here</a> to log in with your Google Account.';
 
-			for (let element of document.getElementsByClassName('google-login-button'))
+			for (let element of document.getElementsByClassName('google-login-button')) {
 				GoogleAuth.attachClickHandler(element, {}, gSuccess, gFail);
+			}
 		});
 	});
 }
@@ -69,4 +70,16 @@ export function getVersion() {
 		if (node.src.includes('/js/bundle.js?v='))
 			return node.src.substring(node.src.indexOf('?v=') + 3);
 	}
+}
+
+export function isFreePeriod(name) {
+	if (typeof name !== 'string')
+		return false;
+	
+	name = name.trim().toLowerCase();
+	return ['free', 'none', 'nothin'].some(a => name.includes(a));
+}
+
+export function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
 }

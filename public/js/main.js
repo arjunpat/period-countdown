@@ -1,14 +1,14 @@
-import PrefManager from './PrefManager.js';
-import Analytics from './Analytics.js';
-import View from './View.js';
-import RequestManager from './RequestManager.js';
-import Logger from './Logger.js';
-import Storage from './Storage.js';
-import ScheduleBuilder from './ScheduleBuilder.js';
-import TimingEngine from './TimingEngine.js';
+import PrefManager from './PrefManager';
+import Analytics from './Analytics';
+import View from './View';
+import RequestManager from './RequestManager';
+import Logger from './Logger';
+import Storage from './Storage';
+import ScheduleBuilder from './ScheduleBuilder';
+import TimingEngine from './TimingEngine';
 
-import { render, load } from './render.js';
-import { addServiceWorker, googleApiDidLoad, greeting, getVersion } from './extras.js';
+import { render, router, timingManager } from './render';
+import { addServiceWorker, googleApiDidLoad, greeting, getVersion } from './extras';
 
 
 window.timingEngine = new TimingEngine();
@@ -17,12 +17,17 @@ window.analytics = new Analytics();
 window.prefManager = new PrefManager();
 window.scheduleBuilder = new ScheduleBuilder();
 window.RequestManager = RequestManager;
+window.router = router;
+window.render = render;
 
-// has to global fro google
+// has to global for google
 window.googleApiDidLoad = googleApiDidLoad(render);
 
+// inital preferences before starting timer
+timingManager.init(prefManager.getSchoolId());
+
 // inital page render
-load(window.location.pathname);
+router(window.location.pathname);
 
 RequestManager.init().then(data => {
 
@@ -40,6 +45,7 @@ RequestManager.init().then(data => {
 	if (Storage.deviceIdExists()) {
 		analytics.setDeviceId(Storage.getDeviceId());
 		analytics.setTheme(prefManager.getThemeNum());
+		analytics.setSchool(prefManager.getSchoolId());
 	} else {
 		view.showModal('modal-server-down');
 		throw 'Device id was not established';
@@ -59,7 +65,7 @@ RequestManager.init().then(data => {
 });
 
 // makes sure that back and forwards buttons work
-window.onpopstate = () => load(window.location.pathname);
+window.onpopstate = () => router(window.location.pathname);
 
 window.onbeforeunload = () => {
 	analytics.leaving();
@@ -71,7 +77,7 @@ analytics.setPathname(window.location.pathname);
 
 //addServiceWorker('/sw.js');
 
-if (window.chrome && !window.localStorage.chrome_extension_installed) {
+if (window.chrome && !Storage.chromeExtensionInstalled()) {
 	setTimeout(() => {
 		view.notify('Install the <a style="display: inline;" target="_blank" href="https://www.mvhs.club/u/bell-extn">Chrome Extension</a>');
 	}, 3000);

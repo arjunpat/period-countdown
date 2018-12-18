@@ -34,7 +34,7 @@ export default class ExtnRequestManager {
 
 	static init() {
 		return this.ajax({
-			url: '/api/v1/init',
+			url: '/api/v3/init',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -63,45 +63,9 @@ export default class ExtnRequestManager {
 		});
 	}
 
-	static getPresets() {
-		return this.ajax({
-			url: '/api/presets'
-		}).then(res => {
-			chrome.storage.sync.set({
-				presets: res.json
-			}, () => Logger.log('ExtnRequestManager', 'saved presets in chrome.storage'));
-
-			return res.json
-		}).catch(err => {
-			return new Promise((resolve, reject) => {
-				chrome.storage.sync.get(['presets'], vals => {
-					resolve(vals.presets);
-				});
-			});
-		});
-	}
-
-	static getCalendar() {
-		return this.ajax({
-			url: '/api/calendar'
-		}).then(res => {
-			chrome.storage.sync.set({
-				calendar: res.json
-			}, () => Logger.log('ExtnRequestManager', 'saved calendar in chrome.storage'));
-
-			return res.json;
-		}).catch(err => {
-			return new Promise((resolve, reject) => {
-				chrome.storage.sync.get(['calendar'], vals => {
-					resolve(vals.calendar);
-				});
-			});
-		});
-	}
-
 	static sendAnalytics(data) {
 		return this.ajax({
-			url: '/api/v1/write/analytics',
+			url: '/api/v3/write/analytics',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
@@ -112,17 +76,29 @@ export default class ExtnRequestManager {
 
 	static sendLeaveAnalytics() {
 		if (navigator.sendBeacon) {
-			navigator.sendBeacon(URL_PREFIX + '/api/v1/write/close_analytics', JSON.stringify({
+			navigator.sendBeacon(URL_PREFIX + '/api/v3/write/close_analytics', JSON.stringify({
 				device_id: Storage.getDeviceId(),
 				data: {}
 			}));
 		}
 	}
 
+	static getSchoolMeta(school) {
+		return this.ajax({
+			url: `/api/school/${school}`
+		}).then(res => res.json);
+	}
+
+	static getSchoolSchedule(school) {
+		return this.ajax({
+			url: `/api/schedule/${school}`
+		}).then(res => res.json);
+	}
+
 	static sendError(data) {
 		console.error(data);
 		return this.ajax({
-			url: '/api/v1/write/error',
+			url: '/api/v3/write/error',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),

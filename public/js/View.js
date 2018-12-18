@@ -1,6 +1,9 @@
-import Canvas from './Canvas.js';
-import Logger from './Logger.js';
-import Storage from './Storage.js';
+import Logger from './Logger';
+import Storage from './Storage';
+
+import Canvas from './components/Canvas';
+import SchoolSelector from './components/SchoolSelector';
+import PeriodNameEnterArea from './components/PeriodNameEnterArea';
 
 export default class View {
 	constructor() {
@@ -25,8 +28,8 @@ export default class View {
 			scheduleTable: document.getElementById('schedule-table')
 		}
 		this.settings = {
+			pleaseSignIn: document.getElementById('please-sign-in'),
 			title: document.querySelector('#settings #title'),
-			changesSaved: document.getElementById('changes-saved'),
 			chooseSettings: document.getElementById('choose-settings'),
 			inputs: document.querySelectorAll('#choose-settings input'),
 			closeButton: document.getElementById('settings-close'),
@@ -34,8 +37,8 @@ export default class View {
 			themeExamples: document.getElementsByClassName('theme-example'),
 			saveSettingsButton: document.getElementById('save-settings-button'),
 			foundBug: document.getElementById('found-bug'),
-			gradientOnly: document.getElementById('gradient-only'),
-			saved: true
+			schoolSelector: new SchoolSelector(document.getElementById('school-selector')),
+			periodNameEnterArea: new PeriodNameEnterArea(document.getElementById('period-name-enter-area'))
 		}
 		this.modal = {
 			open: false,
@@ -55,7 +58,7 @@ export default class View {
 	updateScreen(time, showVisuals) {
 
 		let returnVal = false;
-		let {percent_completed, hours, minutes, seconds, period_name, day_type} = time;
+		let {percentCompleted, hours, minutes, seconds, periodName, dayType} = time;
 
 		// make time human readable
 		seconds = padNum(seconds);
@@ -68,10 +71,7 @@ export default class View {
 
 		timeString += `${minutes}:${seconds}`;
 
-		if (typeof period_name === 'number')
-			period_name = formatPeriodNumber(period_name);
-
-		let documentTitle = `${timeString} \u2022 ${period_name}`;
+		let documentTitle = `${timeString} \u2022 ${periodName}`;
 		if (this.currentValues.documentTitle !== documentTitle) {
 			document.title = documentTitle;
 			this.currentValues.documentTitle = documentTitle;
@@ -79,28 +79,28 @@ export default class View {
 
 		if (showVisuals) {
 			if (
-				(percent_completed < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
-				|| (percent_completed > 99 && this.canvas.props.decimalCompleted >= .99)
+				(percentCompleted < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
+				|| (percentCompleted > 99 && this.canvas.props.decimalCompleted >= .99)
 			) {
-				this.canvas.draw(percent_completed / 100); // more specific at the beginning or end
+				this.canvas.draw(percentCompleted / 100); // more specific at the beginning or end
 			} else if (!this.canvas.animationInterval) {
-				this.canvas.animate(Math.floor(percent_completed) / 100);
+				this.canvas.animate(Math.floor(percentCompleted) / 100, 2);
 			}
 
 
-			if (this.currentValues.dayTypeText !== day_type) {
-				this.index.dayType.innerText = day_type;
-				this.currentValues.dayTypeText = day_type;
+			if (this.currentValues.dayTypeText !== dayType) {
+				this.index.dayType.innerText = dayType;
+				this.currentValues.dayTypeText = dayType;
 				returnVal = true;
 			}
 
-			if (this.currentValues.currentPeriodText !== period_name) {
-				this.index.currentPeriodText.innerText = period_name;
+			if (this.currentValues.currentPeriodText !== periodName) {
+				this.index.currentPeriodText.innerText = periodName;
 
 				// animation
 				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
-				this.currentValues.currentPeriodText = period_name;
+				this.currentValues.currentPeriodText = periodName;
 				returnVal = true;
 			}
 
@@ -114,64 +114,38 @@ export default class View {
 		return returnVal;
 	}
 
-	applyPreferencesToElements(values) {
+	updateViewWithState(preferences, meta) {
 		// theme stuff
-		this.canvas.updateColors(values.theme.background, values.theme.completed);
-		this.index.mainCanvasOverlay.style.color = values.theme.text;
-		this.index.settingsButton.querySelector('div').style.background = values.theme.text;
+		this.canvas.updateColors(preferences.theme.background, preferences.theme.completed);
+		this.index.mainCanvasOverlay.style.color = preferences.theme.text;
+		this.index.settingsButton.querySelector('div').style.background = preferences.theme.text;
 
-		if (typeof values.theme.background === 'object') { // if gradient background
-			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background.stops[values.theme.background.stops.length - 1];
+		if (typeof preferences.theme.background === 'object') { // if gradient background
+			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.background.stops[preferences.theme.background.stops.length - 1];
 		} else {
-			this.index.settingsButton.querySelector('div > i').style.color = values.theme.background;
+			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.background;
 		}
 
-		this.showThemeColorExamples(values.theme);
-		this.settings.themeSelector.value = values.theme.num;
+		this.showThemeColorExamples(preferences.theme);
+		this.settings.themeSelector.value = preferences.theme.num;
 
-		if (values.google_account.signed_in) {
+		this.settings.schoolSelector.setSchoolOptions(preferences.schoolOptions);
+		this.settings.periodNameEnterArea.setPeriods(meta.periods);
+
+		if (preferences.googleAccount.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
-			this.index.googleSignin.querySelector('div > img').src = values.google_account.profile_pic + '?sz=70';
+			this.index.googleSignin.querySelector('div > img').src = preferences.googleAccount.profile_pic + '?sz=70';
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
+
+			this.settings.periodNameEnterArea.setDisabled(false);
+			this.settings.periodNameEnterArea.setPreferences(preferences.periodNames);
+			this.settings.schoolSelector.setDisabled(false);
+			this.settings.schoolSelector.setSelection(preferences.school);
 
 			this.settings.themeSelector.disabled = '';
 			this.settings.saveSettingsButton.disabled = '';
-			this.settingChangesSaved();
 
-			for (let element of this.settings.inputs)
-				element.disabled = '';
-		}
-
-		if (values.period_names)
-			for (let element of this.settings.inputs) {
-				let num = this.getIdFromInputElem(element);
-				this.showPeriodInput(element, values.free_periods[num], values.period_names[num])
-			}
-
-	}
-
-	showPeriodInput(element, isFree, value) {
-		let num = element.id.substring(6, 7);
-		let label = element.nextElementSibling;
-
-		element.classList.remove('free-period');
-		label.innerHTML = label.innerHTML.replace(' - removed from schedule', '');
-
-		if (isFree) {
-			element.classList.add('free-period');
-			if (!label.innerHTML.includes(' - removed from schedule'))
-				label.innerHTML += ' - removed from schedule';
-		}
-
-		if (value === null)
-			return;
-
-		if (typeof value === 'string') {
-			element.value = value;
-			element.classList.add('has-value');
-		} else {
-			element.value = '';
-			element.classList.remove('has-value');
+			this.settings.pleaseSignIn.style.display = 'none';
 		}
 
 	}
@@ -190,8 +164,8 @@ export default class View {
 				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== currentDate)
 					continue;
 
-				if (typeof p.n === 'number') {
-					p.n = periodNames[p.n] || formatPeriodNumber(p.n);
+				if (scheduleBuilder.isPeriod(p.n)) {
+					p.n = periodNames[p.n] || p.n;
 				}
 
 				html += `
@@ -216,21 +190,25 @@ export default class View {
 	showThemeColorExamples(theme) {
 
 		if (typeof theme.background === 'object') {
-			for (let input of this.settings.themeExamples) {
-				input.style.display = 'none';
-			}
-			this.settings.gradientOnly.style.display = 'block';
+
+			this.settings.themeExamples[0].innerText = 'Beginning color';
+			this.settings.themeExamples[1].innerText = 'End color';
+
+			this.settings.themeExamples[0].style.background = theme.background.stops[0];
+			this.settings.themeExamples[1].style.background = theme.background.stops[theme.background.stops.length - 1];
+			this.settings.themeExamples[0].style.color = theme.text;
+			this.settings.themeExamples[1].style.color = theme.text;
 
 		} else {
-			for (let input of this.settings.themeExamples) {
-				input.style.display = 'block';
-			}
-			this.settings.gradientOnly.style.display = 'none';
+
+			this.settings.themeExamples[0].innerText = 'Overlay color';
+			this.settings.themeExamples[1].innerText = 'Background color';
 			
 			this.settings.themeExamples[0].style.background = theme.completed;
 			this.settings.themeExamples[1].style.background = theme.background;
 			this.settings.themeExamples[0].style.color = theme.text;
 			this.settings.themeExamples[1].style.color = theme.text;
+
 		}
 	}
 
@@ -260,9 +238,6 @@ export default class View {
 
 		if (dimension > 450) {
 			this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
-			
-			if (window.innerHeight > 800 && dimension > 900)
-				document.body.style.overflow = 'hidden'; // locks screen
 		} else {
 			// mobile sizing
 			this.index.timeLeft.style.fontSize = Math.min(120, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
@@ -278,19 +253,23 @@ export default class View {
 	showModal(screen) {
 		let screens = this.modal.body.children;
 
-		for (let i = 0; i < screens.length; i++)
-			if (screens[i].classList.contains(screen))
+		for (let i = 0; i < screens.length; i++) {
+			if (screens[i].classList.contains(screen)) {
 				screens[i].style.display = 'block';
-			else
+			} else {
 				screens[i].style.display = 'none';
+			}
+		}
 
 		let titles = this.modal.title.children;
 
-		for (let i = 0; i < titles.length; i++)
-			if (titles[i].classList.contains(screen))
+		for (let i = 0; i < titles.length; i++) {
+			if (titles[i].classList.contains(screen)) {
 				titles[i].style.display = 'block';
-			else
+			} else {
 				titles[i].style.display = 'none';
+			}
+		}
 
 		let modalStyle = this.root.querySelector('#modal').style;
 		modalStyle.display = 'block';
@@ -340,30 +319,6 @@ export default class View {
 
 	}
 
-	settingChangesNotSaved() {
-		this.settings.saved = false;
-		this.settings.changesSaved.style.background = '#464646';
-		this.settings.changesSaved.querySelector('span').style.color = '#fff';
-		this.settings.changesSaved.querySelector('span').innerHTML = 'Click save to save changes';
-	}
-
-	settingChangesSaved() {
-		this.settings.saved = true;
-		this.settings.changesSaved.style.background = '';
-		this.settings.changesSaved.querySelector('span').style.color = '';
-		this.settings.changesSaved.querySelector('span').innerHTML = 'All changes saved in the cloud';
-	}
-
-	getValuesFromAllPeriodInputs() {
-		let names = {};
-		for (let element of this.settings.inputs) {
-			let num = this.getIdFromInputElem(element);
-			names[num] = element.value.trim();
-		}
-
-		return names;
-	}
-
 	notify(html) {
 		this.notifications.querySelector('span').innerHTML = html;
 		this.notifications.style.bottom = '15px';
@@ -390,21 +345,12 @@ export default class View {
 		}
 	}
 
-	getIdFromInputElem(element) { return parseInt(element.id.substring(6, 7)); }
-
 	getSelectedThemeNum() { return parseInt(this.settings.themeSelector.value); }
 
 	dimensionCanvas() { this.canvas.dimension(); }
 }
 
 // helper functions
-function getOrdinalNumber(n) {
-	return n + (n > 0 ? ["th", "st", "nd", "rd"][n > 3 && 21 > n || n % 10 > 3 ? 0 : n % 10] : "");
-}
-
-function formatPeriodNumber(n) {
-	return getOrdinalNumber(n) + ' Period';
-}
 
 function padNum(n) {
 	if (n < 10)

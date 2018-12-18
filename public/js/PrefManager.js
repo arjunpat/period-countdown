@@ -1,21 +1,29 @@
-import Storage from './Storage.js';
+import Storage from './Storage';
+import RequestManager from './RequestManager';
+import { isFreePeriod } from './extras';
 
 export default class PrefManager {
 
 	constructor() {
-		this.initVars();
 
 		this.themeOptions = [
 			// [background, completed, text]
-			['#fccb0b', '#fee561', '#000000'], // Yellow
+			[ // Yellow gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#fccb0b', 'rgba(252, 89, 11, 0.68)']
+				},
+				'rgba(70, 0, 70, 0.18)',
+				'#000'
+			],
 			['#000000', '#262626', '#fccb0b'], // Yellow on Black
-			['#ffffff', '#d9d9d9', '#000000'], // Grey
+			['#eaeaea', '#d0d0d0', '#000000'], // Grey
 			[ // Blue-green gradient
 				{
 					type: 'linear_gradient',
 					stops: ['#40e078', '#40c8e6']
 				},
-				'rgba(0, 0, 0, .18)',
+				'rgba(0, 0, 0, 0.18)',
 				'#000'
 			],
 			[ // Pink-blue gradient
@@ -23,69 +31,119 @@ export default class PrefManager {
 					type: 'linear_gradient',
 					stops: ['#FC5C7D', '#6A82FB']
 				},
-				'rgba(0, 0, 0, .18)',
+				'rgba(0, 0, 0, 0.18)',
 				'#000'
 			],
-			['#bdffff', '#aae6e6', '#000000'], // Light Blue
-			['#000000', '#262626', '#ff2a00'], // Red on Black
-			[
+			[ // Chalkboard gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#232526', '#414345']
+				},
+				'rgba(5, 6, 7, 0.22)',
+				'#cfcfcf'
+			],
+			[ // Twitch purple gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#6441A5', '#2a0845']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#cfcfcf'
+			],
+			[ // Sunrise gradient
 				{
 					type: 'linear_gradient',
 					stops: ['#F3904F', '#3B4371']
 				},
-				'rgba(0, 0, 0, .18)',
+				'rgba(0, 0, 0, 0.18)',
 				'#000'
-			], // Sunrise Gradient
-			['#90e69e', '#7bce89', '#000000'], // Green
+			],
+			[ // Greek gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#3D7EAA', '#FFE47A']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#000'
+			],
+			[ // Netflix red gradient
+				{
+					type: 'linear_gradient',
+					stops: ['#8e0e00', '#1f1c18']
+				},
+				'rgba(0, 0, 0, 0.18)',
+				'#cfcfcf'
+			],
 		]
 
-		if (Storage.prefsExist())
+		this.schoolOptions = [
+			[
+				'mvhs',
+				'Mountain View High School'
+			],
+			[
+				'lahs',
+				'Los Altos High School'
+			],
+			[
+				'paly',
+				'Palo Alto High School'
+			]
+		]
+
+		if (Storage.prefsExist()) {
 			this.setAllPreferences(Storage.getPrefs());
+		}
+		
+		this.initVars();
 	}
 
 	initVars() {
-		this.themeNum = 0;
-		this.period_names = {};
-		this.google_account = {
-			signed_in: false
-		}
+		// set to default values (school and theme)
+
+		this.themeNum = this.themeNum || 0;
+		this.periodNames = this.periodNames || {};
+		this.googleAccount = this.googleAccount || { signed_in: false }
+		this.school = (this.isASchoolId(this.school) && this.school) || 'mvhs';
 	}
 
 	getAllPreferences() {
+		let freePeriods = {};
 
-		let free_periods = {};
-		for (let i = 0; i <= 7; i++)
-			if (this.isFreePeriodGivenContext(this.period_names, i))
-				free_periods[i] = true;
-			else
-				free_periods[i] = false;
+		for (let key in this.periodNames) {
+			freePeriods[key] = isFreePeriod(this.periodNames[key]);
+		}
 
 		return {
 			theme: this.getThemeFromNum(this.themeNum),
-			period_names: this.period_names,
-			google_account: this.google_account,
-			free_periods
+			periodNames: this.periodNames,
+			googleAccount: this.googleAccount,
+			school: this.school,
+			schoolOptions: this.schoolOptions,
+			freePeriods
 		}
 	}
 
 	setAllPreferences(values) {
 		this.setTheme(values.theme);
-		this.period_names = values.period_names;
-		this.google_account = values.google_account;
+		this.periodNames = values.periodNames;
+		this.googleAccount = values.googleAccount;
+		this.school = values.school;
 	}
 
 	save() {
 		Storage.setPrefs({
 			theme: this.themeNum,
-			period_names: this.period_names,
-			google_account: this.google_account
+			periodNames: this.periodNames,
+			googleAccount: this.googleAccount,
+			school: this.school
 		});
 	}
-
+	
 	// settage and gettage of settings
 
 	setGoogleAccount(values) {
-		this.google_account = {
+		this.googleAccount = {
 			first_name: values.first_name,
 			last_name: values.last_name,
 			profile_pic: values.profile_pic,
@@ -95,38 +153,34 @@ export default class PrefManager {
 
 		if (values.settings) {
 			if (values.settings.period_names)
-				this.period_names = values.settings.period_names;
+				this.periodNames = values.settings.period_names;
 			if (typeof values.settings.theme === 'number')
 				this.setTheme(values.settings.theme);
+			if (typeof values.school === 'string') {
+				this.setSchoolId(values.school);
+			}
 			// do other loading stuff here
 		}
 
 		this.save();
 	}
 
-	setPreferences(periodValues, theme) {
+	setPreferences(periodNames, theme, school) {
 		if (!this.isLoggedIn())
 			return;
-
-		let period_names = {};
-		for (let num in periodValues) {
-			let name = periodValues[num];
-
-			if (num >= 0 && num <= 7 && typeof name === 'string')
-				if (name.length <= 20 && name.length > 0)
-					period_names[num] = name;
-		}
 
 		if (!this.isValidThemeNum(theme))
 			theme = 0;
 
-		return RequestManager.updatePreferences(period_names, theme).then(data => {
+		return RequestManager.updatePreferences(periodNames, theme, school).then(data => {
 			if (data.success) {
 				this.setTheme(theme);
-				this.period_names = period_names;
+				this.periodNames = periodNames;
+				this.setSchoolId(school);
 				return true;
-			} else
+			} else {
 				return false;
+			}
 		});
 
 	}
@@ -139,6 +193,14 @@ export default class PrefManager {
 		this.save();
 	}
 
+	setSchoolId(id) {
+		if (!this.isASchoolId(id))
+			return;
+
+		this.school = id;
+		this.save();
+	}
+
 	getThemeFromNum(num) {
 		return {
 			num,
@@ -148,65 +210,24 @@ export default class PrefManager {
 		}
 	}
 
+	isASchoolId(schoolId) {
+		// TODO: optimize this
+		// use the prefmanager school functionality
+		return this.schoolOptions.some(a => a[0] === schoolId);
+	}
+
 	isValidThemeNum(num) {
 		if (this.themeOptions[num])
 			return true;
 		return false;
 	}
 
+	getPeriodName(num) { return this.periodNames[num]; }
 
-	isFreePeriod(periodName) {
-		// some serious ml going on here!
-		if (typeof periodName !== 'string')
-			return false;
+	getThemeNum() { return this.themeNum; }
 
-		periodName = periodName.trim().toLowerCase();
-		return ['free', 'none', 'nothin'].some(a => periodName.includes(a));
-	}
+	getSchoolId() { return this.school; }
 
-	isFreePeriodGivenContext(context, num) {
-
-		/*
-		 * this method only marks a free period as free
-		 * if it is consecutive with other free periods at either
-		 * the begining of end of the day
-		 */
-
-		// sanitize
-		context = JSON.parse(JSON.stringify(context))
-
-		for (let key in context)
-			context[key] = this.isFreePeriod(context[key]);
-
-		// make sure all periods are not free
-		if (!context[num])
-			return false;
-
-		if (num === 0 || num === 7)
-			return true;
-
-		let isFree = true;
-		for (let i = 0; i < num; i++)
-			if (!context[i]) {
-				isFree = false;
-				break;
-			}
-
-		if (isFree)
-			return isFree;
-
-		for (let i = 7; i > num; i--)
-			if (!context[i])
-				return false;
-
-		return true;
-
-	}
-
-	getPeriodName(num) { return this.period_names[num] }
-
-	getThemeNum() { return this.themeNum }
-
-	isLoggedIn() { return !!this.google_account.signed_in; }
+	isLoggedIn() { return !!this.googleAccount.signed_in; }
 
 }

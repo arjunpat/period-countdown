@@ -89,7 +89,7 @@
 
 #settings #save-settings-button {
 	width: 160px;
-	transition: all ease 0.5s;
+	transition: background 0.2s ease;
 	margin: auto;
 	display: block;
 }
@@ -109,9 +109,8 @@
 	margin: 20px 0;
 	font-size: 20px;
 	background: #ccc;
-	padding: 6px;
+	padding: 8px;
 	border-radius: 4px;
-	border: 2px solid black;
 	user-select: none;
 	transition: all 0.3s ease;
 }
@@ -122,6 +121,24 @@
 
 #settings #free-period {
 	text-decoration: line-through;
+}
+
+#settings .section-title {
+	font-weight: bold;
+	font-size: 36px;
+	margin-bottom: 30px;
+	font-family: 'Product Sans';
+}
+
+#settings #please-sign-in {
+	padding: 8px;
+	background: #e0e0e0;
+	border-radius: 4px;
+	display: inline-block;
+	margin: 16px 0 0 0;
+	color: #525252;
+	font-size: 14px;
+	margin-left: 1.5%;
 }
 
 @media (max-width: 750px) {
@@ -137,10 +154,8 @@
 }
 
 @media (min-width: 750px) {
-	#settings .third:nth-child(3) {
+	#settings .third:nth-child(2) {
 		border-left: 2px solid #ccc;
 	}
-	#settings .third:nth-child(2) {
-		margin-top: 71px;
-	}
 }
+
