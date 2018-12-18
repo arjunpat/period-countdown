@@ -202,7 +202,7 @@ render.settings = () => {
 				let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
 
 				for (let period in periodNames) {
-					if (periodNames[period] !== prefManager.getPeriodName(period)) {
+					if (periodNames[period] !== prefManager.getPeriodName(period) && !(!periodNames[period] && !prefManager.getPeriodName(period))) {
 						return true;
 					}
 				}
@@ -262,7 +262,7 @@ render.settings = () => {
 
 			view.settings.periodNameEnterArea.setPeriods(null);
 			timingManager.loadSchool(val).then(() => {
-				view.settings.periodNameEnterArea.setPeriods(timingManager.getSchoolData().school.periods);
+				view.settings.periodNameEnterArea.setPeriods(timingManager.getSchoolData(val).school.periods);
 			});
 
 		}
