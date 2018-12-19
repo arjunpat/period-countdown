@@ -32,6 +32,7 @@
 	"homepage": "https://github.com/arjunpat/period-countdown#readme",
 	"dependencies": {
 		"dotenv": "^6.0.0",
+		"express": "^4.16.4",
 		"mysql": "^2.16.0"
 	},
 	"devDependencies": {
