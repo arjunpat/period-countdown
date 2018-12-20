@@ -11,7 +11,7 @@ export default class PrefManager {
 			[ // Yellow gradient
 				{
 					type: 'linear_gradient',
-					stops: ['#fccb0b', 'rgba(252, 89, 11, 0.68)']
+					stops: ['#fccb0b', 'rgb(252, 89, 11)']
 				},
 				'rgba(70, 0, 70, 0.18)',
 				'#000'

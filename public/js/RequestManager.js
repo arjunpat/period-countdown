@@ -121,10 +121,19 @@ export default class RequestManager {
 
 	static sendLeaveAnalytics() {
 		if (navigator.sendBeacon) {
-			navigator.sendBeacon('/api/v3/write/close-analytics', JSON.stringify({
-				device_id: Storage.getDeviceId(),
-				data: {}
-			}));
+
+			let data = [
+				JSON.stringify({
+					device_id: Storage.getDeviceId(),
+					data: {}
+				})
+			]
+
+			let blob = new Blob(data, {
+				type: 'application/json; charset=UTF-8'
+			});
+
+			navigator.sendBeacon('/api/v3/write/close-analytics', blob);
 		}
 	}
 

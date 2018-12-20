@@ -130,6 +130,7 @@ render.index = () => {
 	});
 
 	view.index.dayType.onmouseover = () => {
+		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 		view.index.scheduleTable.style.display = 'block';
 		setTimeout(() => {
 			view.index.scheduleTable.style.opacity = '1';

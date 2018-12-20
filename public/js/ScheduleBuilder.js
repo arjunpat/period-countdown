@@ -53,22 +53,22 @@ export default class ScheduleBuilder {
 			}
 
 			// remove periods at the end of the day
-			let lastEvent;
+			let freeEvent;
 			while (schedule.length > 1) {
 				let i = schedule.length - 2;
 				if (this.isPeriod(schedule[i].n)) {
 					if (this.free[schedule[i].n]) {
-						lastEvent = schedule[i];
+						freeEvent = schedule[i];
 						schedule.splice(i, 1);
 					} else {
-						if (lastEvent) {
-							schedule[schedule.length - 1].f = lastEvent.f;
+						if (freeEvent) {
+							schedule[schedule.length - 1].f = freeEvent.f;
 						}
 						break;
 					}
 				} else {
+					freeEvent = schedule[i];
 					schedule.splice(i, 1);
-					lastEvent = schedule[i];
 				}
 			}
 

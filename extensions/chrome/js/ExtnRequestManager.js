@@ -76,10 +76,19 @@ export default class ExtnRequestManager {
 
 	static sendLeaveAnalytics() {
 		if (navigator.sendBeacon) {
-			navigator.sendBeacon(URL_PREFIX + '/api/v3/write/close_analytics', JSON.stringify({
-				device_id: Storage.getDeviceId(),
-				data: {}
-			}));
+
+			let data = [
+				JSON.stringify({
+					device_id: Storage.getDeviceId(),
+					data: {}
+				})
+			]
+
+			let blob = new Blob(data, {
+				/*type: 'application/json; charset=UTF-8'*/
+			});
+
+			navigator.sendBeacon(URL_PREFIX + '/api/v3/write/close_analytics', blob);
 		}
 	}
 
