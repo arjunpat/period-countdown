@@ -72,6 +72,10 @@ export default class TimingManager {
 		this.loop = func;
 	}
 
+	repeatLoopIn(ms) {
+		this.state.timeoutId = window.setTimeout(this.loop, ms);
+	}
+
 	getSchoolData(schoolId) {
 		return this.state.schoolData[schoolId];
 	}

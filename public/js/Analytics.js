@@ -17,7 +17,7 @@ export default class Analytics {
 			await this.sleep(1);
 
 		let data = {};
-		if ((this.pathname === '/' || this.pathname === 'extn') && typeof this.period === 'number' && this.period_name) { // index page or extn
+		if ((this.pathname === '/' || this.pathname === 'extn') && typeof this.period === 'number') { // index page or extn
 
 			data.prefs = {
 				theme: this.theme,

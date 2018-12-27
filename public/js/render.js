@@ -21,10 +21,8 @@ timingManager.setTimerPrepareMethod((school, schedule) => {
 
 timingManager.setLoop((firstRun = false) => {
 
-	let tm = timingManager; // alias
-
 	if (window.location.pathname !== '/')
-		return tm.state.timeoutId = window.setTimeout(tm.loop, 500); // .5s when user not on the page; helps with cpu usage
+		return timingManager.repeatLoopIn(500); // .5s when user not on the page; helps with cpu usage
 
 	let time = timingEngine.getRemainingTime();
 	time.periodName = prefManager.getPeriodName(time.period) || time.period;
@@ -37,19 +35,19 @@ timingManager.setLoop((firstRun = false) => {
 		analytics.setPeriodName(time.periodName);
 
 		window.onresize();
-		return tm.state.timeoutId = window.setTimeout(tm.loop, 50);
+		return timingManager.repeatLoopIn(50);
 	}
 
 	if (!document.hidden || document.hasFocus()) {
 		if (view.updateScreen(time, true)) {
 			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 		}
-		return tm.state.timeoutId = window.setTimeout(tm.loop, 50);
+		return timingManager.repeatLoopIn(50);
 	}
 
 	view.updateScreen(time, false);
 
-	return tm.state.timeoutId = window.setTimeout(tm.loop, 500); // .5s when user not on the page; helps with cpu usage
+	return timingManager.repeatLoopIn(500); // .5s when user not on the page; helps with cpu usage
 
 });
 

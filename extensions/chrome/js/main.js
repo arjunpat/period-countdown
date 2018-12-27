@@ -15,10 +15,10 @@ window.Logger = Logger;
 window.analytics = new Analytics();
 window.prefManager = new PrefManager();
 window.scheduleBuilder = new ScheduleBuilder();
+window.timingManager = new TimingManager();
 window.RequestManager = RequestManager;
 window.URL_PREFIX = 'http://localhost:8080';
 window.VERSION = '0.4.2';
-window.timingManager = new TimingManager();
 
 async function showPrefs() {
 
@@ -67,7 +67,7 @@ timingManager.setLoop((firstRun = false) => {
 		analytics.setPeriodName(time.periodName);
 	}
 
-	return timingManager.state.timeoutId = window.setTimeout(timingManager.loop, 50);
+	return timingManager.repeatLoopIn(50);
 
 });
 
