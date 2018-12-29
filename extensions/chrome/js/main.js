@@ -104,6 +104,7 @@ chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 		analytics.setPeriod(analyticsTime.period);
 		analytics.setPeriodName(prefManager.getPeriodName(analyticsTime.period) || analyticsTime.period);
 		analytics.setTheme(prefManager.getThemeNum());
+		analytics.setSchool(prefManager.getSchoolId());
 		analytics.setPathname('extn');
 		analytics.setDeviceId(Storage.getDeviceId());
 
