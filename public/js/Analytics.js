@@ -12,12 +12,15 @@ export default class Analytics {
 		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || !this.version || !this.school)
 			return;
 
+		if ((this.pathname === '/' || this.pathname === 'extn') && typeof this.period !== 'number')
+			return;
+
 		this.sent = true;
 		while (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0)
 			await this.sleep(1);
 
 		let data = {};
-		if ((this.pathname === '/' || this.pathname === 'extn') && typeof this.period === 'number') { // index page or extn
+		if (this.pathname === '/' || this.pathname === 'extn') { // index page or extn
 
 			data.prefs = {
 				theme: this.theme,

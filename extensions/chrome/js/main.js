@@ -123,10 +123,10 @@ window.onbeforeunload = () => {
 }
 
 
-RequestManager.getLatestVersion().then(version => {
+/*RequestManager.getLatestVersion().then(version => {
 	if (version !== VERSION) {
 		view.hidePreloader();
 		view.switchTo('update-extn');
 		document.querySelector('a[href="chrome://extensions"]').onclick = () => chrome.tabs.create({url: 'chrome://extensions'});
 	}
-});
+});*/
