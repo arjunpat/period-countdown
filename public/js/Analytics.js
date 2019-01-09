@@ -12,7 +12,7 @@ export default class Analytics {
 		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || !this.version || !this.school)
 			return;
 
-		if ((this.pathname === '/' || this.pathname === 'extn') && typeof this.period !== 'number')
+		if ((this.pathname === '/' || this.pathname === 'extn') && !this.period)
 			return;
 
 		this.sent = true;
@@ -51,9 +51,6 @@ export default class Analytics {
 
 		data.version = this.version;
 
-		if (this.registeredTo)
-			data.registered_to = this.registeredTo;
-
 		RequestManager.sendAnalytics(data).then(data => {
 			if (data.success) {
 				Logger.log('Analytics', 'analytics data sent!');
@@ -85,11 +82,6 @@ export default class Analytics {
 
 	setPathname(x) {
 		this.pathname = x;
-		this.a();
-	}
-
-	setRegisteredTo(x) {
-		this.registeredTo = x;
 		this.a();
 	}
 

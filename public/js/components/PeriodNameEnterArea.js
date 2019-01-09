@@ -108,7 +108,9 @@ export default class PeriodNameEnterArea extends Component {
 		let map = {};
 
 		for (let input of this.getElement().querySelectorAll('input')) {
-			map[ this._decodePeriodNameId(input.id) ] = input.value;
+
+			if (input.value !== '')
+				map[ this._decodePeriodNameId(input.id) ] = input.value;
 		}
 
 		return map;

@@ -21,21 +21,12 @@ export function googleApiDidLoad(render) {
 			scope: 'profile email'
 		}).then(GoogleAuth => {
 			let gSuccess = user => {
-				if (view.modal.open) view.closeModal();
+				view.showModal('modal-loading');
 
-				let data = user.getBasicProfile();
+				RequestManager.login(user.getAuthResponse().id_token).then(res => {
+					view.closeModal();
 
-				let account = {
-					email: data.U3,
-					first_name: data.ofa,
-					last_name: data.wea,
-					profile_pic: data.Paa
-				}
-
-				RequestManager.login(account).then(res => {
-					if (res.data.status === 'returning_user') {
-						prefManager.setGoogleAccount(res.data.user_data);
-					} else if (res.data.status === 'new_user') {
+					if (res.data.status === 'returning_user' || res.data.status === 'new_user') {
 						prefManager.setGoogleAccount(res.data.user_data);
 					} else {
 						view.showModal('modal-server-down');

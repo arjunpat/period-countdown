@@ -93,7 +93,6 @@ chrome.runtime.onMessageExternal.addListener((req, sender, sendResponse) => {
 		}
 
 		if (values.error !== 'not_registered') {
-			analytics.setRegisteredTo(values.email);
 			prefManager.setGoogleAccount(values);
 		}
 		showPrefs();

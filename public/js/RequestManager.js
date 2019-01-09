@@ -52,14 +52,20 @@ export default class RequestManager {
 			});
 		else {
 
+			let ua = window.navigator.userAgent;
+
 			let temp = {
 				chrome: !!window.chrome,
-				int_exp: false || !!document.documentMode,
+				int_exp: /*@cc_on!@*/false || !!document.documentMode,
 				edge: !this.int_exp && !!window.StyleMedia,
-				safari: /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]" })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)),
+				safari: (
+					/constructor/i.test(window.HTMLElement)
+					|| (function (p) { return p.toString() === "[object SafariRemoteNotification]" })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)))
+					|| ((!!ua.match(/iPad/i) || !!ua.match(/iPhone/i) && !window.chrome)
+				),
 				firefox: typeof InstallTrigger !== 'undefined',
-				opera: (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0
-			};
+				opera: (!!window.opr && !!opr.addons) || !!window.opera || ua.indexOf(' OPR/') >= 0
+			}
 
 			let browser = {};
 
@@ -72,7 +78,7 @@ export default class RequestManager {
 				method: 'POST',
 				data: {
 					data: {
-						user_agent: window.navigator.userAgent,
+						user_agent: ua,
 						platform: window.navigator.platform,
 						browser
 					}
@@ -86,13 +92,15 @@ export default class RequestManager {
 		}
 	}
 
-	static login(account) {
+	static login(token) {
 		return this.ajax({
 			url: '/api/v3/write/login',
 			method: 'POST',
 			data: {
 				device_id: Storage.getDeviceId(),
-				data: account
+				data: {
+					token
+				}
 			}
 		}).then(res => res.json);
 	}

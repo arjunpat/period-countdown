@@ -39,7 +39,6 @@ RequestManager.init().then(data => {
 	if (data.email) {
 		prefManager.setGoogleAccount(data);
 		render.showPrefs();
-		analytics.setRegisteredTo(data.email);
 	}
 
 	if (Storage.deviceIdExists()) {
