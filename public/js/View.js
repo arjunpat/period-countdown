@@ -164,9 +164,7 @@ export default class View {
 				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== currentDate)
 					continue;
 
-				if (scheduleBuilder.isPeriod(p.n)) {
-					p.n = periodNames[p.n] || p.n;
-				}
+				p.n = periodNames[p.n] || p.n;
 
 				html += `
 					<tr>

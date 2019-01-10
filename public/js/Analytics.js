@@ -70,7 +70,6 @@ export default class Analytics {
 	}
 
 	setPeriod(x) {
-		if (x === 'Free') x = -1;
 		this.period = x;
 		this.a();
 	}
