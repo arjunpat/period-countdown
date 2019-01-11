@@ -31,12 +31,7 @@ timingManager.setLoop((firstRun = false) => {
 		view.updateScreen(time, true);
 		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 
-		if (scheduleBuilder.isPeriod(time.period)) {
-			analytics.setPeriod(time.period);
-		} else {
-			analytics.setPeriod(-1);
-		}
-		
+		analytics.setPeriod(time.period);		
 		analytics.setPeriodName(time.periodName);
 
 		window.onresize();
