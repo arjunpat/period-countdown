@@ -39,7 +39,7 @@ app.all('*', (req, res) => {
 		res.send(file.content);
 	}).catch(err => {
 		console.log(err);
-		cache.getFile('/').then(file => { res.set(file.headers); res.send(file.content); });
+		cache.getFile('/').then(file => { res.status(404); res.set(file.headers); res.send(file.content); });
 	});
 });
 

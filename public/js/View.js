@@ -25,7 +25,8 @@ export default class View {
 			timeLeft: document.getElementById('time-left'),
 			settingsButton: document.getElementById('settings-button'),
 			googleSignin: document.getElementById('google-signin'),
-			scheduleTable: document.getElementById('schedule-table')
+			scheduleTable: document.getElementById('schedule-table'),
+			isACrawler: /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
 		}
 		this.settings = {
 			pleaseSignIn: document.getElementById('please-sign-in'),
@@ -72,7 +73,7 @@ export default class View {
 		timeString += `${minutes}:${seconds}`;
 
 		let documentTitle = `${timeString} \u2022 ${periodName}`;
-		if (this.currentValues.documentTitle !== documentTitle) {
+		if (this.currentValues.documentTitle !== documentTitle && !this.index.isACrawler) {
 			document.title = documentTitle;
 			this.currentValues.documentTitle = documentTitle;
 		}
