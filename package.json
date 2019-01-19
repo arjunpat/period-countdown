@@ -1,6 +1,6 @@
 {
 	"name": "period-countdown",
-	"version": "3.0.7",
+	"version": "3.0.8",
 	"description": "A simple way to keep track of the remaining time in class",
 	"main": "server.js",
 	"scripts": {

@@ -16,8 +16,12 @@ export default class Analytics {
 			return;
 
 		this.sent = true;
-		while (window.performance.timing.domInteractive - window.performance.timing.domLoading < 0)
+		while (
+			window.performance.timing.domInteractive - window.performance.timing.domLoading < 0
+			|| window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0
+		) {
 			await this.sleep(1);
+		}
 
 		let data = {};
 		if (this.pathname === '/' || this.pathname === 'extn') { // index page or extn
