@@ -135,7 +135,9 @@ export default class View {
 
 		if (preferences.googleAccount.signed_in) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
-			this.index.googleSignin.querySelector('div > img').src = preferences.googleAccount.profile_pic + '?sz=70';
+
+			let size = 70 * (window.devicePixelRatio || 1);
+			this.index.googleSignin.querySelector('div > img').src = preferences.googleAccount.profile_pic + '?sz=' + size;
 			this.index.googleSignin.querySelector('div > img').style.display = 'block';
 
 			this.settings.periodNameEnterArea.setDisabled(false);

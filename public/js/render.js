@@ -193,22 +193,21 @@ render.settings = () => {
 	}
 
 	if (view.settings.closeButton.onclick === null) {
-		
-		view.settings.closeButton.onclick = () => {
 
-			function newPeriodNames() {
+		function newPeriodNames() {
 
-				let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
+			let periodNames = view.settings.periodNameEnterArea.getPeriodNames();
 
-				for (let period in periodNames) {
-					if (periodNames[period] !== prefManager.getPeriodName(period) && !(!periodNames[period] && !prefManager.getPeriodName(period))) {
-						return true;
-					}
+			for (let period in periodNames) {
+				if (periodNames[period] !== prefManager.getPeriodName(period) && !(!periodNames[period] && !prefManager.getPeriodName(period))) {
+					return true;
 				}
-
-				return false;
 			}
 
+			return false;
+		}
+		
+		view.settings.closeButton.onclick = () => {
 			if (
 				view.getSelectedThemeNum() === prefManager.getThemeNum()
 				&& view.settings.schoolSelector.getSelection() === prefManager.getSchoolId()
@@ -225,6 +224,13 @@ render.settings = () => {
 		}
 
 		view.settings.saveSettingsButton.onclick = () => {
+
+			if (
+				view.getSelectedThemeNum() === prefManager.getThemeNum()
+				&& view.settings.schoolSelector.getSelection() === prefManager.getSchoolId()
+				&& !newPeriodNames()
+			) return view.showModal('modal-no-changes');
+
 			let elem = view.settings.saveSettingsButton;
 			let currentText = elem.innerHTML;
 			elem.innerHTML = 'Saving...';

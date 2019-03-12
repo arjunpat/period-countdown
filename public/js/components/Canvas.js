@@ -18,8 +18,8 @@ export default class Canvas {
 	}
 
 	draw(to) {
-		let w = this.canvas.width,
-			h = this.canvas.height;
+		let w = window.innerWidth,
+			h = window.innerHeight;
 
 		this.ctx.fillStyle = this.props.colors.background;
 		this.ctx.fillRect(0, 0, w, h);
@@ -93,8 +93,12 @@ export default class Canvas {
 	}
 
 	dimension() {
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
+		let dpr = window.devicePixelRatio || 1;
+		this.canvas.style.width = window.innerWidth + 'px';
+		this.canvas.style.height = window.innerHeight + 'px';
+		this.canvas.width = window.innerWidth * dpr;
+		this.canvas.height = window.innerHeight * dpr;
+		this.ctx.scale(dpr, dpr);
 
 		if (this.props.colors.gradient)
 			this.props.colors.background = this.parseGradient(this.props.colors.gradient);
@@ -103,7 +107,7 @@ export default class Canvas {
 	}
 
 	parseGradient(obj) {
-		let grd = this.ctx.createLinearGradient(0, 0, this.canvas.width, 0);
+		let grd = this.ctx.createLinearGradient(0, 0, window.innerWidth, 0);
 		
 		for (let i = 0; i < obj.stops.length; i++) {
 			grd.addColorStop(i / (obj.stops.length - 1), obj.stops[i]);

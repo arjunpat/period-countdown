@@ -18,12 +18,12 @@ export default class PrefManager {
 			],
 			['#000000', '#262626', '#fccb0b'], // Yellow on Black
 			['#eaeaea', '#d0d0d0', '#000000'], // Grey
-			[ // Blue-green gradient
+			[ // Cotton candy gradient
 				{
 					type: 'linear_gradient',
-					stops: ['#40e078', '#40c8e6']
+					stops: ['#74ebd5', '#ACB6E5']
 				},
-				'rgba(0, 0, 0, 0.18)',
+				'rgba(0, 0, 0, 0.1)',
 				'#000'
 			],
 			[ // Pink-blue gradient
@@ -50,18 +50,18 @@ export default class PrefManager {
 				'rgba(0, 0, 0, 0.18)',
 				'#cfcfcf'
 			],
-			[ // Sunrise gradient
+			[ // Purple hint gradient
 				{
 					type: 'linear_gradient',
-					stops: ['#F3904F', '#3B4371']
+					stops: ['#d9a7c7', '#fffcdc']
 				},
-				'rgba(0, 0, 0, 0.18)',
+				'rgba(0, 0, 0, 0.1)',
 				'#000'
 			],
-			[ // Greek gradient
+			[ // Peach gradient
 				{
 					type: 'linear_gradient',
-					stops: ['#3D7EAA', '#FFE47A']
+					stops: ['#fffbd5', '#b20a2c']
 				},
 				'rgba(0, 0, 0, 0.18)',
 				'#000'
