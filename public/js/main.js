@@ -78,7 +78,7 @@ analytics.setPathname(window.location.pathname);
 
 if (window.chrome && !Storage.chromeExtensionInstalled()) {
 	setTimeout(() => {
-		view.notify('Install the <a style="display: inline;" target="_blank" href="https://www.mvhs.club/u/bell-extn">Chrome Extension</a>');
+		view.notify('Install the <a style="display: inline;" target="_blank" href="http://bit.ly/bell-extn">Chrome Extension</a>');
 	}, 3000);
 }
 
