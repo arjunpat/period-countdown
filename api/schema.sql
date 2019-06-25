@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS devices (
+	device_id VARCHAR(30) PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	registered_to VARCHAR(100),
+	time_registered BIGINT UNSIGNED,
+	properties TEXT
+);
+CREATE TABLE IF NOT EXISTS users (
+	email VARCHAR(100) PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	first_name VARCHAR(50),
+	last_name VARCHAR(50),
+	profile_pic VARCHAR(150),
+	settings TEXT,
+	stats TEXT
+);
+CREATE TABLE IF NOT EXISTS hits (
+	db_id MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	device_id VARCHAR(30),
+	leave_time BIGINT UNSIGNED,
+	ip TINYTEXT,
+	properties TEXT
+);
+CREATE TABLE IF NOT EXISTS errors (
+	db_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	device_id VARCHAR(30),
+	error TEXT
+);

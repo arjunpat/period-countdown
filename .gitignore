@@ -4,17 +4,5 @@
 # no node_modules!
 node_modules/
 
-# no need for this
-bundle.js
-bundle.css
 
 .env
-
-# 3 simple, non-conflicting dependencies -> this file is just an eyesore
-package-lock.json
-
-# extention copy stuff
-extensions/chrome/css/main.css
-extensions/chrome/css/index.css
-
-extensions/chrome/images/

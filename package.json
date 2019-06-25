@@ -1,48 +1,19 @@
 {
-	"name": "period-countdown",
-	"version": "3.0.10",
-	"description": "A simple way to keep track of the remaining time in class",
-	"main": "server.js",
-	"scripts": {
-		"watch:server": "nodemon server.js",
-		"watch:client": "webpack --watch --config public/webpack.dev.config.js",
-		"build:client": "webpack --config public/webpack.prod.config.js",
-		"watch:extn": "webpack --watch --config extensions/chrome/webpack.config.js",
-		"build:extn": "webpack --config extensions/chrome/webpack.config.js",
-		"build": "node scripts/build-all.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/arjunpat/period-countdown.git"
-	},
-	"keywords": [
-		"countdown",
-		"bell",
-		"schedule",
-		"mvhs",
-		"school",
-		"mvla",
-		"period"
-	],
-	"author": "Arjun Patrawala",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/arjunpat/period-countdown/issues"
-	},
-	"homepage": "https://github.com/arjunpat/period-countdown#readme",
-	"dependencies": {
-		"dotenv": "^6.0.0",
-		"express": "^4.16.4",
-		"mysql": "^2.16.0"
-	},
-	"devDependencies": {
-		"@babel/core": "^7.1.2",
-		"@babel/polyfill": "^7.0.0",
-		"@babel/preset-env": "^7.1.0",
-		"babel-loader": "^8.0.4",
-		"nodemon": "^1.18.4",
-		"webpack": "^4.20.2",
-		"webpack-cli": "^3.1.2",
-		"whatwg-fetch": "^2.0.4"
-	}
+  "name": "period-countdown",
+  "version": "4.0.0",
+  "description": "A simple way to keep track of the remaining time in class",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all -p dev:*",
+    "dev:api": "npm run serve --prefix api"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com//arjunpat/period-countdown.git"
+  },
+  "author": "Arjun Patrawala",
+  "license": "MIT",
+  "dependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }
