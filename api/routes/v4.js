@@ -68,6 +68,18 @@ router.all('*', async (req, res, next) => {
   }
 });
 
+/*
+POST /v4/init
+{
+  "user_agent": "hi",
+  "platform": "hi",
+  "browser": {
+    "chrome": true,
+    "firefox": true
+  }
+}
+*/
+
 router.post('/init', async (req, res) => {
   let resp = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
 
@@ -87,6 +99,13 @@ router.post('/init', async (req, res) => {
 
   res.send(responses.success(resp[0]));
 });
+
+/*
+POST /v4/login
+{
+  "google_token": "aasdf.sdf.sdf"
+}
+*/
 
 router.post('/login',
   [
@@ -237,15 +256,38 @@ router.post('/thanks-again', async (req, res) => {
   res.send(responses.success());
 });
 
+/*
+POST /v4/error
+{...}
+*/
+
 router.post('/error', async (req, res) => {
+  let error = JSON.stringify(req.body);
+
+  if (error.length > 4000) {
+    return res.send(responses.success('error_too_long'));
+  }
+
   await mysql.insert('errors', {
     device_id: req.device_id,
     time: Date.now(),
-    error: JSON.stringify(req.body)
+    error
   });
 
   res.send(responses.success());
 });
+
+/*
+POST /v4/update-preferences
+{
+  "period_names": {
+    "Period 1": "Math",
+    "Period 5": "English"
+  },
+  "theme": 12,
+  "school": "mvhs"
+}
+*/
 
 router.post('/update-preferences', async (req, res) => {
   let { period_names, theme, school } = req.body;
