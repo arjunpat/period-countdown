@@ -1,11 +1,96 @@
 <!DOCTYPE html>
-	<html>
+<html lang="en">
 	<head>
-		<title></title>
+		<title>Period Countdown</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Manage your time more effectively by tracking the remaining time in class">
+		<meta name="keywords" content="countdown,period,bell,schedule,school,student,teacher,time,mvla,mvhs">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="theme-color" content="#fccb0b">
+		<link rel="manifest" href="/manifest.json?v=0.4.2">
+		<link rel="shortcut icon" href="/images/1024.png?v=0.4.2">
+
+		<link rel="apple-touch-icon" sizes="1024x1024" href="/images/1024_square.png?v=0.4.2">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Countdown">
+
+		<meta name="application-name" content="Countdown">
+
 		<link rel="stylesheet" type="text/css" href="/dist/bundle.css">
 	</head>
 	<body>
-
+		<div id="preloader">
+			<div>
+				<svg viewBox="25 25 50 50">
+					<circle cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10"/>
+				</svg>
+			</div>
+		</div>
+		<div id="index">
+			<div id="main-canvas-container">
+				<canvas id="main-canvas"></canvas>
+				<div id="main-canvas-overlay">
+					<div id="google-signin">
+						<button>Sign in with Google</button>
+						<div tooltip="Logout"><img></div>
+					</div>
+					<div style="bottom: 0; left: 0; position: fixed; padding: 50px; user-select: none;">
+						<div id="schedule-table">
+							<span>Upcoming Periods</span>
+							<table><tbody></tbody></table>
+						</div>
+						<span style="font-size: 50px; padding-left: 15px; font-family: 'Product Sans';">
+							<span href="https://periods.io" id="day-type"></span>
+							&nbsp;&#x25B8;&nbsp;
+							<span id="current-period-text"></span>
+						</span>
+						<span id="time-left"></span>
+					</div>
+					<div id="settings-button">
+						<div tooltip="Settings (s)">
+							<i class="material-icons">settings</i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modal">
+			<div id="modal-title">
+				<span class="modal-server-down">There&#8217;s a problem</span>
+				<span class="modal-found-bug">Report a bug</span>
+				<span class="modal-loading">Please wait</span>
+			</div>
+			<div id="modal-body">
+				<div class="modal-server-down">
+					It looks like our servers are currently down. Please try again later.
+				</div>
+				<div class="modal-found-bug">
+					Thanks for taking time to report a bug. To report it, do the following:<br><br>
+					1. Send an email to <a href="mailto:help@periods.io">help@periods.io</a> detailing the problem.<br><br>
+					2. Make sure to include the following device code in your email:<br><br>
+					<div style="background: #cccccc9e; padding: 5px; border-radius: 4px; display: inline-block;">
+						<span class="device-id"></span>
+					</div>
+					<br><br>
+					The code helps us fix the bug rapidly.
+				</div>
+				<div class="modal-loading">
+					Loading...
+				</div>
+			</div>
+			<div id="modal-footer">
+				<a>Close</a>
+			</div>
+		</div>
+		<div id="notifications">
+			<p>
+				<span></span>
+				<span>Close</span>
+			</p>
+		</div>
 		<script type="text/javascript" src="/dist/bundle.js"></script>
 	</body>
 </html>

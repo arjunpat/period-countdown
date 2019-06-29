@@ -4,7 +4,7 @@
   "description": "A simple way to keep track of the remaining time in class",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all -p dev:*",
+    "dev": "npm-run-all -p dev:*",
     "dev:api": "npm run serve --prefix api",
     "dev:main": "npm run dev --prefix main"
   },

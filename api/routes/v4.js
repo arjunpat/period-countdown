@@ -36,12 +36,6 @@ router.all('*', async (req, res, next) => {
     if (!user_agent || !platform)
       res.send(responses.error('bad_token_and_body'));
 
-    if (typeof browser === 'object') {
-      browser = Object.keys(browser);
-    } else {
-      browser = [];
-    }
-
     let device_id = generateId(20);
 
     await mysql.insert('devices', {
@@ -50,7 +44,7 @@ router.all('*', async (req, res, next) => {
       properties: JSON.stringify({
         user_agent,
         platform,
-        browser
+        browser: browser.join(',')
       })
     });
 
@@ -59,7 +53,7 @@ router.all('*', async (req, res, next) => {
     }, JWT_SECRET);
 
     res.cookie('periods_io', cookie, {
-      domain: process.env.NODE_ENV === 'production' ? 'periods.io' : undefined
+      domain: process.env.NODE_ENV === 'production' ? '.periods.io' : undefined
     });
 
     req.device_id = device_id;
