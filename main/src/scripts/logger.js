@@ -1,5 +1,5 @@
 
-export default new class Logger {
+export default class Logger {
 	constructor() {
 		this.timings = {};
 		this.logLevel = 1;

@@ -6,6 +6,10 @@ export default class RequestManager {
 	static get(url) {
 		let startTime = window.performance.now();
 
+		if (!url.includes('http')) {
+			url = serverHost + url;
+		}
+
 		return fetch(url).then(async res => {
 			res.json = await res.json();
 			res.loadTime = window.performance.now() - startTime;
@@ -16,6 +20,10 @@ export default class RequestManager {
 
 	static post(url, json) {
 		let startTime = window.performance.now();
+
+		if (!url.includes('http')) {
+			url = serverHost + url;
+		}
 
 		return window.fetch(url, {
 			method: 'POST',
@@ -32,13 +40,17 @@ export default class RequestManager {
 	}
 
 	static init() {
-		if (document.cookie.inclues('periods_io')) {
+		if (document.cookie.includes('periods_io')) {
 			return this.post('/v4/init', {}).then(res => {
 				if (res.json.error === 'no_device_exists') {
 					return this.init();
 				}
 			});
 		} else {
+			Storage.clearAll(); // clear all old data
+
+			let ua = window.navigator.userAgent;
+
 			let temp = {
 				chrome: !!window.chrome,
 				int_exp: /*@cc_on!@*/false || !!document.documentMode,
@@ -59,7 +71,7 @@ export default class RequestManager {
 					browser.push(val);
 
 			return this.post('/v4/init', {
-				user_agent: window.navigator.userAgent,
+				user_agent: ua,
 				platform: window.navigator.platform,
 				browser
 			}).then(res => res.json);
@@ -91,16 +103,8 @@ export default class RequestManager {
 		}
 	}
 
-	static updatePreferences(period_names, theme, school) {
-		return this.post('/v4/update-preferences', {
-			period_names,
-			theme,
-			school
-		}).then(res => res.json);
-	}
-
 	static getTime() {
-		return this.get('/time').then(res => res.json.data.ms + res.loadTime).catch(err => {
+		return this.get('/time').then(res => res.json.data + res.loadTime).catch(err => {
 			return false;
 		});
 	}

@@ -1,17 +1,14 @@
-import Logger from './Logger';
+import { logger } from './init';
 import Storage from './Storage';
 
 import Canvas from './components/Canvas';
-import SchoolSelector from './components/SchoolSelector';
-import PeriodNameEnterArea from './components/PeriodNameEnterArea';
 
-export default new class View {
+export default class View {
 	constructor() {
 
-		Logger.time('View', 'grabbed-elements');
+		logger.time('View', 'grabbed-elements');
 
 		this.currentValues = {};
-		this.root = document.getElementById('root');
 		this.preloader = document.getElementById('preloader');
 		this.notifications = document.getElementById('notifications');
 
@@ -37,12 +34,10 @@ export default new class View {
 		this.closeModal = this.closeModal.bind(this);
 		this.modal.footer.querySelector('a').onclick = this.closeModal;
 
-		Logger.timeEnd('View', 'grabbed-elements');
+		logger.timeEnd('View', 'grabbed-elements');
 	}
 
 	updateScreen(time, showVisuals) {
-
-		let returnVal = false;
 		let { percentCompleted, hours, minutes, seconds, periodName, dayType } = time;
 
 		// make time human readable
@@ -76,7 +71,6 @@ export default new class View {
 			if (this.currentValues.dayTypeText !== dayType) {
 				this.index.dayType.innerText = dayType;
 				this.currentValues.dayTypeText = dayType;
-				returnVal = true;
 			}
 
 			if (this.currentValues.currentPeriodText !== periodName) {
@@ -86,7 +80,6 @@ export default new class View {
 				this.index.currentPeriodText.style.animation = '.6s updatePeriod'
 				setTimeout(() => this.index.currentPeriodText.style.animation = 'none', 1e3);
 				this.currentValues.currentPeriodText = periodName;
-				returnVal = true;
 			}
 
 			if (this.currentValues.timeLeftText !== timeString) {
@@ -95,11 +88,9 @@ export default new class View {
 			}
 
 		}
-
-		return returnVal;
 	}
 
-	updateViewWithState(preferences, meta) {
+	updateViewWithState(preferences) {
 		// theme stuff
 		this.canvas.updateColors(preferences.theme.background, preferences.theme.completed);
 		this.index.mainCanvasOverlay.style.color = preferences.theme.text;
@@ -212,7 +203,6 @@ export default new class View {
 	}
 
 	hidePreloader() {
-
 		if (this.preloader.style.display !== 'none') {
 
 			this.preloader.querySelector('div').style.opacity = '0';
@@ -223,7 +213,6 @@ export default new class View {
 			}, 2000);
 
 		}
-
 	}
 
 	notify(html) {

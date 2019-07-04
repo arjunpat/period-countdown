@@ -1,6 +1,5 @@
 
 export default class Storage {
-
 	static setPrefs(x) {
 		if (typeof x !== 'object')
 			throw new TypeError('invalid arguments');

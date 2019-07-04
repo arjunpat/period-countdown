@@ -5,9 +5,7 @@ const timingData = require('../timing-data');
 router.use('/v4', require('./v4'));
 
 router.get('/time', (req, res) => {
-  res.send(responses.success({
-    ms: Date.now()
-  }));
+  res.send(responses.success(Date.now()));
 });
 
 router.get('/schedule/:school', (req, res) => {

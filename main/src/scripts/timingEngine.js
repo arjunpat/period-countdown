@@ -1,34 +1,15 @@
-import logger from './logger';
+import RequestManager from './RequestManager';
+import { logger } from './init';
 import { clone } from './extras';
 
-export default new class TimingEngine {
+export default class TimingEngine {
 
-	constructor() {}
-
-	init(presets, calendar, weeklyPresets) {
-		if (this.initialized)
-			throw 'TimingEngine has already been initialized';
-
-		// calc offset and run every 5 minutes
+	constructor() {
 		this.offset = 0;
 		this.calculateOffset();
-
-		this._init(presets, calendar, weeklyPresets);
-
-		this.initialized = true;
 	}
 
-	loadNewSchedule(presets, calendar, weeklyPresets) {
-		this.checkInit();
-
-		logger.time('TimingEngine', 'new-schedule');
-
-		this._init(presets, calendar, weeklyPresets);
-
-		logger.timeEnd('TimingEngine', 'new-schedule');
-	}
-
-	_init(presets, calendar, weeklyPresets) {
+	init(presets, calendar, weeklyPresets) {
 		this.presets = presets;
 		this.calendar = this.parseCalendar(calendar);
 		this.weeklyPresets = weeklyPresets;
@@ -40,8 +21,6 @@ export default new class TimingEngine {
 	}
 
 	getRemainingTime() {
-		this.checkInit();
-
 		let now = this.getCurrentTime(),
 			periodLength,
 			dist,
@@ -92,8 +71,6 @@ export default new class TimingEngine {
 	}
 
 	prepareSchedule() {
-		this.checkInit();
-
 		this.timeline = []; // always a fresh start
 
 		let dateString = this.getTodayDateString();
@@ -119,12 +96,9 @@ export default new class TimingEngine {
 		}
 
 		this.ensureTwoItemsInSchedule();
-
 	}
 
 	prepareDay(dateString) {
-		this.checkInit();
-
 		// makes sure hasn't been prepared before
 		if (this.calendar[dateString] && this.calendar[dateString].prepared)
 			return;
@@ -160,7 +134,6 @@ export default new class TimingEngine {
 	}
 
 	calculateOffset(numOfRequests = 5) {
-
 		let offsets = [];
 		for (let i = 0; i < numOfRequests; i++) {
 
@@ -250,11 +223,4 @@ export default new class TimingEngine {
 	getTodayDateString() { return this.getDateStringFromDateObject(new Date(this.getCurrentTime())); }
 
 	getUpcomingEvents() { return clone(this.timeline); }
-
-	isInitialized() { return !!this.initialized; }
-
-	checkInit() {
-		if (!this.isInitialized)
-			throw 'TimingEngine has not been initialized';
-	}
 }

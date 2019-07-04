@@ -25,6 +25,10 @@ function generateId(length) {
 }
 
 router.all('*', async (req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.send({});
+  }
+
   try {
     let contents = jwt.verify(req.cookies.periods_io, JWT_SECRET);
     req.device_id = contents.device_id;
@@ -33,7 +37,9 @@ router.all('*', async (req, res, next) => {
   } catch (e) {
     let { user_agent, platform, browser } = req.body
 
-    if (!user_agent || !platform)
+    console.log(browser, req);
+
+    if (!user_agent || !platform || !browser)
       res.send(responses.error('bad_token_and_body'));
 
     let device_id = generateId(20);

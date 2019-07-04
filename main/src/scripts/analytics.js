@@ -1,6 +1,6 @@
-import Logger from './Logger';
+import { logger } from './init';
 
-export default new class Analytics {
+export default class Analytics {
 	constructor() {
 		this.sent = false;
 	}
@@ -57,7 +57,7 @@ export default new class Analytics {
 
 		RequestManager.sendAnalytics(data).then(data => {
 			if (data.success) {
-				Logger.log('Analytics', 'analytics data sent!');
+				logger.log('Analytics', 'analytics data sent!');
 			}
 		});
 

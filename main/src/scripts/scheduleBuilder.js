@@ -1,6 +1,6 @@
-import logger from './logger';
+import { logger } from './init';
 
-export default new class ScheduleBuilder {
+export default class ScheduleBuilder {
 	constructor() {}
 
 	init(school, schedule) {
