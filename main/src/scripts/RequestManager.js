@@ -44,7 +44,7 @@ export default class RequestManager {
 
 	static init() {
 		if (document.cookie.includes('periods_io')) {
-			return this.post('/v4/init', {}).then(res => res.json);
+			return this.post('/v4/account', {}).then(res => res.json);
 		} else {
 			Storage.clearAll(); // clear all old data
 
@@ -69,7 +69,7 @@ export default class RequestManager {
 				if (temp.hasOwnProperty(val) && temp[val] === true)
 					browser.push(val);
 
-			return this.post('/v4/init', {
+			return this.post('/v4/account', {
 				user_agent: ua,
 				platform: window.navigator.platform,
 				browser
@@ -117,6 +117,7 @@ export default class RequestManager {
 	}
 
 	static sendError(data) {
+		console.error(data);
 		return this.post('/v4/error', data);
 	}
 }

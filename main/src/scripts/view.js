@@ -112,7 +112,6 @@ export default class View {
 	}
 
 	updateScheduleTable(periods, periodNames, currentTime) {
-
 		let currentDate = (new Date(currentTime)).setHours(0, 0, 0, 0);
 
 		let html = '';

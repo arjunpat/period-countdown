@@ -67,7 +67,7 @@ router.all('*', async (req, res, next) => {
 });
 
 /*
-POST /v4/init
+POST /v4/account
 {
   "user_agent": "hi",
   "platform": "hi",
@@ -75,7 +75,7 @@ POST /v4/init
 }
 */
 
-router.post('/init', async (req, res) => {
+router.post('/account', async (req, res) => {
   let resp = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
 
   if (resp.length === 0) {

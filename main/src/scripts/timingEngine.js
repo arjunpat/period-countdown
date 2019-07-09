@@ -147,7 +147,7 @@ export default class TimingEngine {
 				for (let i = 0; i < offsets.length; i++) temp += offsets[i];
 
 				this.offset = temp / offsets.length;
-			}), 1000 * i);
+			}), 1500 * i);
 		}
 
 		setTimeout(() => this.calculateOffset(), 5 * 60 * 1000); // does every 5 minutes

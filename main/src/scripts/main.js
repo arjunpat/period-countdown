@@ -12,7 +12,6 @@ import { removeServiceWorker, greeting, getVersion } from './extras';
 
 // inital preferences before starting timer
 timingManager.init(prefManager.getSchoolId());
-
 render();
 
 RequestManager.init().then(json => {
@@ -21,7 +20,7 @@ RequestManager.init().then(json => {
 		return;
 	}
 
-	if (json.data.email) {
+	if (json.success) {
 		prefManager.setGoogleAccount(json.data);
 		showPrefs();
 	}

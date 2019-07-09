@@ -16,6 +16,8 @@ export const analytics = new Analytics();
 export const prefManager = new PrefManager();
 export const scheduleBuilder = new ScheduleBuilder();
 
+window.timingEngine = timingEngine;
+
 timingManager.setTimerPrepareMethod((school, schedule) => {
 	scheduleBuilder.init(school, schedule);
 	
@@ -82,12 +84,17 @@ export function render() {
 		view.dimensionCanvas();
 	}
 
+	window.onresize = resizeScreen;
+
 	// login button
 	view.index.googleSignin.querySelector('button').onclick = () => {
 		window.open('https://account.periods.io');
 	}
 
-	window.onresize = resizeScreen;
+	// settings button
+	view.index.settingsButton.querySelector('div').onclick = () => {
+		window.open('https://account.periods.io');
+	}
 }
 
 export async function showPrefs() {
