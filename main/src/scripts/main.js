@@ -3,7 +3,8 @@ import {
 	prefManager,
 	render,
 	showPrefs,
-	analytics
+	analytics,
+	view
 } from './init';
 import RequestManager from './RequestManager';
 import Storage from './Storage';
@@ -14,15 +15,15 @@ timingManager.init(prefManager.getSchoolId());
 
 render();
 
-RequestManager.init().then(data => {
-	if (typeof data !== 'object') {
+RequestManager.init().then(json => {
+	if (typeof json !== 'object') {
 		view.showModal('modal-server-down');
 		return;
 	}
 
-	if (data.email) {
-		prefManager.setGoogleAccount(data);
-		render.showPrefs();
+	if (json.data.email) {
+		prefManager.setGoogleAccount(json.data);
+		showPrefs();
 	}
 
 	analytics.setTheme(prefManager.getThemeNum());

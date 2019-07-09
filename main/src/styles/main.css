@@ -1,5 +1,54 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700|Material+Icons|Product+Sans');
 
+/* all reset settings */
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-family: 'Roboto', sans-serif;
+	font-weight: normal;
+}
+a {
+	color: inherit;
+	text-decoration: none;
+	transition: padding 150ms ease;
+	cursor: pointer;
+	border-bottom: 2px solid var(--main-yellow-color);
+}
+
+a:hover {
+	padding-bottom: 2px;
+}
+
 body {
 	overflow: hidden;
 }
+
+input,
+button,
+select,
+textarea {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.material-icons {
+	vertical-align: middle;
+}
+
+/* animations */
+@keyframes updatePeriod {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 100%, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+@import "./preloader.css";
+@import "./tooltip.css";
+@import "./index.css";

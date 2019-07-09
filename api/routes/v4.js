@@ -37,10 +37,8 @@ router.all('*', async (req, res, next) => {
   } catch (e) {
     let { user_agent, platform, browser } = req.body
 
-    console.log(browser, req);
-
     if (!user_agent || !platform || !browser)
-      res.send(responses.error('bad_token_and_body'));
+      return res.send(responses.error('bad_token_and_body'));
 
     let device_id = generateId(20);
 
@@ -50,7 +48,7 @@ router.all('*', async (req, res, next) => {
       properties: JSON.stringify({
         user_agent,
         platform,
-        browser: browser.join(',')
+        browser
       })
     });
 
@@ -73,10 +71,7 @@ POST /v4/init
 {
   "user_agent": "hi",
   "platform": "hi",
-  "browser": {
-    "chrome": true,
-    "firefox": true
-  }
+  "browser": ["chrome", "firefox"]
 }
 */
 
@@ -156,8 +151,7 @@ router.post('/login',
         last_name,
         profile_pic,
         time: Date.now(),
-        settings: '{}',
-        stats: '{}'
+        settings: '{}'
       });
 
       status = 'new_user';
@@ -312,7 +306,7 @@ router.post('/update-preferences', async (req, res) => {
     return res.send(responses.error('not_logged_in'));
   }
 
-  let resp = await mysql.query('SELECT stats, settings FROM users WHERE email = ?', [email]);
+  let resp = await mysql.query('SELECT settings FROM users WHERE email = ?', [email]);
 
   let settings = JSON.stringify({
     theme,
@@ -324,17 +318,16 @@ router.post('/update-preferences', async (req, res) => {
     return res.send(responses.error('no_changes'));
   }
 
-  let stats = JSON.parse(resp[0].stats);
-  if (!stats.pref_changes) {
-    stats.pref_changes = [];
-  }
-  stats.pref_changes.push(Date.now());
-
   await mysql.update('users', {
-    settings,
-    stats: JSON.stringify(stats)
+    settings
   }, {
     email
+  });
+
+  await mysql.insert('events', {
+    time: Date.now(),
+    email,
+    event: 'upt_pref'
   });
 
   res.send(responses.success());

@@ -52,7 +52,7 @@ export function render() {
 	logger.time('render', 'index');
 
 	timingManager.initTimer().then(() => {
-		render.showPrefs();
+		showPrefs();
 		view.hidePreloader();
 
 		logger.timeEnd('render', 'index');

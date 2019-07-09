@@ -192,12 +192,12 @@ export default class TimingEngine {
 
 	ensureTwoItemsInSchedule() { while (this.timeline.length < 2) this.addAnotherDayToSchedule(); }
 
-	getPresetSchedule(type) { return clone(this.presets[type]); /* presets are stored in json to create new references */ }
+	getPresetSchedule(type) {return clone(this.presets[type]); /* presets are stored in json to create new references */ }
 
 	getPresetScheduleFromDateString(dateString) {
 		let d = new Date(dateString).getTime();
 		d = (d - this.weeklyPresets.start) / 86400000;
-		d = d % this.weeklyPresets.pattern.length;
+		d = Math.round(d % this.weeklyPresets.pattern.length);
 
 		return this.getPresetSchedule(this.weeklyPresets.pattern[d]);
 	}

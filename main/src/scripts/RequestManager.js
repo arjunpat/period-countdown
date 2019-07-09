@@ -10,7 +10,9 @@ export default class RequestManager {
 			url = serverHost + url;
 		}
 
-		return fetch(url).then(async res => {
+		return fetch(url, {
+			credentials: 'include'
+		}).then(async res => {
 			res.json = await res.json();
 			res.loadTime = window.performance.now() - startTime;
 
@@ -27,6 +29,7 @@ export default class RequestManager {
 
 		return window.fetch(url, {
 			method: 'POST',
+			credentials: 'include',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -41,11 +44,7 @@ export default class RequestManager {
 
 	static init() {
 		if (document.cookie.includes('periods_io')) {
-			return this.post('/v4/init', {}).then(res => {
-				if (res.json.error === 'no_device_exists') {
-					return this.init();
-				}
-			});
+			return this.post('/v4/init', {}).then(res => res.json);
 		} else {
 			Storage.clearAll(); // clear all old data
 
@@ -118,7 +117,6 @@ export default class RequestManager {
 	}
 
 	static sendError(data) {
-		console.error(data);
-		return this.post('/v4/write/error', data);
+		return this.post('/v4/error', data);
 	}
 }

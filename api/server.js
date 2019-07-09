@@ -20,11 +20,13 @@ app.set('x-powered-by', false);
 app.use((req, res, next) => {
   res.set({
     'Server': 'Spice',
-    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type,X-Requested-With',
     'Access-Control-Allow-Credentials': 'true'
   });
+
+  if (req.headers.origin)
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
 
   next();
 });

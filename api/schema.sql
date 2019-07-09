@@ -11,8 +11,7 @@ CREATE TABLE IF NOT EXISTS users (
 	first_name VARCHAR(50),
 	last_name VARCHAR(50),
 	profile_pic VARCHAR(150),
-	settings TEXT,
-	stats TEXT
+	settings TEXT
 );
 CREATE TABLE IF NOT EXISTS hits (
 	db_id MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -21,6 +20,15 @@ CREATE TABLE IF NOT EXISTS hits (
 	leave_time BIGINT UNSIGNED,
 	ip TINYTEXT,
 	properties TEXT
+);
+CREATE TABLE IF NOT EXISTS events (
+	time BIGINT UNSIGNED PRIMARY KEY,
+	email VARCHAR(100),
+	event VARCHAR(30),
+	item_id VARCHAR(30),
+	INDEX(email),
+	INDEX(event),
+	INDEX(item_id)
 );
 CREATE TABLE IF NOT EXISTS errors (
 	db_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

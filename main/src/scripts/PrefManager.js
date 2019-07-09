@@ -141,7 +141,6 @@ export default class PrefManager {
 	}
 	
 	// settage and gettage of settings
-
 	setGoogleAccount(values) {
 		this.googleAccount = {
 			first_name: values.first_name,
