@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "npm-run-all -p dev:*",
     "dev:api": "npm run serve --prefix api",
-    "dev:main": "npm run dev --prefix main"
+    "dev:main": "npm run dev --prefix main",
+    "dev:account": "npm run serve --prefix account"
   },
   "repository": {
     "type": "git",

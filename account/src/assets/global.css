@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:400,700|Material+Icons|Product+Sans');
 
-/* all reset settings */
 * {
 	margin: 0;
 	padding: 0;
@@ -20,10 +19,6 @@ a:hover {
 	padding-bottom: 2px;
 }
 
-body {
-	overflow: hidden;
-}
-
 input,
 button,
 select,
@@ -36,19 +31,3 @@ textarea {
 .material-icons {
 	vertical-align: middle;
 }
-
-/* animations */
-@keyframes updatePeriod {
-	from {
-		opacity: 0;
-		transform: translate3d(0, 100%, 0);
-	}
-	to {
-		opacity: 1;
-		transform: translate3d(0, 0, 0);
-	}
-}
-
-@import "./preloader.css";
-@import "./tooltip.css";
-@import "./index.css";
