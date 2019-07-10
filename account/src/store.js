@@ -8,7 +8,9 @@ export default new Vuex.Store({
   state: {
   	profile_pic: '',
     school: '',
-    periods: []
+    periods: [],
+    schools: [],
+    themes: []
   },  
   mutations: {
     setAccount(state, payload) {
@@ -19,6 +21,18 @@ export default new Vuex.Store({
     },
     setPeriodName(state, { key, value }) {
       state.period_names[key] = value;
+    },
+    setSchools(state, payload) {
+      state.schools = payload;
+    },
+    setSchool(state, payload) {
+      state.school = payload;
+    },
+    setThemes(state, payload) {
+      state.themes = payload;
+    },
+    setTheme(state, payload) {
+      state.theme = payload;
     }
   },
   actions: {
@@ -31,11 +45,29 @@ export default new Vuex.Store({
     async loadPeriods(context) {
       let res = (await get(`/periods/${context.state.school}`)).json;
       context.commit('setPeriods', res);
+    },
+    async loadSchools(context) {
+      if (context.state.schools.length === 0) {
+        let res = (await get('/schools')).json;
+        context.commit('setSchools', res);
+      }
+    },
+    async loadThemes(context) {
+      if (context.state.themes.length === 0) {
+        let res = (await get('/themes')).json;
+        context.commit('setThemes', res);
+      }
     }
   },
   getters: {
     periodNames(state) {
       return state.period_names;
+    },
+    school(state) {
+      return state.school;
+    },
+    theme(state) {
+      return state.theme;
     }
   }
 });

@@ -21,16 +21,17 @@
           >Theme</div>
         </div>
 
-        <div style="padding: 20px 0;">
+        <div style="border: 2px solid #f17600; border-radius: 6px;">
           <transition name="tab-change">
             <PeriodNamesEnter v-if="tab === 'period_names'" />
             <SchoolEnter v-if="tab === 'school'" />
             <ThemeEnter v-if="tab === 'theme'" />
           </transition>
         </div>
-
       </div>
     </div>
+    <br><br>
+    <button>Save All Settings</button>
   </div>
 </template>
 
@@ -55,14 +56,14 @@ export default {
 
 <style scoped>
 .settings-tabs {
-  /*margin: 20px 20px;*/
-  width: 70%; margin: 0 auto;
+  width: 70%;
+  margin: 0 auto;
   margin-top: 40px;
 }
 
 .header {
   display: flex;
-  border-bottom: 3px solid #f17600;
+  /*border-bottom: 3px solid #f17600;*/
 }
 
 .header > div {

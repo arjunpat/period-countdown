@@ -1,8 +1,8 @@
 <template>
   <div>
-    <br>
+    <br><br><br>
     <div style="display: flex; margin: 0 auto;">
-      <div v-for="column in columns" style="padding: 0 1.5%; flex: 1;">
+      <div v-for="column in columns" style="padding: 0 24px; flex: 1;">
         <PeriodNameInput v-for="period in column" :key="period" :period-name="period" />
       </div>
     </div>

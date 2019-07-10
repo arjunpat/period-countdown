@@ -2,6 +2,7 @@ const router = require('express').Router();
 const responses = require('../lib/responses');
 const timingData = require('../timing-data');
 const themes = JSON.stringify(require('../options/themes'));
+const schools = JSON.stringify(timingData.schools);
 
 router.use('/v4', require('./v4'));
 
@@ -48,6 +49,14 @@ router.get('/themes', (req, res) => {
     'Content-Type': 'application/json'
   });
   res.send(themes);
+});
+
+router.get('/schools', (req, res) => {
+  res.set({
+    'Cache-Control': 'max-age=43200',
+    'Content-Type': 'application/json'
+  });
+  res.send(schools);
 });
 
 router.all('*', (req, res) => {
