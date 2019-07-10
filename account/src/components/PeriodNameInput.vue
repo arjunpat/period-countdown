@@ -31,7 +31,7 @@ export default {
       },
       set(val) {
         this.isFree = isFreePeriod(val);
-        this.$store.commit('setPeriodName', { key: this.periodName, val });
+        this.$store.commit('setPeriodName', { key: this.periodName, value: val });
       }
     }
   }
@@ -61,7 +61,7 @@ input:disabled {
 input:focus {
   outline: none;
   border-width: 2px;
-  border-color: #4285f4;
+  border-color: #f17600;
   transition: all .2s ease-out;
 }
 .has-value:valid + label {
@@ -71,7 +71,7 @@ input:focus {
 }
 .material-form-control:focus + label {
   top: -15px;
-  color: #4285f4;
+  color: #f17600;
   font-size: 12px;
 }
 .material-form-control + label {

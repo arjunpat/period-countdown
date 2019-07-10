@@ -344,13 +344,23 @@ router.post('/update-preferences', async (req, res) => {
     email
   });
 
+  await recordUptPref(email);
+
+  res.send(responses.success());
+});
+
+async function recordUptPref(email) {
+  let now = Date.now();
+  await mysql.query(
+    'DELETE FROM events WHERE time > ? AND email = ? AND event = ?',
+    [now - 300000, email, 'upt_pref']
+  );
+
   await mysql.insert('events', {
     time: Date.now(),
     email,
     event: 'upt_pref'
   });
-
-  res.send(responses.success());
-});
+}
 
 module.exports = router;

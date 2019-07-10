@@ -21,7 +21,7 @@
           >Theme</div>
         </div>
 
-        <div style="padding: 20px 10px;">
+        <div style="padding: 20px 0;">
           <transition name="tab-change">
             <PeriodNamesEnter v-if="tab === 'period_names'" />
             <SchoolEnter v-if="tab === 'school'" />
@@ -55,7 +55,9 @@ export default {
 
 <style scoped>
 .settings-tabs {
-  margin: 20px 20px;
+  /*margin: 20px 20px;*/
+  width: 70%; margin: 0 auto;
+  margin-top: 40px;
 }
 
 .header {
@@ -65,7 +67,7 @@ export default {
 
 .header > div {
   font-family: 'Product Sans';
-  font-size: 32px;
+  font-size: 30px;
   font-weight: normal;
   padding: 6px 18px;
   color: grey;
