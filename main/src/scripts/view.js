@@ -92,17 +92,17 @@ export default class View {
 
 	updateViewWithState(preferences) {
 		// theme stuff
-		this.canvas.updateColors(preferences.theme.background, preferences.theme.completed);
-		this.index.mainCanvasOverlay.style.color = preferences.theme.text;
-		this.index.settingsButton.querySelector('div').style.background = preferences.theme.text;
+		this.canvas.updateColors(preferences.theme.b, preferences.theme.c);
+		this.index.mainCanvasOverlay.style.color = preferences.theme.t;
+		this.index.settingsButton.querySelector('div').style.background = preferences.theme.t;
 
-		if (typeof preferences.theme.background === 'object') { // if gradient background
-			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.background.stops[preferences.theme.background.stops.length - 1];
+		if (typeof preferences.theme.b === 'object') { // if gradient background
+			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.b.stops[preferences.theme.b.stops.length - 1];
 		} else {
-			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.background;
+			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.b;
 		}
 
-		if (preferences.googleAccount.signed_in) {
+		if (preferences.googleAccount) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';
 
 			let size = 70 * (window.devicePixelRatio || 1);

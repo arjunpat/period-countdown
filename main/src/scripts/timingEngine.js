@@ -146,7 +146,8 @@ export default class TimingEngine {
 				let temp = 0;
 				for (let i = 0; i < offsets.length; i++) temp += offsets[i];
 
-				this.offset = temp / offsets.length;
+				if (typeof temp === 'number')
+					this.offset = temp / offsets.length;
 			}), 1500 * i);
 		}
 

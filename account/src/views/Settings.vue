@@ -1,15 +1,101 @@
 <template>
   <div style="padding: 20px;">
-    <span id="title">Settings</span>
+    <span id="title">Your Settings</span>
+    <br><br>
+    <div>
+      <div class="settings-tabs">
+
+        <div class="header">
+          <div
+            :class="{ selected: tab === 'period_names' }"
+            style="padding-left: 0;"
+            @click="tab = 'period_names'"
+          >Period Names</div>
+          <div
+            :class="{ selected: tab === 'school' }"
+            @click="tab = 'school'"
+          >School</div>
+          <div
+            :class="{ selected: tab === 'theme' }"
+            @click="tab = 'theme'"
+          >Theme</div>
+        </div>
+
+        <div style="padding: 20px 10px;">
+          <transition name="tab-change">
+            <PeriodNamesEnter v-if="tab === 'period_names'" />
+            <SchoolEnter v-if="tab === 'school'" />
+            <ThemeEnter v-if="tab === 'theme'" />
+          </transition>
+        </div>
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import PeriodNamesEnter from '@/components/PeriodNamesEnter.vue';
+import SchoolEnter from '@/components/SchoolEnter.vue';
+import ThemeEnter from '@/components/ThemeEnter.vue';
+
 export default {
+  components: {
+    PeriodNamesEnter,
+    SchoolEnter,
+    ThemeEnter
+  },
+  data() {
+    return {
+      tab: 'period_names'
+    }
+  }
 }
 </script>
 
 <style scoped>
+.settings-tabs {
+  margin: 20px 20px;
+}
+
+.header {
+  display: flex;
+  border-bottom: 3px solid #f17600;
+}
+
+.header > div {
+  font-family: 'Product Sans';
+  font-size: 32px;
+  font-weight: normal;
+  padding: 6px 18px;
+  color: grey;
+  cursor: pointer;
+  transition: all 250ms ease;
+  user-select: none;
+}
+
+.header > div:hover {
+  color: #444;
+}
+
+.header > div.selected {
+  color: #f17600;
+  font-weight: bold;
+}
+
+.tab-change-enter-active {
+  transition: all 250ms ease;
+}
+
+.tab-change-active {
+  transition-delay: .25s;
+}
+
+.tab-change-enter, .tab-change-leave-to {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
 #title {
   font: 88px 'Product Sans';
   color: black;
@@ -23,8 +109,10 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 20px;
   background-position: 0 86%;
+  border-radius: 15px;
   animation: settingsUnderlineAnimation 2s cubic-bezier(0.67, 0.24, 0.22, 0.96);
 }
+
 @keyframes settingsUnderlineAnimation {
   0% {
     background-size: 0 0;

@@ -67,3 +67,11 @@ export function getClientInformation() {
     browser
   }
 }
+
+export function isFreePeriod(name) {
+  if (typeof name !== 'string')
+    return false;
+  
+  name = name.trim().toLowerCase();
+  return ['free', 'none', 'nothin'].some(a => name.includes(a));
+}

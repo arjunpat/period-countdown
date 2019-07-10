@@ -15,6 +15,10 @@ const mysql = new MySQL(
   MYSQL_HOST
 );
 
+const timingData = require('../timing-data');
+const themes = require('../options/themes');
+const schoolIds = Object.keys(require('../timing-data'));
+
 function generateId(length) {
   let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   let id = '';
@@ -90,9 +94,25 @@ router.post('/account', async (req, res) => {
     return res.send(responses.error('not_registered'))
   }
 
-  resp[0].settings = JSON.parse(resp[0].settings);
+  let { email, profile_pic, first_name, last_name, settings } = resp[0];
+  let { theme, period_names, school } = JSON.parse(settings);
 
-  res.send(responses.success(resp[0]));
+  if (typeof theme !== 'number' || theme > themes.length) {
+    theme = 0;
+  }
+
+  res.send(responses.success({
+    email,
+    profile_pic,
+    first_name,
+    last_name,
+    theme: {
+      theme,
+      ...themes[theme]
+    },
+    school: schoolIds.includes(school) ? school : 'mvhs',
+    period_names: period_names || {}
+  }));
 });
 
 /*

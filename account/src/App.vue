@@ -7,29 +7,25 @@
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
     </div>
-    <router-view/>
+    <transition name="page-change">
+      <router-view/>
+    </transition>
   </div>
 </template>
 
 <script type="text/javascript">
+import { mapState } from 'vuex';
 import { post, getClientInformation } from '../../common.js';
 
 export default {
   data() {
-    return {
-      profile_pic: ''
-    }
+    return {}
   },
   created() {
-    this.init();
+    this.$store.dispatch('loadAccount');
   },
-  methods: {
-    async init() {
-      let res = (await post('/v4/account', getClientInformation())).json;
-      if (res.success) {
-        this.profile_pic = res.data.profile_pic;
-      }
-    }
+  computed: {
+    ...mapState(['profile_pic'])
   }
 }
 </script>
@@ -73,6 +69,19 @@ export default {
     display: none;
   }
 }
+
+.page-change-enter-active {
+  transition: all 250ms ease;
+}
+
+.page-change-active {
+  transition-delay: .25s;
+}
+
+.page-change-enter, .page-change-leave-to {
+  opacity: 0;
+  transform: scale(.97) /*translateY(20px)*/;
+}
 </style>
 
 <style>
@@ -81,5 +90,6 @@ export default {
   border-width: 0 0 3px 0 !important;
   border-image-source: linear-gradient(120deg, #fccb0b 0%, #fc590bad 100%) !important;
   border-image-slice: 1 !important;
+  font-weight: bold;
 }
 </style>

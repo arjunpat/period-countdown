@@ -35,14 +35,6 @@ export function getVersion() {
 	}
 }
 
-export function isFreePeriod(name) {
-	if (typeof name !== 'string')
-		return false;
-	
-	name = name.trim().toLowerCase();
-	return ['free', 'none', 'nothin'].some(a => name.includes(a));
-}
-
 export function clone(obj) {
 	return JSON.parse(JSON.stringify(obj));
 }

@@ -48,4 +48,3 @@ if (window.location.pathname === '/extn') {
 
 removeServiceWorker();
 greeting();
-
