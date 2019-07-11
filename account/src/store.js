@@ -10,11 +10,13 @@ export default new Vuex.Store({
     school: '',
     periods: [],
     schools: [],
-    themes: []
+    themes: [],
+    themeNum: 0
   },  
   mutations: {
     setAccount(state, payload) {
       Object.assign(state, payload);
+      state.themeNum = payload.theme.theme;
     },
     setPeriods(state, payload) {
       state.periods = payload;
@@ -31,17 +33,11 @@ export default new Vuex.Store({
     setThemes(state, payload) {
       state.themes = payload;
     },
-    setTheme(state, payload) {
-      state.theme = payload;
+    setThemeNum(state, payload) {
+      state.themeNum = payload;
     }
   },
   actions: {
-    async loadAccount(context) {
-      let res = (await post('/v4/account', getClientInformation())).json;
-      if (res.success) {
-        context.commit('setAccount', res.data);
-      }
-    },
     async loadPeriods(context) {
       let res = (await get(`/periods/${context.state.school}`)).json;
       context.commit('setPeriods', res);
@@ -61,7 +57,7 @@ export default new Vuex.Store({
     async saveSettings({ state }) {
       let res = await post('/v4/update-preferences', {
         period_names: state.period_names,
-        theme: state.theme.theme,
+        theme: state.themeNum,
         school: state.school
       });
     }

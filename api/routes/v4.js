@@ -186,14 +186,7 @@ router.post('/login',
     });
 
     res.send(responses.success({
-      status,
-      user_data: {
-        email,
-        first_name,
-        last_name,
-        profile_pic,
-        settings
-      }
+      status
     }));
   }
 );

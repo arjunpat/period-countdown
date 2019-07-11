@@ -19,34 +19,41 @@ import ThemeDisplay from './ThemeDisplay.vue';
 export default {
   data() {
     return {
-      value: '0',
       themeName: '',
-      themeToDisplay: {}
+      themeToDisplay: {},
     }
   },
   components: {
     ThemeDisplay
   },
-  created() {
-    this.init();
+  async created() {
+    await this.$store.dispatch('loadThemes');
+    this.show();
   },
   methods: {
-    async init() {
-      await this.$store.dispatch('loadThemes');
-      this.value = this.$store.getters.theme.theme;
-    }
-  },
-  watch: {
-    value() {
-      let val = parseInt(this.value);
-      this.$store.commit('setTheme', this.themes[val]);
-      console.log(JSON.stringify(this.$store.getters.theme));
-      this.themeToDisplay = this.themes[val];
+    show() {
+      this.themeToDisplay = this.themes[this.value];
       this.themeName = this.themeToDisplay.n;
     }
   },
   computed: {
-    ...mapState(['themes'])
+    ...mapState(['themes']),
+    value: {
+      get() {
+        return this.$store.state.themeNum;
+      },
+      set(value) {
+        this.$store.commit('setThemeNum', parseInt(value));
+      }
+    }
+  },
+  watch: {
+    value() {
+      this.show();
+    },
+    themes() {
+      this.show();
+    }
   }
 }
 </script>

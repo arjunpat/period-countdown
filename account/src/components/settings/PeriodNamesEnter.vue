@@ -18,7 +18,8 @@ export default {
     PeriodNameInput
   },
   created() {
-    this.$store.dispatch('loadPeriods');
+    if (this.school)
+      this.$store.dispatch('loadPeriods');
   },
   computed: {
     ...mapState(['periods', 'school']),
@@ -30,6 +31,11 @@ export default {
       }
       return columns
     },
+  },
+  watch: {
+    school() {
+      this.$store.dispatch('loadPeriods');
+    }
   }
 }
 </script>

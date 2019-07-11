@@ -1,14 +1,15 @@
 <template>
   <div>
-    <div id="nav-links">
+    <div style="padding: 20px; font-size: 40px;" v-if="!show">{{ msg }}</div>
+    <div id="nav-links" v-if="show">
       <div>
         <router-link to="/settings">Settings</router-link>
-        <router-link to="/privacy">Privacy</router-link>
+        <router-link to="/logout">Logout</router-link>
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
     </div>
     <transition name="page-change">
-      <router-view/>
+      <router-view v-if="show" />
     </transition>
   </div>
 </template>
@@ -19,10 +20,45 @@ import { post, getClientInformation } from '../../common.js';
 
 export default {
   data() {
-    return {}
+    return {
+      show: false,
+      msg: ''
+    }
   },
-  created() {
-    this.$store.dispatch('loadAccount');
+  async mounted() {
+    let accessTokenLocation = window.location.href.indexOf('access_token=');
+    if (accessTokenLocation > -1) {
+      this.msg = 'Signing you in. Please wait...';
+      let accessToken = window.location.href.substring(accessTokenLocation + 13);
+      while (accessToken.includes('&')) {
+        accessToken = accessToken.substring(0, accessToken.indexOf('&'));
+      }
+      
+      let res = await post('/v4/login', {
+        google_token: accessToken
+      });
+
+      if (!res.success) {
+        // TODO server issue
+      }
+    }
+
+    let res = (await post('/v4/account', getClientInformation())).json;
+    if (res.success) {
+      this.$store.commit('setAccount', res.data);
+      this.show = true;
+    } else {
+      let redirect_uri = encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname.split('/').slice(0, -1).join('/') + '/');
+
+      let params = {
+        client_id: '770077939711-hbanoschq9p65gr8st8grsfbku4bsnhl.apps.googleusercontent.com',
+        scope: encodeURIComponent('profile email')
+      }
+
+      let url = `https://accounts.google.com/o/oauth2/auth?client_id=${params.client_id}&redirect_uri=${redirect_uri}&scope=${params.scope}&response_type=token&prompt=select_account`;
+      window.location.href = url;
+    }
+
   },
   computed: {
     ...mapState(['profile_pic'])
