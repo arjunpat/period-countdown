@@ -12,27 +12,24 @@
 </template>
 
 <script>
-import { isFreePeriod } from '../../../common.js';
+import { isFreePeriod } from '../../../../common.js';
 
 export default {
   data() {
     return {
       id: Math.random().toString(36).substring(7),
-      isFree: false
+      isFree: false,
+      value: ''
     }
   },
   props: ['periodName'],
-  computed: {
-    value: {
-      get() {
-        let val = this.$store.getters.periodNames[this.periodName];
-        this.isFree = isFreePeriod(val);
-        return val;
-      },
-      set(val) {
-        this.isFree = isFreePeriod(val);
-        this.$store.commit('setPeriodName', { key: this.periodName, value: val });
-      }
+  created() {
+    this.value = this.$store.getters.periodNames[this.periodName];
+  },
+  watch: {
+    value() {
+      this.isFree = isFreePeriod(this.value);
+      this.$store.commit('setPeriodName', { key: this.periodName, value: this.value });
     }
   }
 }

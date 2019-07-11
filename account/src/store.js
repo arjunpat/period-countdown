@@ -57,6 +57,13 @@ export default new Vuex.Store({
         let res = (await get('/themes')).json;
         context.commit('setThemes', res);
       }
+    },
+    async saveSettings({ state }) {
+      let res = await post('/v4/update-preferences', {
+        period_names: state.period_names,
+        theme: state.theme.theme,
+        school: state.school
+      });
     }
   },
   getters: {

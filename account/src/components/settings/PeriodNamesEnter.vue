@@ -11,11 +11,14 @@
 
 <script>
 import { mapState } from 'vuex';
-import PeriodNameInput from '@/components/PeriodNameInput.vue';
+import PeriodNameInput from './PeriodNameInput.vue';
 
 export default {
   components: {
     PeriodNameInput
+  },
+  created() {
+    this.$store.dispatch('loadPeriods');
   },
   computed: {
     ...mapState(['periods', 'school']),
@@ -27,13 +30,6 @@ export default {
       }
       return columns
     },
-  },
-  watch: {
-    school(old, value) {
-      if (this.school && old !== value) {
-        this.$store.dispatch('loadPeriods');
-      }
-    }
   }
 }
 </script>

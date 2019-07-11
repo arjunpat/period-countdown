@@ -1,7 +1,6 @@
 <template>
   <div style="padding: 20px;">
     <span id="title">Your Settings</span>
-    <br><br>
     <div>
       <div class="settings-tabs">
 
@@ -31,20 +30,22 @@
       </div>
     </div>
     <br><br>
-    <button>Save All Settings</button>
+    <SaveSettingsButton />
   </div>
 </template>
 
 <script>
-import PeriodNamesEnter from '@/components/PeriodNamesEnter.vue';
-import SchoolEnter from '@/components/SchoolEnter.vue';
-import ThemeEnter from '@/components/ThemeEnter.vue';
+import PeriodNamesEnter from '@/components/settings/PeriodNamesEnter.vue';
+import SchoolEnter from '@/components/settings/SchoolEnter.vue';
+import ThemeEnter from '@/components/settings/ThemeEnter.vue';
+import SaveSettingsButton from '@/components/settings/SaveSettingsButton.vue';
 
 export default {
   components: {
     PeriodNamesEnter,
     SchoolEnter,
-    ThemeEnter
+    ThemeEnter,
+    SaveSettingsButton
   },
   data() {
     return {
@@ -58,7 +59,7 @@ export default {
 .settings-tabs {
   width: 70%;
   margin: 0 auto;
-  margin-top: 40px;
+  margin-top: 34px;
 }
 
 .header {
