@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Period Countdown</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Manage your time more effectively by tracking the remaining time in class">
+		<meta name="keywords" content="countdown,period,bell,schedule,school,student,teacher,time,mvla,mvhs">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="theme-color" content="#fccb0b">
+		<link rel="manifest" href="/manifest.json?v=0.4.2">
+		<link rel="shortcut icon" href="/img/1024.png?v=0.4.2">
+
+		<link rel="apple-touch-icon" sizes="1024x1024" href="/img/1024_square.png?v=0.4.2">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-title" content="Countdown">
+
+		<meta name="application-name" content="Countdown">
+
+		<link rel="stylesheet" type="text/css" href="/dist/bundle.css?v=0.4.2">
+	</head>
+	<body>
+		<div id="preloader">
+			<div>
+				<svg viewBox="25 25 50 50">
+					<circle cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10"/>
+				</svg>
+			</div>
+		</div>
+		<div id="index">
+			<div id="main-canvas-container">
+				<canvas id="main-canvas"></canvas>
+				<div id="main-canvas-overlay">
+					<div id="google-signin">
+						<button>Sign in with Google</button>
+						<div tooltip="Logout"><img></div>
+					</div>
+					<div style="bottom: 0; left: 0; position: fixed; padding: 50px; user-select: none;">
+						<div id="schedule-table">
+							<span>Upcoming Periods</span>
+							<table><tbody></tbody></table>
+						</div>
+						<span style="font-size: 50px; padding-left: 15px; font-family: 'Product Sans';">
+							<span href="https://periods.io" id="day-type"></span>
+							&nbsp;&#x25B8;&nbsp;
+							<span id="current-period-text"></span>
+						</span>
+						<span id="time-left"></span>
+					</div>
+					<div id="settings-button">
+						<div tooltip="Settings">
+							<i class="material-icons">settings</i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="modal">
+			<div id="modal-title">
+				<span class="show-notifications">Notifications?</span>
+			</div>
+			<div id="modal-body">
+				<div class="show-notifications">
+					We can <span style="font-weight: bold;">notify you when 5 minutes</span> are left of a period!<br><br>
+					To enable notifications, <a id="enable-notifications">click here.</a><br><br>
+					Note: you'll only receive these notifications when you have a tab of periods.io open.
+				</div>
+			</div>
+			<div id="modal-footer">
+				<a>Close</a>
+			</div>
+		</div>
+		<div class="notifications" id="notification">
+			<p>
+				<span></span>
+				<span>Close</span>
+			</p>
+		</div>
+		<script type="text/javascript" src="/dist/bundle.js?v=0.4.2"></script>
+	</body>
+</html>

@@ -1,0 +1,18 @@
+{
+	"name": "Period Countdown",
+	"short_name": "Countdown",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#ffffff",
+	"theme_color": "#fccb0b",
+	"description": "A simple way to keep track of the remaining time in class",
+	"lang": "en-US",
+	"orientation": "portrait-primary",
+	"icons": [
+		{
+			"src": "/img/1024.png",
+			"sizes": "1024x1024",
+			"type": "image/png"
+		}
+	]
+}

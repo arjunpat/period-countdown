@@ -1,0 +1,49 @@
+CREATE TABLE IF NOT EXISTS devices (
+	device_id VARCHAR(30) PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	registered_to VARCHAR(100),
+	time_registered BIGINT UNSIGNED,
+	properties TEXT
+);
+CREATE TABLE IF NOT EXISTS users (
+	email VARCHAR(100) PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	first_name VARCHAR(50),
+	last_name VARCHAR(50),
+	profile_pic VARCHAR(150),
+	settings TEXT
+);
+CREATE TABLE IF NOT EXISTS hits (
+	db_id MEDIUMINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	device_id VARCHAR(30),
+	leave_time BIGINT UNSIGNED,
+	ip TINYTEXT,
+	pathname VARCHAR(100),
+	referrer TEXT,
+	version VARCHAR(20),
+	school VARCHAR(20),
+	period VARCHAR(100),
+	dc SMALLINT UNSIGNED,
+	pc SMALLINT UNSIGNED,
+	rt SMALLINT UNSIGNED,
+	dns SMALLINT UNSIGNED,
+	tti SMALLINT UNSIGNED,
+	ttfb SMALLINT UNSIGNED,
+	properties JSON
+);
+CREATE TABLE IF NOT EXISTS events (
+	time BIGINT UNSIGNED PRIMARY KEY,
+	email VARCHAR(100),
+	event VARCHAR(30),
+	item_id VARCHAR(30),
+	INDEX(email),
+	INDEX(event),
+	INDEX(item_id)
+);
+CREATE TABLE IF NOT EXISTS errors (
+	db_id SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	time BIGINT UNSIGNED,
+	device_id VARCHAR(30),
+	error TEXT
+);
