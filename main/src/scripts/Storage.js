@@ -4,29 +4,41 @@ export default class Storage {
 		if (typeof x !== 'object')
 			throw new TypeError('invalid arguments');
 
-		window.localStorage.prefs = JSON.stringify(x);
+		localStorage.prefs = JSON.stringify(x);
 	}
 
 	static getPrefs() {
 		if (this.prefsExist())
-			return JSON.parse(window.localStorage.prefs);
+			return JSON.parse(localStorage.prefs);
 
 		return false;
 	}
 
 	static prefsExist() {
-		return !!window.localStorage.prefs;
+		return !!localStorage.prefs;
+	}
+
+	static clearPrefs() {
+		delete localStorage.prefs;
 	}
 
 	static chromeExtensionInstalled() {
-		return !!window.localStorage.extension;
+		return !!localStorage.extension;
 	}
 
 	static setChromeExtensionInstalled() {
-		window.localStorage.extension = 'true';
+		localStorage.extension = 'true';
 	}
 
 	static clearAll() {
-		window.localStorage.clear();
+		localStorage.clear();
+	}
+
+	static askedAboutNotifications() {
+		return !!localStorage.notifications;
+	}
+
+	static setAskedAboutNotifications() {
+		localStorage.notifications = 'true';
 	}
 }

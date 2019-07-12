@@ -5,13 +5,12 @@ export default class Canvas {
 		this.ctx = canvas.getContext('2d');
 		this.props = {
 			colors: {
-				background: '#000',
 				completed: '#fff'
 			},
 			decimalCompleted: 0,
 			decimalAnimatingTowards: 0
 		}
-		this.animationInterval; // j to remind myself this is a thing
+		this.animationInterval; // this is a thing
 
 		this.dimension();
 	}
@@ -20,8 +19,7 @@ export default class Canvas {
 		let w = window.innerWidth,
 			h = window.innerHeight;
 
-		this.ctx.fillStyle = this.props.colors.background;
-		this.ctx.fillRect(0, 0, w, h);
+		this.ctx.clearRect(0, 0, w, h);
 
 		this.ctx.fillStyle = this.props.colors.completed;
 		this.ctx.fillRect(0, 0, to * w, h);
@@ -73,18 +71,15 @@ export default class Canvas {
 	updateColors(background, completed) {
 
 		if (typeof background === 'object') {
-			/*
-				{
-					type: 'linear_gradient',
-					stops: ['#fccb0b','#fc590b']
-				}
-			*/
+			let str = 'linear-gradient(90deg';
+			for (let i = 0 ; i < background.stops.length; i++) {
+				str += ', ' + background.stops[i];
+			}
+			str += ')';
 
-			this.props.colors.background = this.parseGradient(background);
-			this.props.colors.gradient = background;
+			this.canvas.style.background = str;
 		} else {
-			this.props.colors.background = background;
-			this.props.colors.gradient = undefined;
+			this.canvas.style.background = background;
 		}
 
 		this.props.colors.completed = completed;
@@ -99,20 +94,6 @@ export default class Canvas {
 		this.canvas.height = window.innerHeight * dpr;
 		this.ctx.scale(dpr, dpr);
 
-		if (this.props.colors.gradient)
-			this.props.colors.background = this.parseGradient(this.props.colors.gradient);
-
 		this.redraw();
 	}
-
-	parseGradient(obj) {
-		let grd = this.ctx.createLinearGradient(0, 0, window.innerWidth, 0);
-		
-		for (let i = 0; i < obj.stops.length; i++) {
-			grd.addColorStop(i / (obj.stops.length - 1), obj.stops[i]);
-		}
-		
-		return grd;
-	}
-
 }

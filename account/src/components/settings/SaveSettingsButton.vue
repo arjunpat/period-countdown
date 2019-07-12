@@ -14,6 +14,21 @@ export default {
       disabled: false
     }
   },
+  created() {
+    document.onkeydown = e => {
+      // support ctrl/cmd + s as saving
+      if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault();
+        if (!this.disabled) {
+          this.save();
+        }
+      }
+      console.log('hi');
+    }
+  },
+  destroyed() {
+    document.onkeydown = null;
+  },
   methods: {
     async save() {
       this.disabled = true;

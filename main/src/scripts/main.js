@@ -23,6 +23,11 @@ RequestManager.init().then(json => {
 	if (json.success) {
 		prefManager.setGoogleAccount(json.data);
 		showPrefs();
+	} else {
+		if (Storage.prefsExist()) {
+			Storage.clearPrefs();
+			location.reload();
+		}
 	}
 
 	analytics.setTheme(prefManager.getThemeNum());
@@ -44,6 +49,13 @@ if (window.location.pathname === '/extn') {
 	setTimeout(() => {
 		view.notify('Install the <a style="display: inline;" target="_blank" href="http://bit.ly/bell-extn">Chrome Extension</a>');
 	}, 3000);
+}
+
+if (window.Notification && Notification.permission === 'default' && (!Storage.askedAboutNotifications() || Math.random() < .05)) {
+	setTimeout(() => {
+		view.showModal('show-notifications');
+		Storage.setAskedAboutNotifications();
+	}, 10000);
 }
 
 removeServiceWorker();

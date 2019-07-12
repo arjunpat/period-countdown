@@ -1,7 +1,10 @@
 // http://mvla.net/files/user/140/file/MVHS%20Bell%20Schedule(1).pdf
 const schedule = {
 	offset: 0,
-	weekly_presets: ['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'],
+	weekly_presets: {
+		pattern: ['weekend', 'A', 'tutorial', 'B', 'C', 'A', 'weekend'],
+		start: '1/6/2019'
+	},
 	calendar: [
 		/*{
 			date: '6/23/2018',

@@ -10,7 +10,7 @@ export default class View {
 
 		this.currentValues = {};
 		this.preloader = document.getElementById('preloader');
-		this.notifications = document.getElementById('notifications');
+		this.notification = document.getElementById('notification');
 
 		this.index = {
 			mainCanvas: document.getElementById('main-canvas'),
@@ -23,18 +23,25 @@ export default class View {
 			scheduleTable: document.getElementById('schedule-table'),
 			isACrawler: /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
 		}
+
 		this.modal = {
 			open: false,
+			modal: document.getElementById('modal'),
 			title: document.getElementById('modal-title'),
 			body: document.getElementById('modal-body'),
 			footer: document.getElementById('modal-footer')
 		}
 
 		this.canvas = new Canvas(this.index.mainCanvas);
-		this.closeModal = this.closeModal.bind(this);
-		this.modal.footer.querySelector('a').onclick = this.closeModal;
+
+		this.notification.querySelectorAll('span')[1].onclick = (() => this.hideNotification()).bind(this);
+		this.modal.footer.querySelector('a').onclick = this.closeModal.bind(this);
 
 		logger.timeEnd('View', 'grabbed-elements');
+
+		document.getElementById('enable-notifications').onclick = () => {
+			Notification.requestPermission();
+		}
 	}
 
 	updateScreen(time, showVisuals) {
@@ -50,6 +57,38 @@ export default class View {
 			timeString = `${hours}:`;
 
 		timeString += `${minutes}:${seconds}`;
+
+		// the cringier, the better
+		let bodies = [
+			'Did you turn in your homework?',
+			'Give your teacher a hug',
+			'Grab your things!',
+			'Whew!',
+			'Finally, right?',
+			'Prepare for blast off',
+			'Are you looking at me? Do your work!',
+			'You better be going',
+			'Gone so soon?',
+			'It\'s hard to say goodbye',
+			'Your partner will miss you',
+			'Farewell',
+			'See you later, alligator',
+			'Bye Felicia',
+			'Tootle-loo'
+		]
+
+		if (timeString === '5:00') {
+			let body;
+
+			if (Math.random() < .4) {
+				body = bodies[Math.floor(Math.random() * bodies.length)]
+			}
+
+			new Notification(`5 min left of '${periodName}'`, {
+				icon: '/img/1024.png',
+				body
+			});
+		}
 
 		let documentTitle = `${timeString} \u2022 ${periodName}`;
 		if (this.currentValues.documentTitle !== documentTitle && !this.index.isACrawler) {
@@ -160,6 +199,33 @@ export default class View {
 		}
 	}
 
+	hidePreloader() {
+		if (this.preloader.style.display !== 'none') {
+
+			this.preloader.querySelector('div').style.opacity = '0';
+			this.preloader.style.opacity = '0';
+			this.preloader.style.pointerEvents = 'none';
+			setTimeout(() => {
+				this.preloader.style.display = 'none';
+			}, 2000);
+
+		}
+	}
+
+	notify(html) {
+		this.notification.querySelector('span').innerHTML = html;
+		this.notification.style.bottom = '15px';
+	}
+
+	hideNotification() {
+		this.notification.style.bottom = '';
+	}
+
+	notifyAndHide(html, seconds) {
+		this.notify(html);
+		setTimeout(this.hideNotification, 5000);
+	}
+
 	showModal(screen) {
 		let screens = this.modal.body.children;
 
@@ -181,7 +247,7 @@ export default class View {
 			}
 		}
 
-		let modalStyle = this.root.querySelector('#modal').style;
+		let modalStyle = this.modal.modal.style;
 		modalStyle.display = 'block';
 
 		setTimeout(() => {
@@ -193,40 +259,12 @@ export default class View {
 	}
 
 	closeModal() {
-		document.querySelector('#root #modal').style.opacity = '0';
+		this.modal.modal.style.opacity = '0';
 		setTimeout(() => {
-			document.querySelector('#root #modal').style.display = 'none';
-			document.querySelector('#root #modal').style.transform = 'translateY(-500px)';
+			this.modal.modal.style.display = 'none';
+			this.modal.modal.style.transform = 'translateY(-500px)';
 		}, 400);
-		view.modal.open = false; // TODO pls no reference like this! fix
-	}
-
-	hidePreloader() {
-		if (this.preloader.style.display !== 'none') {
-
-			this.preloader.querySelector('div').style.opacity = '0';
-			this.preloader.style.opacity = '0';
-			this.preloader.style.pointerEvents = 'none';
-			setTimeout(() => {
-				this.preloader.style.display = 'none';
-			}, 2000);
-
-		}
-	}
-
-	notify(html) {
-		this.notifications.querySelector('span').innerHTML = html;
-		this.notifications.style.bottom = '15px';
-		this.notifications.querySelectorAll('span')[1].onclick = () => view.hideNotification();
-	}
-
-	hideNotification() {
-		this.notifications.style.bottom = '';
-	}
-
-	notifyAndHide(html, seconds) {
-		this.notify(html);
-		setTimeout(this.hideNotification, 5000);
+		this.modal.open = false; // TODO pls no reference like this! fix
 	}
 
 	dimensionCanvas() { this.canvas.dimension(); }

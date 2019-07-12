@@ -226,36 +226,52 @@ POST /v4/thanks
 }
 */
 
-router.post('/thanks', async (req, res) => { // to prevent ad blocker stuff, etc
-  let { pathname, referrer, version, school, period, speed, user } = req.body;
+router.post('/thanks',
+  [
+    body('pathname').not().isEmpty(),
+    body('version').not().isEmpty(),
+    body('school').not().isEmpty(),
+    body('period').not().isEmpty(),
+    body('speed').not().isEmpty()
+  ],
+  async (req, res) => { // to prevent ad blocker stuff, etc
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.send(responses.error({
+        params: helpers.generateRequestIssues(errors.array())
+      }));
+    }
 
-  await mysql.insert('hits', {
-    time: Date.now(),
-    device_id: req.device_id,
-    ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-    properties: JSON.stringify({
-      pathname,
-      referrer,
-      version,
-      speed: {
-        dns: speed.dns,
-        dc: speed.dom_complete,
-        pc: speed.page_complete,
-        rt: speed.response_time,
-        ttfb: speed.ttfb,
-        tti: speed.tti
-      },
-      school,
-      period,
-      user: {
-        theme: user.theme,
-        period: user.period
-      }
-    })
-  });
+    let { pathname, referrer, version, school, period, speed, user } = req.body;
 
-  res.send(responses.success());
-});
+    await mysql.insert('hits', {
+      time: Date.now(),
+      device_id: req.device_id,
+      ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+      properties: JSON.stringify({
+        pathname,
+        referrer,
+        version,
+        speed: {
+          dns: speed.dns,
+          dc: speed.dom_complete,
+          pc: speed.page_complete,
+          rt: speed.response_time,
+          ttfb: speed.ttfb,
+          tti: speed.tti
+        },
+        school,
+        period,
+        user: {
+          theme: user.theme,
+          period: user.period
+        }
+      })
+    });
+
+    res.send(responses.success());
+  }
+);
 
 router.post('/thanks-again', async (req, res) => {
   await mysql.query('UPDATE hits SET leave_time = ? WHERE device_id = ? ORDER BY db_id DESC LIMIT 1', [Date.now(), req.device_id]);

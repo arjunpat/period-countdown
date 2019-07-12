@@ -34,9 +34,9 @@ export default {
         accessToken = accessToken.substring(0, accessToken.indexOf('&'));
       }
       
-      let res = await post('/v4/login', {
+      let res = (await post('/v4/login', {
         google_token: accessToken
-      });
+      })).json;
 
       if (!res.success) {
         // TODO server issue
@@ -47,6 +47,8 @@ export default {
     if (res.success) {
       this.$store.commit('setAccount', res.data);
       this.show = true;
+
+      this.$router.push({ path: '/settings' });
     } else {
       let redirect_uri = encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname.split('/').slice(0, -1).join('/') + '/');
 

@@ -52,3 +52,5 @@ textarea {
 @import "./preloader.css";
 @import "./tooltip.css";
 @import "./index.css";
+@import "./modal.css";
+@import "./notifications.css";

@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS hits (
 	device_id VARCHAR(30),
 	leave_time BIGINT UNSIGNED,
 	ip TINYTEXT,
-	properties TEXT
+	properties JSON
 );
 CREATE TABLE IF NOT EXISTS events (
 	time BIGINT UNSIGNED PRIMARY KEY,

@@ -19,7 +19,7 @@ let router = new Router({
       name: 'settings',
       component: Settings,
       meta: {
-        title: 'Settings — periods.io'
+        title: 'settings — periods.io'
       }
     },
     /*{
@@ -32,7 +32,7 @@ let router = new Router({
       name: 'logout',
       component: Logout,
       meta: {
-        title: 'Logout — periods.io'
+        title: 'logout — periods.io'
       }
     },
     {
