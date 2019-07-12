@@ -135,11 +135,9 @@ export default class View {
 		this.index.mainCanvasOverlay.style.color = preferences.theme.t;
 		this.index.settingsButton.querySelector('div').style.background = preferences.theme.t;
 
-		if (typeof preferences.theme.b === 'object') { // if gradient background
-			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.b.stops[preferences.theme.b.stops.length - 1];
-		} else {
-			this.index.settingsButton.querySelector('div > i').style.color = preferences.theme.b;
-		}
+		let b = preferences.theme.b;
+		this.index.settingsButton.querySelector('div > i').style.color = b.substring(b.lastIndexOf('#'), b.lastIndexOf(')'));
+		this.index.settingsButton.querySelector('div > i').style.color = b;
 
 		if (preferences.googleAccount) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';

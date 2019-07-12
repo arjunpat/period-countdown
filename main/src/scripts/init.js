@@ -8,6 +8,7 @@ import Analytics from './Analytics';
 import PrefManager from './PrefManager';
 import RequestManager from './RequestManager';
 import ScheduleBuilder from './ScheduleBuilder';
+import { generateGoogleSignInLink } from '../../../common.js';
 
 export const timingManager = new TimingManager();
 export const timingEngine = new TimingEngine();
@@ -86,12 +87,12 @@ export function render() {
 
 	// login button
 	view.index.googleSignin.querySelector('button').onclick = () => {
-		window.open('https://account.periods.io');
+		window.open(generateGoogleSignInLink());
 	}
 
 	// settings button
 	view.index.settingsButton.querySelector('div').onclick = () => {
-		window.open('https://account.periods.io');
+		window.open(prefManager.isLoggedIn() ? 'https://account.periods.io' : generateGoogleSignInLink());
 	}
 
 	// profile picture

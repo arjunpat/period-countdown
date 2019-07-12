@@ -50,19 +50,7 @@ export default {
         this.textColor = this.theme.t;
         this.themeName = this.theme.n;
 
-        let theme = this.theme.b;
-
-        if (typeof theme === 'object') {
-          let str = 'linear-gradient(90deg';
-          for (let i = 0 ; i < theme.stops.length; i++) {
-            str += ', ' + theme.stops[i];
-          }
-          str += ')';
-
-          this.background = str;;
-        } else {
-          this.background = theme;
-        }
+        this.background = this.theme.b;
       } catch (e) {
         console.log(e);
       }

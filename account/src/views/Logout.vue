@@ -8,13 +8,13 @@
 </template>
 
 <script>
-import { post } from '../../../common.js';
+import { post, generateGoogleSignInLink } from '../../../common.js';
 
 export default {
   created() {
     setTimeout(() => {
       post('/v4/logout', {}).then(() => {
-        location.href = '/';
+        location.href = generateGoogleSignInLink();
       });
     }, 2000);
   }

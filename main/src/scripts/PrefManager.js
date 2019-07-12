@@ -25,10 +25,7 @@ export default class PrefManager {
 		this.theme = this.theme || {
 			theme: 0,
 			n: 'Yellow gradient',
-			b: {
-				type: 'linear_gradient',
-				stops: ['#fccb0b', 'rgb(252, 89, 11)']
-			},
+			b: 'linear-gradient(90deg, #fccb0b, #fc590b)',
 			c: 'rgba(70, 0, 70, 0.18)',
 			t: '#000'
 		}

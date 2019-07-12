@@ -16,7 +16,7 @@
 
 <script type="text/javascript">
 import { mapState } from 'vuex';
-import { post, getClientInformation } from '../../common.js';
+import { post, getClientInformation, generateGoogleSignInLink } from '../../common.js';
 
 export default {
   data() {
@@ -50,15 +50,7 @@ export default {
 
       this.$router.push({ path: '/settings' });
     } else {
-      let redirect_uri = encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname.split('/').slice(0, -1).join('/') + '/');
-
-      let params = {
-        client_id: '770077939711-hbanoschq9p65gr8st8grsfbku4bsnhl.apps.googleusercontent.com',
-        scope: encodeURIComponent('profile email')
-      }
-
-      let url = `https://accounts.google.com/o/oauth2/auth?client_id=${params.client_id}&redirect_uri=${redirect_uri}&scope=${params.scope}&response_type=token&prompt=select_account`;
-      window.location.href = url;
+      window.location.href = generateGoogleSignInLink();
     }
 
   },

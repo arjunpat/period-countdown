@@ -75,3 +75,24 @@ export function isFreePeriod(name) {
   name = name.trim().toLowerCase();
   return ['free', 'none', 'nothin'].some(a => name.includes(a));
 }
+
+export function generateGoogleSignInLink() {
+  let redirectURI;
+
+  if (window.location.origin.includes('periods.io')) {
+    redirectURI = 'https://account.periods.io/';
+  } else {
+    redirectURI = 'http://localhost:8082/';
+  }
+
+  redirectURI = encodeURIComponent(redirectURI);
+
+  let params = {
+    client_id: '770077939711-hbanoschq9p65gr8st8grsfbku4bsnhl.apps.googleusercontent.com',
+    scope: encodeURIComponent('profile email')
+  }
+
+  let url = `https://accounts.google.com/o/oauth2/auth?client_id=${params.client_id}&redirect_uri=${redirectURI}&scope=${params.scope}&response_type=token&prompt=select_account`;
+
+  return url;
+}
