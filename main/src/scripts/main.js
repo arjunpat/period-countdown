@@ -22,6 +22,7 @@ RequestManager.init().then(json => {
 
 	if (json.success) {
 		prefManager.setGoogleAccount(json.data);
+		analytics.setLoggedIn(true);
 		showPrefs();
 	} else {
 		if (Storage.prefsExist()) {

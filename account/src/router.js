@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Settings from './views/Settings.vue';
-// import Privacy from './views/Privacy.vue';
+import Profile from './views/Profile.vue';
 import Logout from './views/Logout.vue';
 
 Vue.use(Router);
@@ -22,11 +22,11 @@ let router = new Router({
         title: 'settings — periods.io'
       }
     },
-    /*{
-      path: '/privacy',
-      name: 'privacy',
-      component: Privacy
-    },*/
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
+    },
     {
       path: '/logout',
       name: 'logout',

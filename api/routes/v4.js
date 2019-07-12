@@ -33,6 +33,8 @@ router.all('*', async (req, res, next) => {
     return res.send({});
   }
 
+  console.log('path: ' + req.originalUrl)
+
   try {
     let contents = jwt.verify(req.cookies.periods_io, JWT_SECRET);
     req.device_id = contents.device_id;
@@ -244,29 +246,31 @@ router.post('/thanks',
 
     let { pathname, referrer, version, school, period, speed, user } = req.body;
 
+    let props = {};
+    
+    if (user) {
+      props.user = {
+        theme: user.theme,
+        period: user.period
+      }
+    }
+
     await mysql.insert('hits', {
       time: Date.now(),
       device_id: req.device_id,
       ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-      properties: JSON.stringify({
-        pathname,
-        referrer,
-        version,
-        speed: {
-          dns: speed.dns,
-          dc: speed.dom_complete,
-          pc: speed.page_complete,
-          rt: speed.response_time,
-          ttfb: speed.ttfb,
-          tti: speed.tti
-        },
-        school,
-        period,
-        user: {
-          theme: user.theme,
-          period: user.period
-        }
-      })
+      pathname,
+      referrer,
+      version,
+      school,
+      period,
+      dc: speed.dc, // dom complete
+      pc: speed.pc, // page complete
+      rt: speed.rt, // response time
+      dns: speed.dns, // dns response time
+      tti: speed.tti, // time to interactivity
+      ttfb: speed.ttfb, // time to first byte
+      properties: JSON.stringify(props)
     });
 
     res.send(responses.success());

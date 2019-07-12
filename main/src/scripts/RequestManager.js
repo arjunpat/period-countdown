@@ -28,14 +28,16 @@ export default class RequestManager {
 	}
 
 	static sendLeaveAnalytics() {
-		if (navigator.sendBeacon) {
+		if (navigator.sendBeacon && !window.chrome) { // chrome disabled for some reason
 
 			let blob = new Blob(['{}'], {
 				type: 'application/json; charset=UTF-8'
 			});
 
-			navigator.sendBeacon('/v4/thanks-again', blob);
+			navigator.sendBeacon(serverHost + '/v4/thanks-again', blob);
 		}
+
+		post('/v4/thanks-again', {});
 	}
 
 	static getTime() {

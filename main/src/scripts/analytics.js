@@ -1,4 +1,5 @@
 import { logger } from './init';
+import RequestManager from './RequestManager';
 
 export default class Analytics {
 	constructor() {
@@ -9,63 +10,61 @@ export default class Analytics {
 
 		if (this.sent) return;
 
-		if (!this.pathname || !this.deviceId || typeof this.theme !== 'number' || !this.version || !this.school)
-			return;
-
-		if ((this.pathname === '/' || this.pathname === 'extn') && !this.period)
+		if (!this.pathname || typeof this.theme !== 'number' || !this.version || !this.school || !this.period || !this.periodName)
 			return;
 
 		this.sent = true;
-		while (
-			window.performance.timing.domInteractive - window.performance.timing.domLoading < 0
-			|| window.performance.timing.loadEventEnd - window.performance.timing.navigationStart < 0
-		) {
+
+		while (this.getSpeed() === null) {
 			await this.sleep(1);
 		}
 
 		let data = {};
-		if (this.pathname === '/' || this.pathname === 'extn') { // index page or extn
+		if (this.pathname === '/' || this.pathname === '/extn') { // index page or extn
+			if (this.loggedIn) {
+				data.user = {
+					theme: this.theme
+				}
 
-			data.prefs = {
-				theme: this.theme,
-				period: this.period
-			}
-			if (this.period !== this.period_name)
-				data.prefs.period_name = this.period_name;
-
-		} else {
-			data.prefs = {
-				theme: this.theme
+				if (this.period !== this.periodName) {
+					data.user = {
+						period: this.periodName
+					}
+				}
 			}
 		}
-
-		let speedInfo = window.performance.timing;
 
 		data.pathname = this.pathname;
 		data.referrer = window.document.referrer;
 		data.school = this.school;
-		data.speed = {
-			page_complete: speedInfo.loadEventEnd - speedInfo.navigationStart,
-			response_time: speedInfo.responseEnd - speedInfo.requestStart,
-			dom_complete: speedInfo.domComplete - speedInfo.domLoading,
-			dns: speedInfo.domainLookupEnd - speedInfo.domainLookupStart,
-			ttfb: speedInfo.responseStart - speedInfo.navigationStart,
-			tti: speedInfo.domInteractive - speedInfo.domLoading
-		}
-
+		data.speed = this.getSpeed();
+		data.period = this.period;
 		data.version = this.version;
 
-		RequestManager.sendAnalytics(data).then(data => {
-			if (data.success) {
-				logger.log('Analytics', 'analytics data sent!');
-			}
-		});
+		let res = await RequestManager.sendAnalytics(data);
+
+		if (res.success) {
+			logger.log('Analytics', 'analytics sent!');
+		}
 
 	}
 
-	setDeviceId(x) {
-		this.deviceId = x;
-		this.a();
+	getSpeed() {
+		let timing = window.performance.timing;
+		let speed = {
+			dns: timing.domainLookupEnd - timing.domainLookupStart,
+			dc: timing.domComplete - timing.domLoading,
+			pc: timing.loadEventEnd - timing.navigationStart,
+			rt: timing.responseEnd - timing.requestStart,
+			ttfb: timing.responseStart - timing.navigationStart,
+			tti: timing.domInteractive - timing.domLoading
+		}
+
+		if (Object.values(speed).some(a => a < 0)) {
+			return null;
+		}
+
+		return speed;
 	}
 
 	setTheme(x) {
@@ -79,7 +78,7 @@ export default class Analytics {
 	}
 
 	setPeriodName(x) {
-		this.period_name = x;
+		this.periodName = x;
 		this.a();
 	}
 
@@ -95,6 +94,11 @@ export default class Analytics {
 
 	setSchool(x) {
 		this.school = x;
+		this.a();
+	}
+
+	setLoggedIn(x) {
+		this.loggedIn = x;
 		this.a();
 	}
 

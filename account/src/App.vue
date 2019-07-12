@@ -3,7 +3,7 @@
     <div style="padding: 20px; font-size: 40px;" v-if="!show">{{ msg }}</div>
     <div id="nav-links" v-if="show">
       <div>
-        <router-link to="/settings">Settings</router-link>
+        <!-- <router-link to="/settings">Settings</router-link> -->
         <router-link to="/logout">Logout</router-link>
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
@@ -79,6 +79,7 @@ export default {
   padding: 12px 16px;
   border-radius: 6px;
   border: none;
+  font-size: 20px;
 }
 
 #nav-links > div > a:hover {
