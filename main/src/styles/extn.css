@@ -1,0 +1,43 @@
+@media only screen and (width: 400px) and (height: 400px) {
+	#index #time-left {
+		font-size: 20vw;
+	}
+
+	#index #settings-button {
+		padding: 20px;
+	}
+
+	#index #settings-button > div > i {
+		font-size: 30px;
+	}
+
+	#index #settings-button > div {
+		padding: 12px;
+	}
+
+	#index #google-signin {
+		padding: 25px;
+	}
+
+	#index #google-signin > button {
+		font-size: 14px;
+		padding: 10px 20px;
+	}
+
+	#index #google-signin > div > img {
+		height: 50px;
+		width: 50px;
+	}
+
+	#index #google-signin {
+		padding: 20px;
+	}
+
+	#index #left-corner {
+		padding: 12px
+	}
+
+	#index #left-corner-status {
+		padding-left: 6px;
+	}
+}

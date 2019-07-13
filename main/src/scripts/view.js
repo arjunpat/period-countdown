@@ -1,4 +1,5 @@
 import { logger } from './init';
+import { isExtn } from './extras';
 import Storage from './Storage';
 
 import Canvas from './components/Canvas';
@@ -58,45 +59,47 @@ export default class View {
 
 		timeString += `${minutes}:${seconds}`;
 
-		// the cringier, the better
-		let bodies = [
-			'Did you turn in your homework?',
-			'Give your teacher a hug',
-			'Grab your things!',
-			'Whew!',
-			'Finally, right?',
-			'Prepare for blast off',
-			'Are you looking at me? Do your work!',
-			'You better be going',
-			'Gone so soon?',
-			'It\'s hard to say goodbye',
-			'Your partner will miss you',
-			'Farewell',
-			'See you later, alligator',
-			'Bye Felicia',
-			'Tootle-loo'
-		]
+		if (!isExtn) {
+			// the cringier, the better
+			let bodies = [
+				'Did you turn in your homework?',
+				'Give your teacher a hug',
+				'Grab your things!',
+				'Whew!',
+				'Finally, right?',
+				'Prepare for blast off',
+				'Are you looking at me? Do your work!',
+				'You better be going',
+				'Gone so soon?',
+				'It\'s hard to say goodbye',
+				'Your partner will miss you',
+				'Farewell',
+				'See you later, alligator',
+				'Bye Felicia',
+				'Tootle-loo'
+			]
 
-		if (timeString === '5:00') {
-			let body;
+			if (timeString === '5:00') {
+				let body;
 
-			if (Math.random() < .4) {
-				body = bodies[Math.floor(Math.random() * bodies.length)]
+				if (Math.random() < .4) {
+					body = bodies[Math.floor(Math.random() * bodies.length)]
+				}
+
+				new Notification(`5 min left of '${periodName}'`, {
+					icon: '/img/1024.png',
+					body
+				});
 			}
-
-			new Notification(`5 min left of '${periodName}'`, {
-				icon: '/img/1024.png',
-				body
-			});
 		}
 
 		let documentTitle = `${timeString} \u2022 ${periodName}`;
-		if (this.currentValues.documentTitle !== documentTitle && !this.index.isACrawler) {
+		if (this.currentValues.documentTitle !== documentTitle && !this.index.isACrawler && !isExtn) {
 			document.title = documentTitle;
 			this.currentValues.documentTitle = documentTitle;
 		}
 
-		if (showVisuals) {
+		if (showVisuals || isExtn) {
 			if (
 				(percentCompleted < 1 && this.canvas.props.decimalCompleted <= .1 && !this.canvas.animationInterval)
 				|| (percentCompleted > 99 && this.canvas.props.decimalCompleted >= .99)
@@ -184,17 +187,22 @@ export default class View {
 	updateScreenDimensions() {
 		let dimension = window.innerWidth;
 
-		this.index.settingsButton.style.padding = Math.min(45, dimension / 18) + 'px';
-		this.index.settingsButton.querySelector('div').style.padding = Math.min(18, dimension / 28) + 'px';
-		this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
-		this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
-
-		if (dimension > 450) {
-			this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
-		} else {
-			// mobile sizing
+		if (isExtn) {
+			this.index.dayType.parentElement.style.fontSize = Math.min(50, (dimension / this.index.dayType.parentElement.innerText.length) / .6) + 'px';
 			this.index.timeLeft.style.fontSize = Math.min(120, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
-		}
+		} else {
+			this.index.settingsButton.style.padding = Math.min(45, dimension / 18) + 'px';
+			this.index.settingsButton.querySelector('div').style.padding = Math.min(18, dimension / 28) + 'px';
+			this.index.dayType.parentElement.style.fontSize = Math.min(55, dimension / 16) + 'px';
+			this.index.dayType.parentElement.parentElement.style.padding = Math.min(50, dimension / 22) + 'px';
+
+			if (dimension > 450) {
+				this.index.timeLeft.style.fontSize = Math.min(170, dimension / (this.index.timeLeft.innerText.length - 3)) + 'px';
+			} else {
+				// mobile sizing
+				this.index.timeLeft.style.fontSize = Math.min(120, dimension / (this.index.timeLeft.innerText.length - 2)) + 'px';
+			}
+		}		
 	}
 
 	hidePreloader() {

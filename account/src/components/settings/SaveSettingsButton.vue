@@ -23,7 +23,6 @@ export default {
           this.save();
         }
       }
-      console.log('hi');
     }
   },
   destroyed() {

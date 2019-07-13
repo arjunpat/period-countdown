@@ -9,6 +9,7 @@ import PrefManager from './PrefManager';
 import RequestManager from './RequestManager';
 import ScheduleBuilder from './ScheduleBuilder';
 import { generateGoogleSignInLink } from '../../../common.js';
+import { isExtn } from './extras';
 
 export const timingManager = new TimingManager();
 export const timingEngine = new TimingEngine();
@@ -63,19 +64,21 @@ export function render() {
 		throw err;
 	});
 
-	view.index.dayType.onmouseover = () => {
-		view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
-		view.index.scheduleTable.style.display = 'block';
-		setTimeout(() => {
-			view.index.scheduleTable.style.opacity = '1';
-		}, 20);
-	}
+	if (!isExtn) {
+		view.index.dayType.onmouseover = () => {
+			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
+			view.index.scheduleTable.style.display = 'block';
+			setTimeout(() => {
+				view.index.scheduleTable.style.opacity = '1';
+			}, 20);
+		}
 
-	view.index.dayType.onmouseleave = () => {
-		view.index.scheduleTable.style.opacity = '0';
-		setTimeout(() => {
-			view.index.scheduleTable.style.display = 'none';
-		}, 500);
+		view.index.dayType.onmouseleave = () => {
+			view.index.scheduleTable.style.opacity = '0';
+			setTimeout(() => {
+				view.index.scheduleTable.style.display = 'none';
+			}, 500);
+		}	
 	}
 
 	function resizeScreen() {

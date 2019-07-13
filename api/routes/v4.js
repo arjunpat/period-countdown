@@ -33,8 +33,6 @@ router.all('*', async (req, res, next) => {
     return res.send({});
   }
 
-  console.log('path: ' + req.originalUrl)
-
   try {
     let contents = jwt.verify(req.cookies.periods_io, JWT_SECRET);
     req.device_id = contents.device_id;

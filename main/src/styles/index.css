@@ -8,6 +8,20 @@
 	width: 100%;
 }
 
+#index #left-corner {
+	bottom: 0;
+	left: 0;
+	position: fixed;
+	padding: 50px;
+	user-select: none;
+}
+
+#index #left-corner-status {
+	font-size: 50px;
+	padding-left: 15px;
+	font-family: 'Product Sans';
+}
+
 #index #day-type {
 	font-family: 'Product Sans';
 	cursor: pointer;

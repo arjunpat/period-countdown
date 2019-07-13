@@ -38,3 +38,5 @@ export function getVersion() {
 export function clone(obj) {
 	return JSON.parse(JSON.stringify(obj));
 }
+
+export const isExtn = window.location.pathname === '/extn';

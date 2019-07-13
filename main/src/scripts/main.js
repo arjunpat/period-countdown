@@ -8,7 +8,8 @@ import {
 } from './init';
 import RequestManager from './RequestManager';
 import Storage from './Storage';
-import { removeServiceWorker, greeting, getVersion } from './extras';
+import { removeServiceWorker, greeting, getVersion, isExtn } from './extras';
+
 
 // inital preferences before starting timer
 timingManager.init(prefManager.getSchoolId());
@@ -44,7 +45,7 @@ window.onbeforeunload = () => {
 	analytics.leaving();
 }
 
-if (window.location.pathname === '/extn') {
+if (isExtn) {
 	Storage.setChromeExtensionInstalled();
 } else if (window.chrome && !Storage.chromeExtensionInstalled()) {
 	setTimeout(() => {
@@ -52,7 +53,7 @@ if (window.location.pathname === '/extn') {
 	}, 3000);
 }
 
-if (window.Notification && Notification.permission === 'default' && (!Storage.askedAboutNotifications() || Math.random() < .05)) {
+if (!isExtn && window.Notification && Notification.permission === 'default' && (!Storage.askedAboutNotifications() || Math.random() < .05)) {
 	setTimeout(() => {
 		view.showModal('show-notifications');
 		Storage.setAskedAboutNotifications();
