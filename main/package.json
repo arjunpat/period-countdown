@@ -1,6 +1,6 @@
 {
   "name": "main",
-  "version": "4.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "src/main.js",
   "scripts": {
@@ -18,8 +18,10 @@
     "@babel/core": "^7.5.4",
     "@babel/plugin-transform-runtime": "^7.5.0",
     "@babel/preset-env": "^7.5.4",
+    "@babel/runtime": "^7.5.4",
     "@babel/runtime-corejs2": "^7.5.4",
     "babel-loader": "^8.0.6",
+    "core-js": "^2.6.9",
     "css-loader": "^3.0.0",
     "cssnano": "^4.1.10",
     "live-server": "^1.2.1",

@@ -3,7 +3,7 @@
     <div style="padding: 20px; font-size: 40px;" v-if="!show">{{ msg }}</div>
     <div id="nav-links" v-if="show">
       <div>
-        <!-- <router-link to="/settings">Settings</router-link> -->
+        <!-- <router-link to="/profile">Profile</router-link> -->
         <router-link to="/logout">Logout</router-link>
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
@@ -16,7 +16,8 @@
 
 <script type="text/javascript">
 import { mapState } from 'vuex';
-import { post, getClientInformation, generateGoogleSignInLink } from '../../common.js';
+import { get, post } from '@/utils.js';
+import { getClientInformation, generateGoogleSignInLink } from '../../common.js';
 
 export default {
   data() {
@@ -33,26 +34,27 @@ export default {
       while (accessToken.includes('&')) {
         accessToken = accessToken.substring(0, accessToken.indexOf('&'));
       }
-      
-      let res = (await post('/v4/login', {
-        google_token: accessToken
-      })).json;
 
-      if (!res.success) {
+      let res = await post('/v4/init', getClientInformation());
+      res = await post('/v4/login', {
+        google_token: accessToken
+      });
+
+      if (!res.json.success) {
         // TODO server issue
       }
     }
 
-    let res = (await post('/v4/account', getClientInformation())).json;
-    if (res.success) {
-      this.$store.commit('setAccount', res.data);
+    let res = await get('/v4/account');
+
+    if (res.json.success) {
+      this.$store.commit('setAccount', res.json.data);
       this.show = true;
 
       this.$router.push({ path: '/settings' });
     } else {
       window.location.href = generateGoogleSignInLink();
     }
-
   },
   computed: {
     ...mapState(['profile_pic'])

@@ -50,6 +50,11 @@ export default {
   watch: {
     value() {
       this.show();
+      this.$ga.event({
+        eventCategory: 'settings.theme.input',
+        eventAction: 'changed',
+        eventLabel: this.themeToDisplay.n
+      });
     },
     themes() {
       this.show();

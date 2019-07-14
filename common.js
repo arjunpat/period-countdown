@@ -1,12 +1,14 @@
 export const serverHost = 'http://localhost:8081';
+// export const serverHost = 'https://api.periods.io';
+export const accountVersion = '1.0.0';
+export const mainVersion = '4.0.0';
 
 export function get(url) {
-  let startTime = window.performance.now();
-
   if (!url.includes('http')) {
     url = serverHost + url;
   }
 
+  let startTime = window.performance.now();
   return fetch(url, {
     credentials: 'include'
   }).then(async res => {
@@ -18,11 +20,11 @@ export function get(url) {
 }
 
 export function post(url, json) {
-  let startTime = window.performance.now();
-
   if (!url.includes('http')) {
     url = serverHost + url;
   }
+
+  let startTime = window.performance.now();
 
   return window.fetch(url, {
     method: 'POST',

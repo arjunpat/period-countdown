@@ -51,6 +51,14 @@ export default {
     return {
       tab: 'period_names'
     }
+  },
+  watch: {
+    tab() {
+      this.$ga.event({
+        eventCategory: 'settings.' + this.tab,
+        eventAction: 'click'
+      });
+    }
   }
 }
 </script>

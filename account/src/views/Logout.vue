@@ -8,12 +8,15 @@
 </template>
 
 <script>
-import { post, generateGoogleSignInLink } from '../../../common.js';
+import { get, post } from '@/utils';
+import { generateGoogleSignInLink } from '../../../common';
 
 export default {
   created() {
     setTimeout(() => {
-      post('/v4/logout', {}).then(() => {
+      let start = performance.now();;
+
+      post('/v4/logout', {}).then(res => {
         location.href = generateGoogleSignInLink();
       });
     }, 2000);

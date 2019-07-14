@@ -25,6 +25,11 @@ export default {
       },
       set(val) {
         this.$store.commit('setSchool', val);
+        this.$ga.event({
+          eventCategory: 'settings.school.input',
+          eventAction: 'changed',
+          eventLabel: val
+        });
       }
     }
   }

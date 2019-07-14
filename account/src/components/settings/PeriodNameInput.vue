@@ -12,13 +12,15 @@
 </template>
 
 <script>
-import { isFreePeriod } from '../../../../common.js';
+import { isFreePeriod } from '../../../../common';
 
 export default {
   data() {
     return {
       id: Math.random().toString(36).substring(7),
       isFree: false,
+      firstRun: true,
+      timeoutId: null,
       value: ''
     }
   },
@@ -30,6 +32,22 @@ export default {
     value() {
       this.isFree = isFreePeriod(this.value);
       this.$store.commit('setPeriodName', { key: this.periodName, value: this.value });
+      
+      if (!this.firstRun) {
+        if (this.timeoutId) {
+          clearTimeout(this.timeoutId);
+        }
+
+        this.timeoutId = setTimeout(() => {
+          this.$ga.event({
+            eventCategory: 'settings.period_names.input',
+            eventAction: 'changed',
+            eventLabel: this.periodName
+          });
+        }, 5000);
+      }
+      
+      this.firstRun = false;
     }
   }
 }

@@ -71,7 +71,7 @@ router.all('*', async (req, res, next) => {
 });
 
 /*
-POST /v4/account
+POST /v4/init
 {
   "user_agent": "hi",
   "platform": "hi",
@@ -79,7 +79,12 @@ POST /v4/account
 }
 */
 
-router.post('/account', async (req, res) => {
+router.post('/init', async (req, res) => {
+  res.send(responses.success());
+});
+
+
+router.get('/account', async (req, res) => {
   let resp = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
 
   if (resp.length === 0) {
@@ -318,6 +323,10 @@ router.post('/update-preferences', async (req, res) => {
   let { period_names, theme, school } = req.body;
 
   if (typeof theme !== 'number' || theme > 40 || typeof school !== 'string' || school.length > 40) {
+    return res.send(responses.error('bad_data'));
+  }
+
+  if (Object.keys(period_names).length > 20) {
     return res.send(responses.error('bad_data'));
   }
 

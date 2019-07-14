@@ -32,6 +32,10 @@ export default {
     async save() {
       this.disabled = true;
       await this.$store.dispatch('saveSettings');
+      this.$ga.event({
+        eventCategory: 'settings.save_settings_button',
+        eventAction: 'click'
+      });
       setTimeout(() => {
         this.disabled = false;
       }, 2000);

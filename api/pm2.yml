@@ -1,0 +1,2 @@
+- script: ./server.js
+  name: 'api'

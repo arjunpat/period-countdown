@@ -3,14 +3,13 @@ import { get, post, serverHost, getClientInformation } from '../../../common.js'
 
 export default class RequestManager {
 
-	static init() {
-		if (document.cookie.includes('periods_io')) {
-			return post('/v4/account', {}).then(res => res.json);
-		} else {
-			Storage.clearAll(); // clear all old data
-
-			return post('/v4/account', getClientInformation()).then(res => res.json);
+	static async init() {
+		if (!document.cookie.includes('periods_io')) {
+			Storage.clearAll();
+			await post('/v4/init', getClientInformation());
 		}
+
+		return get('/v4/account').then(res => res.json);
 	}
 
 	static login(google_token) {

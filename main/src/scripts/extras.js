@@ -1,3 +1,5 @@
+import { mainVersion } from '../../../common';
+
 Object.defineProperty(Error.prototype, 'toJSON', {
     value: function () {
         var alt = {};
@@ -29,10 +31,12 @@ export function greeting() {
 }
 
 export function getVersion() {
-	for (let node of document.querySelectorAll('script')) {
+	/*for (let node of document.querySelectorAll('script')) {
 		if (node.src.includes('bundle.js?v='))
 			return node.src.substring(node.src.indexOf('?v=') + 3);
-	}
+	}*/
+
+	return mainVersion;
 }
 
 export function clone(obj) {

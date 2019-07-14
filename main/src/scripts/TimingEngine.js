@@ -151,7 +151,7 @@ export default class TimingEngine {
 			}), 1500 * i);
 		}
 
-		setTimeout(() => this.calculateOffset(), 5 * 60 * 1000); // does every 5 minutes
+		setTimeout(() => this.calculateOffset(), 30 * 60 * 1000); // does every 30 minutes
 	}
 
 	addAnotherDayToSchedule() {

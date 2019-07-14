@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { get, post, getClientInformation } from '../../common.js';
+import { get, post } from '@/utils.js';
+import { getClientInformation } from '../../common.js';
 
 Vue.use(Vuex);
 
@@ -55,6 +56,12 @@ export default new Vuex.Store({
       }
     },
     async saveSettings({ state }) {
+      for (let key in state.period_names) {
+        if (!state.periods.includes(key)) {
+          delete state.period_names[key];
+        }
+      }
+
       let res = await post('/v4/update-preferences', {
         period_names: state.period_names,
         theme: state.themeNum,
