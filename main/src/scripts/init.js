@@ -37,12 +37,12 @@ timingManager.setLoop((firstRun = false) => {
 		analytics.setPeriodName(time.periodName);
 
 		window.onresize();
-		return timingManager.repeatLoopIn(50);
+		return timingManager.repeatLoopIn(250);
 	}
 
 	if (!document.hidden || document.hasFocus()) {
 		view.updateScreen(time, true)
-		return timingManager.repeatLoopIn(50);
+		return timingManager.repeatLoopIn(250);
 	}
 
 	view.updateScreen(time, false);

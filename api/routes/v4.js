@@ -70,6 +70,8 @@ router.all('*', async (req, res, next) => {
   }
 });
 
+router.use('/admin', require('./admin')(mysql));
+
 /*
 POST /v4/init
 {
@@ -281,7 +283,7 @@ router.post('/thanks',
 );
 
 router.post('/thanks-again', async (req, res) => {
-  await mysql.query('UPDATE hits SET leave_time = ? WHERE device_id = ? ORDER BY db_id DESC LIMIT 1', [Date.now(), req.device_id]);
+  await mysql.query('UPDATE hits SET leave_time = ? WHERE device_id = ? ORDER BY time DESC LIMIT 1', [Date.now(), req.device_id]);
 
   res.send(responses.success());
 });

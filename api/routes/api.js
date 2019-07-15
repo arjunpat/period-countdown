@@ -5,6 +5,7 @@ const themes = JSON.stringify(require('../options/themes'));
 const schools = JSON.stringify(timingData.schools);
 
 router.use('/v4', require('./v4'));
+// router.use('/admin', require('./admin'));
 
 router.get('/time', (req, res) => {
   res.send(responses.success(Date.now()));
