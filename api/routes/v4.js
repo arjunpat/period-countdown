@@ -8,6 +8,8 @@ const responses = require('../lib/responses');
 const helpers = require('../lib/helpers');
 const { JWT_SECRET, MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB } = process.env;
 
+const admins = process.env.ADMIN_EMAILS.split(',');
+
 const mysql = new MySQL(
   MYSQL_USER,
   MYSQL_PASS,
@@ -117,6 +119,7 @@ router.get('/account', async (req, res) => {
       theme,
       ...themes[theme]
     },
+    admin: admins.includes(email) ? true : undefined,
     school: schoolIds.includes(school) ? school : 'mvhs',
     period_names: period_names || {}
   }));

@@ -71,6 +71,15 @@ router.get('/analytics', async (req, res) => {
   data.hits.dns = await colStats('hits', 'dns', from, to);
   data.hits.tti = await colStats('hits', 'tti', from, to);
   data.hits.ttfb = await colStats('hits', 'ttfb', from, to);
+  resp = await mysql.query(
+    'SELECT COUNT(DISTINCT device_id) FROM hits WHERE time > ? AND time < ?',
+    [from, to]
+  );
+  data.hits.unique_devices = resp[0]['COUNT(DISTINCT device_id)'];
+  resp = await mysql.query(
+    'SELECT COUNT(DISTINCT registered_to) FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?)', [from, to]
+  );
+  data.hits.unique_users = resp[0]['COUNT(DISTINCT registered_to)'];
 
   // devices
   resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE time > ? AND time < ?', [from, to]);
@@ -81,6 +90,8 @@ router.get('/analytics', async (req, res) => {
   // errors
   resp = await mysql.query('SELECT COUNT(*) FROM errors WHERE time > ? AND time < ?', [from, to]);
   data.errors.count = resp[0]['COUNT(*)'];
+  resp = await mysql.query('SELECT * FROM errors WHERE time > ? AND time < ?', [from, to]);
+  // data.errors.errors = resp;
 
   // events
   resp = await mysql.query('SELECT COUNT(*) FROM events WHERE time > ? AND time < ?', [from, to]);
@@ -91,10 +102,6 @@ router.get('/analytics', async (req, res) => {
   // users
   resp = await mysql.query('SELECT COUNT(*) FROM users WHERE time > ? AND time < ?', [from, to]);
   data.users.count = resp[0]['COUNT(*)'];
-  resp = await mysql.query(
-    'SELECT COUNT(DISTINCT registered_to) FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?)', [from, to]
-  );
-  data.users.visited = resp[0]['COUNT(DISTINCT registered_to)'];
 
   // totals
   resp = await mysql.query('SELECT COUNT(*) FROM hits');

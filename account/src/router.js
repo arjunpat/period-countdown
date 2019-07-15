@@ -36,6 +36,14 @@ let router = new Router({
       }
     },
     {
+      path: '/admin',
+      name: 'admin',
+      component: () => import(/* webpackChunkName: "view-[request]" */ '@/views/Admin.vue'),
+      meta: {
+        title: 'admin — periods.io'
+      }
+    },
+    {
       path: '*',
       redirect: '/'
     }
