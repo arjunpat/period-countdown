@@ -26,10 +26,9 @@ export default class Analytics {
 					theme: this.theme
 				}
 
+
 				if (this.period !== this.periodName) {
-					data.user = {
-						period: this.periodName
-					}
+					data.user.period = this.periodName;
 				}
 			}
 		}

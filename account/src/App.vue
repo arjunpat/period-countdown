@@ -4,6 +4,7 @@
     <div id="nav-links" v-if="show">
       <div>
         <router-link to="/admin" v-if="admin">Admin</router-link>
+        <router-link to="/settings" v-if="admin">Settings</router-link>
         <router-link to="/logout">Logout</router-link>
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">

@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS users (
 	first_name VARCHAR(50),
 	last_name VARCHAR(50),
 	profile_pic VARCHAR(150),
-	settings TEXT
+	school VARCHAR(20),
+	theme TINYINT UNSIGNED,
+	period_names JSON
 );
 CREATE TABLE IF NOT EXISTS hits (
 	time BIGINT UNSIGNED PRIMARY KEY,
@@ -29,7 +31,8 @@ CREATE TABLE IF NOT EXISTS hits (
 	dns SMALLINT UNSIGNED,
 	tti SMALLINT UNSIGNED,
 	ttfb SMALLINT UNSIGNED,
-	properties JSON
+	user_theme TINYINT UNSIGNED,
+	user_period VARCHAR(40)
 );
 CREATE TABLE IF NOT EXISTS events (
 	time BIGINT UNSIGNED PRIMARY KEY,

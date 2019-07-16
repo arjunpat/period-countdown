@@ -97,14 +97,13 @@ router.get('/account', async (req, res) => {
 
   resp = resp[0].registered_to;
 
-  resp = await mysql.query('SELECT email, profile_pic, first_name, last_name, settings FROM users WHERE email = ?', [resp]);
+  resp = await mysql.query('SELECT email, profile_pic, first_name, last_name, theme, period_names, school FROM users WHERE email = ?', [resp]);
 
   if (resp.length === 0) {
     return res.send(responses.error('not_registered'))
   }
 
-  let { email, profile_pic, first_name, last_name, settings } = resp[0];
-  let { theme, period_names, school } = JSON.parse(settings);
+  let { email, profile_pic, first_name, last_name, theme, period_names, school } = resp[0];
 
   if (typeof theme !== 'number' || theme > themes.length) {
     theme = 0;
@@ -121,7 +120,7 @@ router.get('/account', async (req, res) => {
     },
     admin: admins.includes(email) ? true : undefined,
     school: schoolIds.includes(school) ? school : 'mvhs',
-    period_names: period_names || {}
+    period_names: JSON.parse(period_names) || {}
   }));
 });
 
@@ -159,9 +158,9 @@ router.post('/login',
       return res.send(responses.error('email_not_verified'));
     }
 
-    resp = await mysql.query('SELECT settings FROM users WHERE email = ?', [email]);
+    resp = await mysql.query('SELECT email FROM users WHERE email = ?', [email]);
 
-    let status, settings;
+    let status;
 
     if (resp.length === 1) {
       await mysql.update('users', {
@@ -173,19 +172,16 @@ router.post('/login',
       });
 
       status = 'returning_user';
-      settings = JSON.parse(resp[0].settings);
     } else {
       await mysql.insert('users', {
         email,
         first_name,
         last_name,
         profile_pic,
-        time: Date.now(),
-        settings: '{}'
+        time: Date.now()
       });
 
       status = 'new_user';
-      settings = {};
     }
 
     await mysql.update('devices', {
@@ -278,7 +274,8 @@ router.post('/thanks',
       dns: speed.dns, // dns response time
       tti: speed.tti, // time to interactivity
       ttfb: speed.ttfb, // time to first byte
-      properties: JSON.stringify(props)
+      user_theme: user.theme || null,
+      user_period: user.period || null
     });
 
     res.send(responses.success());
@@ -351,20 +348,10 @@ router.post('/update-preferences', async (req, res) => {
     return res.send(responses.error('not_logged_in'));
   }
 
-  let resp = await mysql.query('SELECT settings FROM users WHERE email = ?', [email]);
-
-  let settings = JSON.stringify({
-    theme,
-    period_names,
-    school
-  });
-
-  if (settings === resp[0].settings) {
-    return res.send(responses.error('no_changes'));
-  }
-
   await mysql.update('users', {
-    settings
+    school,
+    theme,
+    period_names: JSON.stringify(period_names)
   }, {
     email
   });

@@ -1,7 +1,6 @@
 <template>
   <div>
     <h2 style="font-weight: bold;">{{ name }}</h2>
-  	<h4>Timing</h4>
     <br>
     <h3>Max: {{ timing.max }}</h3>
     <h3>Min: {{ timing.min }}</h3>

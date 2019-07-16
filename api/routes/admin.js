@@ -28,7 +28,7 @@ async function colStats(table, col, from, to) {
 
 async function colPopular(table, col, limit, from, to) {
   return await mysql.query(
-    `SELECT ${col}, COUNT(*) AS count FROM ${table} WHERE time > ? AND time < ? GROUP BY ${col} ORDER BY count DESC LIMIT ${limit}`,
+    `SELECT ${col} as value, COUNT(*) AS count FROM ${table} WHERE time > ? AND time < ? GROUP BY value ORDER BY count DESC LIMIT ${limit}`,
     [from, to]
   );
 }
@@ -59,12 +59,14 @@ router.get('/analytics', async (req, res) => {
     [from, to]
   );
   data.hits.hits_from_users = resp[0]['COUNT(*)'];
-  data.hits.versions = await colPopular('hits', 'version', 10, from, to);
+  data.hits.version = await colPopular('hits', 'version', 10, from, to);
   data.hits.ip = await colPopular('hits', 'ip', 20, from, to);
   data.hits.pathname = await colPopular('hits', 'pathname', 10, from, to);
   data.hits.referrer = await colPopular('hits', 'referrer', 10, from, to);
   data.hits.school = await colPopular('hits', 'school', 20, from, to);
   data.hits.period = await colPopular('hits', 'period', 30, from, to);
+  data.hits.user_theme = await colPopular('hits', 'user_theme', 10, from, to);
+  data.hits.user_period = await colPopular('hits', 'user_period', 10, from, to);
   data.hits.dc = await colStats('hits', 'dc', from, to);
   data.hits.pc = await colStats('hits', 'pc', from, to);
   data.hits.rt = await colStats('hits', 'rt', from, to);
@@ -88,10 +90,9 @@ router.get('/analytics', async (req, res) => {
   data.devices.count_registered = resp[0]['COUNT(*)'];
 
   // errors
-  resp = await mysql.query('SELECT COUNT(*) FROM errors WHERE time > ? AND time < ?', [from, to]);
-  data.errors.count = resp[0]['COUNT(*)'];
   resp = await mysql.query('SELECT * FROM errors WHERE time > ? AND time < ?', [from, to]);
-  // data.errors.errors = resp;
+  data.errors.count = resp.length;
+  data.errors.errors = resp;
 
   // events
   resp = await mysql.query('SELECT COUNT(*) FROM events WHERE time > ? AND time < ?', [from, to]);
@@ -100,8 +101,9 @@ router.get('/analytics', async (req, res) => {
   data.events.upt_pref = resp[0]['COUNT(*)'];
   
   // users
-  resp = await mysql.query('SELECT COUNT(*) FROM users WHERE time > ? AND time < ?', [from, to]);
-  data.users.count = resp[0]['COUNT(*)'];
+  resp = await mysql.query('SELECT * FROM users WHERE time > ? AND time < ?', [from, to]);
+  data.users.count = resp.length;
+  data.users.users = resp;
 
   // totals
   resp = await mysql.query('SELECT COUNT(*) FROM hits');
