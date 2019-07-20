@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Settings from './views/Settings.vue';
 import Profile from './views/Profile.vue';
 import Logout from './views/Logout.vue';
+import NotFound from './views/NotFound.vue';
 
 Vue.use(Router);
 
@@ -16,7 +17,6 @@ let router = new Router({
     },
     {
       path: '/settings',
-      name: 'settings',
       component: Settings,
       meta: {
         title: 'settings — periods.io'
@@ -24,28 +24,25 @@ let router = new Router({
     },
     {
       path: '/profile',
-      name: 'profile',
       component: Profile
     },
     {
       path: '/logout',
-      name: 'logout',
       component: Logout,
       meta: {
         title: 'logout — periods.io'
       }
     },
     {
-      path: '/admin',
-      name: 'admin',
-      component: () => import(/* webpackChunkName: "view-[request]" */ '@/views/Admin.vue'),
+      path: '/admin/analytics',
+      component: () => import(/* webpackChunkName: "admin-analytics" */ '@/views/admin/Analytics.vue'),
       meta: {
-        title: 'admin — periods.io'
+        title: 'analytics — periods.io'
       }
     },
     {
       path: '*',
-      redirect: '/'
+      component: NotFound
     }
   ]
 });

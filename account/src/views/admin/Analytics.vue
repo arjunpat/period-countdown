@@ -23,7 +23,7 @@
       <span>Load Time: {{ loadTime }}ms</span><br><br>
       <div v-show="tab === 'hits'">
         <div class="tiles">
-          <div>
+          <div @click="tab = 'chart'" style="cursor: pointer;">
             <h2>Hits</h2>
             <h1 class="big">{{ numberWithCommas(ana.hits.count) }}</h1>
           </div>
@@ -35,9 +35,9 @@
             <h2>Unique Devices</h2>
             <h1 class="big">{{ numberWithCommas(ana.hits.unique_devices) }}</h1>
           </div>
-          <div>
+          <div @click="tab = 'unique_users'" style="cursor: pointer;">
             <h2>Unique Users</h2>
-            <h1 class="big">{{ numberWithCommas(ana.hits.unique_users) }}</h1>
+            <h1 class="big">{{ numberWithCommas(ana.hits.unique_users.length) }}</h1>
           </div>
         </div>
         <br>
@@ -112,29 +112,19 @@
         </div>
       </div>
 
-      <div v-show="tab === 'users'">
+      <div v-if="tab === 'users'">
         <div class="tiles">
           <div>
             <h2>Created</h2>
-            <h1 class="big">{{ numberWithCommas(ana.users.count) }}</h1>
+            <h1 class="big">{{ numberWithCommas(ana.users.length) }}</h1>
           </div>
         </div>
-        <div>
-          <div v-for="user in ana.users.users" style="border: 1px solid #ccc; border-radius: 6px; padding: 10px; margin: 10px;">
-            <div>
-              <span>{{ user.first_name }} {{ user.last_name }} ({{ new Date(user.time).toLocaleString() }})</span>
-              <span style="float: right;">{{ user.email }}</span>
-            </div>
-            <br>
-            <span>School: {{ user.school || 'null' }}</span><br>
-            <span>Theme: {{ user.theme || 'null' }}</span><br>
-            <code v-html="textToHTML(user.period_names)"></code>
-          </div>
-        </div>
+        <br><br>
+        <Users title="Users Added" :users="ana.users" />
       </div>
 
       <div class="tiles" v-show="tab === 'events'">
-        <div>
+        <div @click="tab = 'chart'" style="cursor: pointer;">
           <h2>Created</h2>
           <h1 class="big">{{ numberWithCommas(ana.events.count) }}</h1>
         </div>
@@ -148,11 +138,11 @@
         <div class="tiles">
           <div>
             <h2>Created</h2>
-            <h1 class="big">{{ numberWithCommas(ana.errors.count) }}</h1>
+            <h1 class="big">{{ numberWithCommas(ana.errors.length) }}</h1>
           </div>
         </div>
         <div>
-          <div v-for="error in ana.errors.errors" style="border: 1px solid #ccc; border-radius: 6px; padding: 10px; margin: 10px;">
+          <div v-for="error in ana.errors" style="border: 1px solid #ccc; border-radius: 6px; padding: 10px; margin: 10px;">
             <div><span>({{ error.db_id }}) {{ new Date(error.time).toLocaleString() }}</span> <span style="float: right;">{{ error.device_id }}</span></div>
             <br>
             <code v-html="textToHTML(error.error)"></code>
@@ -187,6 +177,14 @@
         </div>
       </div>
 
+      <div v-if="tab === 'unique_users'">
+        <Users title="Unique Users" :users="ana.hits.unique_users" />
+      </div>
+
+      <div v-if="tab === 'chart'">
+        <Chart />
+      </div>
+
       <div class="tiles" v-show="tab === 'timings'">
         <Timing name="Dom Complete" :timing="ana.hits.dc" />
         <Timing name="DNS" :timing="ana.hits.dns" />
@@ -201,12 +199,13 @@
 
 <script>
 import { mapState } from 'vuex';
-import Timing from '@/components/admin/Timing.vue';
 import { get, post } from '@/utils.js';
 
 export default {
   components: {
-    Timing
+    Timing: () => import('@/components/admin/Timing.vue'),
+    Users: () => import('@/components/admin/Users.vue'),
+    Chart: () => import('@/components/admin/Chart.vue'),
   },
   data() {
     return {
@@ -223,7 +222,8 @@ export default {
   mounted() {
     let d = new Date();
     d = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
-    this.from = new Date(d.toISOString().substring(0, 10)).toISOString().substring(0, 16);
+    // this.from = new Date(d.toISOString().substring(0, 10)).toISOString().substring(0, 16);
+    this.from = '2019-06-01T00:00'
     this.to = d.toISOString().substring(0, 16);
     this.go();
 
@@ -238,8 +238,8 @@ export default {
       this.loadTime = this.round(res.loadTime);
 
       this.ana = res.json.data;
-      this.ana.errors.errors.reverse();
-      this.ana.users.users.sort((a, b) => {
+      this.ana.errors.reverse();
+      this.ana.users.sort((a, b) => {
         return b.time - a.time;
       });
 
@@ -288,11 +288,6 @@ button {
   margin-left: 10px;
   outline: none;
   border-radius: 6px;
-}
-
-code {
-  font-family: monospace;
-
 }
 
 #nav {

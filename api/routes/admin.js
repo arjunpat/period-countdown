@@ -33,6 +33,41 @@ async function colPopular(table, col, limit, from, to) {
   );
 }
 
+router.get('/bucket/:table', async (req, res) => {
+  if (req.params.table !== 'hits' && req.params.table !== 'events') {
+    return;
+  }
+
+  let table = req.params.table;
+  let from = parseInt(req.query.from);
+  let to = parseInt(req.query.to);
+  let increments = parseInt(req.query.buckets);
+  let incrementSize = Math.round((to - from) / increments);
+  let data = {};
+
+  let resp = await mysql.query(`SELECT time FROM ${table} WHERE time > ? AND time < ?`, [from, to]);
+  resp = resp.map(a => a.time);
+
+  let key = from;
+  let nextKey = from + incrementSize;
+  let i = 0;
+  while (key <= to) {
+    data[key] = 0;
+
+    for (; i < resp.length; i++) {
+      if (resp[i] >= nextKey)
+        break;
+
+      data[key]++;
+    }
+
+    key += incrementSize;
+    nextKey += incrementSize;
+  }
+
+  res.send(responses.success(data));
+});
+
 router.get('/analytics', async (req, res) => {
   let from = parseInt(req.query.from);
   let to = parseInt(req.query.to);
@@ -79,9 +114,9 @@ router.get('/analytics', async (req, res) => {
   );
   data.hits.unique_devices = resp[0]['COUNT(DISTINCT device_id)'];
   resp = await mysql.query(
-    'SELECT COUNT(DISTINCT registered_to) FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?)', [from, to]
+    'SELECT * FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?))', [from, to]
   );
-  data.hits.unique_users = resp[0]['COUNT(DISTINCT registered_to)'];
+  data.hits.unique_users = resp;
 
   // devices
   resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE time > ? AND time < ?', [from, to]);
@@ -91,8 +126,7 @@ router.get('/analytics', async (req, res) => {
 
   // errors
   resp = await mysql.query('SELECT * FROM errors WHERE time > ? AND time < ?', [from, to]);
-  data.errors.count = resp.length;
-  data.errors.errors = resp;
+  data.errors = resp;
 
   // events
   resp = await mysql.query('SELECT COUNT(*) FROM events WHERE time > ? AND time < ?', [from, to]);
@@ -102,8 +136,7 @@ router.get('/analytics', async (req, res) => {
   
   // users
   resp = await mysql.query('SELECT * FROM users WHERE time > ? AND time < ?', [from, to]);
-  data.users.count = resp.length;
-  data.users.users = resp;
+  data.users = resp;
 
   // totals
   resp = await mysql.query('SELECT COUNT(*) FROM hits');

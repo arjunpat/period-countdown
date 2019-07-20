@@ -3,7 +3,7 @@
     <div style="padding: 20px; font-size: 40px;" v-if="!show">{{ msg }}</div>
     <div id="nav-links" v-if="show">
       <div>
-        <router-link to="/admin" v-if="admin">Admin</router-link>
+        <router-link to="/admin/analytics" v-if="admin">Analytics</router-link>
         <router-link to="/settings" v-if="admin">Settings</router-link>
         <router-link to="/logout">Logout</router-link>
       </div>
@@ -51,8 +51,6 @@ export default {
     if (res.json.success) {
       this.$store.commit('setAccount', res.json.data);
       this.show = true;
-
-      this.$router.push({ path: '/settings' });
     } else {
       window.location.href = generateGoogleSignInLink();
     }

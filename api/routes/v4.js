@@ -250,15 +250,6 @@ router.post('/thanks',
 
     let { pathname, referrer, version, school, period, speed, user } = req.body;
 
-    let props = {};
-    
-    if (user) {
-      props.user = {
-        theme: user.theme,
-        period: user.period
-      }
-    }
-
     await mysql.insert('hits', {
       time: Date.now(),
       device_id: req.device_id,
@@ -274,8 +265,8 @@ router.post('/thanks',
       dns: speed.dns, // dns response time
       tti: speed.tti, // time to interactivity
       ttfb: speed.ttfb, // time to first byte
-      user_theme: user.theme || null,
-      user_period: user.period || null
+      user_theme: (user && user.theme) || null,
+      user_period: (user && user.period) || null
     });
 
     res.send(responses.success());
