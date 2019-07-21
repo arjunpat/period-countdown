@@ -40,87 +40,51 @@
             <h1 class="big">{{ numberWithCommas(ana.hits.unique_users.length) }}</h1>
           </div>
         </div>
-        <br>
-        <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
-          <div class="list">
-            <h2 class="big">Versions</h2>
-            <br>
-            <div v-for="version in ana.hits.version">
-              <span>{{ version.value }}</span>
-              <span style="float: right;">{{ version.count }} ({{ percent(version.count, ana.hits.count) }})</span>
-            </div>
-          </div>
-          <div class="list">
-            <h2 class="big">Pathnames</h2>
-            <br>
-            <div v-for="pathname in ana.hits.pathname">
-              <span>{{ pathname.value }}</span>
-              <span style="float: right;">{{ pathname.count }} ({{ percent(pathname.count, ana.hits.count) }})</span>
-            </div>
-          </div>
-          <div class="list">
-            <h2 class="big">Schools</h2>
-            <br>
-            <div v-for="school in ana.hits.school">
-              <span>{{ school.value }}</span>
-              <span style="float: right;">{{ school.count }} ({{ percent(school.count, ana.hits.count) }})</span>
-            </div>
-          </div>
-          <div class="list">
-            <h2 class="big">Periods</h2>
-            <br>
-            <div v-for="period in ana.hits.period">
-              <span>{{ period.value }}</span>
-              <span style="float: right;">{{ period.count }} ({{ percent(period.count, ana.hits.count) }})</span>
-            </div>
-          </div>
-          <div class="list">
-            <h2 class="big">Period Names</h2>
-            <br>
-            <div v-for="period in ana.hits.user_period">
-              <span>{{ period.value || 'null' }}</span>
-              <span style="float: right;">{{ period.count }} ({{ percent(period.count, ana.hits.count) }})</span>
-            </div>
-          </div>
-          <div class="list">
-            <h2 class="big">Theme</h2>
-            <br>
-            <div v-for="theme in ana.hits.user_theme">
-              <span>{{ typeof theme.value === 'number' ? theme.value : 'null' }}</span>
-              <span style="float: right;">{{ theme.count }} ({{ percent(theme.count, ana.hits.count) }})</span>
-            </div>
-          </div>
-          <div class="list">
-            <h2 class="big">Referrers</h2>
-            <br>
-            <div v-for="referrer in ana.hits.referrer">
-              <span>{{ referrer.value || 'null' }}</span>
-              <span style="float: right;">{{ referrer.count }} ({{ percent(referrer.count, ana.hits.count) }})</span>
-            </div>
-          </div>
+        <br><br>
+        <div class="tiles">
+          <List title="Versions" :data="ana.hits.version" :total="ana.hits.count" />
+          <List title="Pathnames" :data="ana.hits.pathname" :total="ana.hits.count" />
+          <List title="Schools" :data="ana.hits.school" :total="ana.hits.count" />
+          <List title="Periods" :data="ana.hits.period" :total="ana.hits.count" />
+          <List title="Period Names" :data="ana.hits.user_period" :total="ana.hits.count" />
+          <List title="Themes" :data="ana.hits.user_theme" :total="ana.hits.count" />
+          <List title="Referrers" :data="ana.hits.referrer" :total="ana.hits.count" />
         </div>
       </div>
 
-      <div class="tiles" v-show="tab === 'devices'">
-        <div>
-          <h2>Created</h2>
-          <h1 class="big">{{ numberWithCommas(ana.devices.count) }}</h1>
+      <div v-show="tab === 'devices'">
+        <div class="tiles">
+          <div>
+            <h2>Created</h2>
+            <h1 class="big">{{ numberWithCommas(ana.devices.count) }}</h1>
+          </div>
+          <div>
+            <h2>Registered</h2>
+            <h1 class="big">{{ numberWithCommas(ana.devices.count_registered) }}</h1>
+          </div>
         </div>
-        <div>
-          <h2>Registered</h2>
-          <h1 class="big">{{ numberWithCommas(ana.devices.count_registered) }}</h1>
+        <br><br>
+        <div style="display: flex;">
+          <List title="Platforms" :data="ana.devices.platform" :total="ana.devices.count" />
+          <List title="Browsers" :data="ana.devices.browser" :total="ana.devices.count" />
         </div>
+        <br><br>
       </div>
 
       <div v-if="tab === 'users'">
         <div class="tiles">
           <div>
             <h2>Created</h2>
-            <h1 class="big">{{ numberWithCommas(ana.users.length) }}</h1>
+            <h1 class="big">{{ numberWithCommas(ana.users.list.length) }}</h1>
           </div>
         </div>
         <br><br>
-        <Users title="Users Added" :users="ana.users" />
+        <div style="display: flex;">
+          <List title="Themes" :data="ana.users.theme" :total="ana.users.list.length" />
+          <List title="Schools" :data="ana.users.school" :total="ana.users.list.length" />
+        </div>
+        <br><br>
+        <Users title="Users Added" :users="ana.users.list" />
       </div>
 
       <div class="tiles" v-show="tab === 'events'">
@@ -150,30 +114,39 @@
         </div>
       </div>
 
-      <div class="tiles" v-show="tab === 'totals'">
-        <div>
-          <h2>Hits</h2>
-          <h1 class="big">{{ numberWithCommas(ana.totals.hits) }}</h1>
+      <div v-show="tab === 'totals'">
+        <div class="tiles">
+          <div>
+            <h2>Hits</h2>
+            <h1 class="big">{{ numberWithCommas(ana.totals.hits) }}</h1>
+          </div>
+          <div>
+            <h2>Total Devices</h2>
+            <h1 class="big">{{ numberWithCommas(ana.totals.devices.count) }}</h1>
+          </div>
+          <div>
+            <h2>Users</h2>
+            <h1 class="big">{{ numberWithCommas(ana.totals.users.count) }}</h1>
+          </div>
+          <div>
+            <h2>Events</h2>
+            <h1 class="big">{{ numberWithCommas(ana.totals.events) }}</h1>
+          </div>
+          <div>
+            <h2>Errors</h2>
+            <h1 class="big">{{ numberWithCommas(ana.totals.errors) }}</h1>
+          </div>
+          <div>
+            <h2 style="font-size: 20px;">Reg Devices ({{ percent(ana.totals.devices.registered, ana.totals.devices.count) }})</h2>
+            <h1 class="big">{{ numberWithCommas(ana.totals.devices.registered) }}</h1>
+          </div>
         </div>
-        <div>
-          <h2>Total Devices</h2>
-          <h1 class="big">{{ numberWithCommas(ana.totals.devices.count) }}</h1>
-        </div>
-        <div>
-          <h2>Users</h2>
-          <h1 class="big">{{ numberWithCommas(ana.totals.users) }}</h1>
-        </div>
-        <div>
-          <h2>Events</h2>
-          <h1 class="big">{{ numberWithCommas(ana.totals.events) }}</h1>
-        </div>
-        <div>
-          <h2>Errors</h2>
-          <h1 class="big">{{ numberWithCommas(ana.totals.errors) }}</h1>
-        </div>
-        <div>
-          <h2 style="font-size: 20px;">Reg Devices ({{ percent(ana.totals.devices.registered, ana.totals.devices.count) }})</h2>
-          <h1 class="big">{{ numberWithCommas(ana.totals.devices.registered) }}</h1>
+        <br><br>
+        <div style="display: flex;">
+          <List title="Themes (u)" :data="ana.totals.users.theme" :total="ana.totals.users.count" />
+          <List title="Schools (u)" :data="ana.totals.users.school" :total="ana.totals.users.count" />
+          <List title="Platforms (d)" :data="ana.totals.devices.platform" :total="ana.totals.devices.count" />
+          <List title="Browsers (d)" :data="ana.totals.devices.browser" :total="ana.totals.devices.count" />
         </div>
       </div>
 
@@ -206,6 +179,7 @@ export default {
     Timing: () => import('@/components/admin/Timing.vue'),
     Users: () => import('@/components/admin/Users.vue'),
     Chart: () => import('@/components/admin/Chart.vue'),
+    List: () => import('@/components/admin/List.vue')
   },
   data() {
     return {
@@ -222,8 +196,8 @@ export default {
   mounted() {
     let d = new Date();
     d = new Date(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
-    // this.from = new Date(d.toISOString().substring(0, 10)).toISOString().substring(0, 16);
-    this.from = '2019-06-01T00:00'
+    this.from = new Date(d.toISOString().substring(0, 10)).toISOString().substring(0, 16);
+    // this.from = '2019-06-01T00:00'
     this.to = d.toISOString().substring(0, 16);
     this.go();
 
@@ -239,7 +213,7 @@ export default {
 
       this.ana = res.json.data;
       this.ana.errors.reverse();
-      this.ana.users.sort((a, b) => {
+      this.ana.users.list.sort((a, b) => {
         return b.time - a.time;
       });
 
@@ -247,10 +221,6 @@ export default {
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
-    round(num, per = 3) {
-      per = 10 ** per;
-      return Math.round(num * per) / per;
     },
     textToHTML(text) {
       if (!text) {
@@ -262,6 +232,10 @@ export default {
       text = div.innerHTML;
       text = text.replace(/    /g, '&nbsp;&nbsp;&nbsp;&nbsp;');
       return text;
+    },
+    round(num, per = 3) {
+      per = 10 ** per;
+      return Math.round(num * per) / per;
     },
     percent(a, b) {
       return this.round(a / b * 100, 3) + '%';
@@ -306,20 +280,6 @@ button {
 
 #nav > span:hover {
   text-decoration: underline;
-}
-
-.list {
-  width: 300px;
-  margin-bottom: 15px;
-}
-
-.list .big {
-  font-size: 35px;
-}
-
-.list > div {
-  padding: 4px;
-  border-bottom: 1px solid #ccc;
 }
 
 .tiles {

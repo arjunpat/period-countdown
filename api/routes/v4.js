@@ -51,11 +51,9 @@ router.all('*', async (req, res, next) => {
     await mysql.insert('devices', {
       device_id,
       time: Date.now(),
-      properties: JSON.stringify({
-        user_agent,
-        platform,
-        browser
-      })
+      platform,
+      user_agent,
+      browser: browser.join(',')
     });
 
     let cookie = jwt.sign({

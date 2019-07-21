@@ -34,16 +34,19 @@ async function colPopular(table, col, limit, from, to) {
 }
 
 router.get('/bucket/:table', async (req, res) => {
-  if (req.params.table !== 'hits' && req.params.table !== 'events') {
-    return;
+  let table = req.params.table;
+
+  if (table !== 'hits' && table !== 'events' && table !== 'users') {
+    return res.send(responses.error('not_allowed'));
   }
 
-  let table = req.params.table;
+  let start = Date.now();
+
   let from = parseInt(req.query.from);
   let to = parseInt(req.query.to);
   let increments = parseInt(req.query.buckets);
   let incrementSize = Math.round((to - from) / increments);
-  let data = {};
+  let buckets = {};
 
   let resp = await mysql.query(`SELECT time FROM ${table} WHERE time > ? AND time < ?`, [from, to]);
   resp = resp.map(a => a.time);
@@ -52,20 +55,24 @@ router.get('/bucket/:table', async (req, res) => {
   let nextKey = from + incrementSize;
   let i = 0;
   while (key <= to) {
-    data[key] = 0;
+    buckets[key] = 0;
 
     for (; i < resp.length; i++) {
       if (resp[i] >= nextKey)
         break;
 
-      data[key]++;
+      buckets[key]++;
     }
 
     key += incrementSize;
     nextKey += incrementSize;
   }
 
-  res.send(responses.success(data));
+  res.send(responses.success({
+    analysis_time: Date.now() - start,
+    buckets,
+    table
+  }));
 });
 
 router.get('/analytics', async (req, res) => {
@@ -79,7 +86,8 @@ router.get('/analytics', async (req, res) => {
     events: {},
     users: {},
     totals: {
-      devices: {}
+      devices: {},
+      users: {}
     }
   }
   let resp;
@@ -123,6 +131,8 @@ router.get('/analytics', async (req, res) => {
   data.devices.count = resp[0]['COUNT(*)'];
   resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE time_registered > ? AND time_registered < ?', [from, to]);
   data.devices.count_registered = resp[0]['COUNT(*)'];
+  data.devices.platform = await colPopular('devices', 'platform', 18, from, to);
+  data.devices.browser = await colPopular('devices', 'browser', 18, from, to);
 
   // errors
   resp = await mysql.query('SELECT * FROM errors WHERE time > ? AND time < ?', [from, to]);
@@ -136,7 +146,9 @@ router.get('/analytics', async (req, res) => {
   
   // users
   resp = await mysql.query('SELECT * FROM users WHERE time > ? AND time < ?', [from, to]);
-  data.users = resp;
+  data.users.list = resp;
+  data.users.theme = await colPopular('users', 'theme', 18, from, to);
+  data.users.school = await colPopular('users', 'school', 18, from, to);
 
   // totals
   resp = await mysql.query('SELECT COUNT(*) FROM hits');
@@ -145,12 +157,16 @@ router.get('/analytics', async (req, res) => {
   data.totals.devices.count = resp[0]['COUNT(*)'];
   resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE registered_to IS NOT NULL');
   data.totals.devices.registered = resp[0]['COUNT(*)'];
+  data.totals.devices.platform = await mysql.query(`SELECT platform as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18`);
+  data.totals.devices.browser = await mysql.query(`SELECT browser as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18`);
   resp = await mysql.query('SELECT COUNT(*) FROM errors');
   data.totals.errors = resp[0]['COUNT(*)'];
   resp = await mysql.query('SELECT COUNT(*) FROM events');
   data.totals.events = resp[0]['COUNT(*)'];
   resp = await mysql.query('SELECT COUNT(*) FROM users');
-  data.totals.users = resp[0]['COUNT(*)'];
+  data.totals.users.count = resp[0]['COUNT(*)'];
+  data.totals.users.theme = await mysql.query(`SELECT theme as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18`);
+  data.totals.users.school = await mysql.query(`SELECT school as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18`);
 
   data.analysis_time = Date.now() - start;
   res.send(responses.success(data));

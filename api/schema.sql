@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS devices (
 	device_id VARCHAR(30) PRIMARY KEY,
 	time BIGINT UNSIGNED,
+	platform VARCHAR(30),
+	browser VARCHAR(30),
+	user_agent TINYTEXT,
 	registered_to VARCHAR(100),
-	time_registered BIGINT UNSIGNED,
-	properties TEXT
+	time_registered BIGINT UNSIGNED
 );
 CREATE TABLE IF NOT EXISTS users (
 	email VARCHAR(100) PRIMARY KEY,
