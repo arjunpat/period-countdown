@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 20px; font-weight: bold;">
+  <div class="main">
     <span>Your school is how we determine which schedule to use.</span>
     <br><br>
     <select id="school-select" v-model="value">
@@ -37,6 +37,19 @@ export default {
 </script>
 
 <style scoped>
+
+.main {
+  padding: 20px;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 500px) {
+  .main {
+    padding: 10px;
+    padding-top: 20px;
+  }
+}
+
 #school-select {
   display: block;
   background: #eaeaea;

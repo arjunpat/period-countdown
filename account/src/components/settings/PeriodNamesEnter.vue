@@ -1,8 +1,8 @@
 <template>
   <div>
-    <br><br><br>
-    <div style="display: flex; margin: 0 auto;">
-      <div v-for="column in columns" style="padding: 0 24px; flex: 1;">
+    <div class="margin-top"></div>
+    <div class="container">
+      <div v-for="column in columns" class="col">
         <PeriodNameInput v-for="period in column" :key="period" :period-name="period" />
       </div>
     </div>
@@ -39,3 +39,34 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.margin-top {
+  height: 57px;
+}
+
+.container {
+  display: flex;
+  margin: 0 auto;
+}
+
+.col {
+  padding: 0 24px;
+  flex: 1;
+}
+
+@media only screen and (max-width: 500px) {
+  .margin-top {
+    height: 35px;
+  }
+
+  .container {
+    display: block;
+  }
+
+  .col {
+    padding: 0 10px;
+  }
+}
+
+</style>

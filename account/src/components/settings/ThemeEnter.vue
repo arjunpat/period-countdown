@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 20px;">
+  <div class="main">
     <select id="theme-select" v-model="value">
       <option v-for="(theme, index) in themes" :value="index">{{ theme.n }}</option>
     </select>
@@ -64,6 +64,17 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  padding: 20px;
+}
+
+@media only screen and (max-width: 500px) {
+  .main {
+    padding: 10px;
+    padding-top: 20px;
+  }
+}
+
 #theme-select {
   display: block;
   background: #eaeaea;

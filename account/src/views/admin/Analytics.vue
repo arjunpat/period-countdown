@@ -23,7 +23,7 @@
       <span>Load Time: {{ loadTime }}ms</span><br><br>
       <div v-show="tab === 'hits'">
         <div class="tiles">
-          <div @click="tab = 'chart'" style="cursor: pointer;">
+          <div @click="$router.push({ path: '/admin/chart' })" style="cursor: pointer;">
             <h2>Hits</h2>
             <h1 class="big">{{ numberWithCommas(ana.hits.count) }}</h1>
           </div>
@@ -88,7 +88,7 @@
       </div>
 
       <div class="tiles" v-show="tab === 'events'">
-        <div @click="tab = 'chart'" style="cursor: pointer;">
+        <div @click="$router.push({ path: '/admin/chart' })" style="cursor: pointer;">
           <h2>Created</h2>
           <h1 class="big">{{ numberWithCommas(ana.events.count) }}</h1>
         </div>
@@ -154,10 +154,6 @@
         <Users title="Unique Users" :users="ana.hits.unique_users" />
       </div>
 
-      <div v-if="tab === 'chart'">
-        <Chart />
-      </div>
-
       <div class="tiles" v-show="tab === 'timings'">
         <Timing name="Dom Complete" :timing="ana.hits.dc" />
         <Timing name="DNS" :timing="ana.hits.dns" />
@@ -173,13 +169,15 @@
 <script>
 import { mapState } from 'vuex';
 import { get, post } from '@/utils.js';
+import Timing from '@/components/admin/Timing.vue';
+import Users from '@/components/admin/Users.vue';
+import List from '@/components/admin/List.vue';
 
 export default {
   components: {
-    Timing: () => import('@/components/admin/Timing.vue'),
-    Users: () => import('@/components/admin/Users.vue'),
-    Chart: () => import('@/components/admin/Chart.vue'),
-    List: () => import('@/components/admin/List.vue')
+    Timing,
+    Users,
+    List
   },
   data() {
     return {

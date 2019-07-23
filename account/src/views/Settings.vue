@@ -1,9 +1,8 @@
 <template>
-  <div style="padding: 20px;">
+  <div class="main-div">
     <span class="title">Your Settings</span>
     <div>
       <div class="settings-tabs">
-
         <div class="header">
           <div
             :class="{ selected: tab === 'period_names' }"
@@ -20,7 +19,7 @@
           >Theme</div>
         </div>
 
-        <div style="border: 2px solid #f17600; border-radius: 6px;">
+        <div class="input-area">
           <transition name="tab-change">
             <PeriodNamesEnter v-if="tab === 'period_names'" />
             <SchoolEnter v-if="tab === 'school'" />
@@ -64,6 +63,11 @@ export default {
 </script>
 
 <style scoped>
+
+.main-div {
+  padding: 20px;
+}
+
 .settings-tabs {
   width: 70%;
   margin: 0 auto;
@@ -95,6 +99,11 @@ export default {
   font-weight: bold;
 }
 
+.input-area {
+  border: 2px solid #f17600;
+  border-radius: 6px;
+}
+
 .tab-change-enter-active {
   transition: all 250ms ease;
 }
@@ -107,4 +116,26 @@ export default {
   opacity: 0;
   transform: translateX(20px);
 }
+
+@media only screen and (max-width: 500px) {
+  .main-div {
+    padding: 0;
+  }
+
+  .input-area {
+    border: none;
+    border-top: 2px solid #f17600;
+    border-radius: 0;
+  }
+
+  .settings-tabs {
+    width: 90%;
+    margin-top: 20px;
+  }
+
+  .header > div {
+    font-size: 20px;
+  }
+}
+
 </style>

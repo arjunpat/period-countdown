@@ -4,7 +4,9 @@
     <div id="nav-links" v-if="show">
       <div>
         <router-link to="/admin/analytics" v-if="admin">Analytics</router-link>
+        <router-link to="/admin/chart" v-if="admin">Chart</router-link>
         <router-link to="/settings" v-if="admin">Settings</router-link>
+        <a v-if="!admin" href="https://periods.io">Back to periods.io</a>
         <router-link to="/logout">Logout</router-link>
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
@@ -51,6 +53,7 @@ export default {
     if (res.json.success) {
       this.$store.commit('setAccount', res.json.data);
       this.show = true;
+      this.$router.push({ path: window.location.pathname });
     } else {
       window.location.href = generateGoogleSignInLink();
     }
@@ -64,8 +67,11 @@ export default {
 <style scoped>
 #nav-links {
   float: right;
-  padding: 60px;
+  margin: 50px;
+  padding: 10px 10px 10px 5px;
   display: flex;
+  border: 2px solid rgba(241, 116, 0, .7);
+  border-radius: 10px;
 }
 
 #nav-links > div {
@@ -84,7 +90,8 @@ export default {
 }
 
 #nav-links > div > a:hover {
-  background: #eee;
+  text-decoration: underline;
+  text-decoration-color: rgba(241, 116, 0, 1);
 }
 
 #profile-pic {
@@ -96,7 +103,11 @@ export default {
   transition: .2s ease all;
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 500px) {
+  #nav-links {
+    margin: 10px;
+  }
+
   #profile-pic {
     display: none;
   }
@@ -118,10 +129,8 @@ export default {
 
 <style>
 .router-link-active {
-  border: 3px solid !important;
-  border-width: 0 0 3px 0 !important;
-  border-image-source: linear-gradient(120deg, #fccb0b 0%, #fc590bad 100%) !important;
-  border-image-slice: 1 !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(241, 116, 0, 1) !important;
   font-weight: bold;
 }
 </style>

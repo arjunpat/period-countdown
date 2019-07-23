@@ -35,9 +35,16 @@ let router = new Router({
     },
     {
       path: '/admin/analytics',
-      component: () => import(/* webpackChunkName: "admin-analytics" */ '@/views/admin/Analytics.vue'),
+      component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/Analytics.vue'),
       meta: {
         title: 'analytics — periods.io'
+      }
+    },
+    {
+      path: '/admin/chart',
+      component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/Chart.vue'),
+      meta: {
+        title: 'chart - periods.io'
       }
     },
     {

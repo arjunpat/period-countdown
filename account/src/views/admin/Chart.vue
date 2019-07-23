@@ -1,5 +1,7 @@
 <template>
   <div style="padding: 20px;">
+    <span class="title">Chart</span>
+    <br><br>
     <div>
       <input type="checkbox" v-model="charts.hits" id="hits">
       <label for="hits">hits</label>
@@ -16,8 +18,8 @@
       <button @click="go();">Go</button>
     </div>
     <br>
-    <span>Analysis time: {{ analysisTime }}ms</span><br>
-    <span>Bucketing time: {{ loadTime }}ms</span>
+    <span>Bucketing time: {{ analysisTime }}ms</span><br>
+    <span>Analysis time: {{ loadTime }}ms</span>
 
     <div style="width: 80%;">
       <canvas ref="chart" width="800" height="500"></canvas>
