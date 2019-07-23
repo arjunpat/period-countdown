@@ -1,7 +1,7 @@
 export const serverHost = 'http://localhost:8081';
 // export const serverHost = 'https://api.periods.io';
 export const accountVersion = '1.1.3';
-export const mainVersion = '4.0.2';
+export const mainVersion = '4.0.3';
 
 export function get(url) {
   if (!url.includes('http')) {

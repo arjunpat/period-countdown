@@ -95,12 +95,16 @@ export function render() {
 
 	// settings button
 	view.index.settingsButton.querySelector('div').onclick = () => {
-		window.open(prefManager.isLoggedIn() ? 'https://account.periods.io' : generateGoogleSignInLink());
+		if (prefManager.isLoggedIn()) {
+			window.location.href = 'https://account.periods.io/settings';
+		} else {
+			window.open(generateGoogleSignInLink());
+		}
 	}
 
 	// profile picture
 	view.index.googleSignin.querySelector('div').onclick = () => {
-		window.open('https://account.periods.io');
+		window.location.href = 'https://account.periods.io/settings';
 	}
 }
 
