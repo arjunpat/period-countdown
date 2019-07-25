@@ -74,3 +74,39 @@ textarea {
     font-size: 70px;
   }
 }
+
+/* loading animation */
+
+.loader {
+  width: 140px;
+  height: 140px;
+  perspective: 168px;
+  border-radius: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+
+.loader:before {
+  content: "";
+  position: absolute;
+  left: 35px;
+  top: 35px;
+  width: 70px;
+  height: 70px;
+  background-color: #f17600;
+  animation: flip 1s infinite;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotate(0);
+  }
+
+  50% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(180deg) rotateX(180deg);
+  }
+}

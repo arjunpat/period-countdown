@@ -6,7 +6,7 @@ export async function get(url) {
   Vue.$ga.time({
     timingCategory: 'GET ' + url,
     timingVar: 'load',
-    timingValue: res.loadTime
+    timingValue: Math.round(res.loadTime)
   });
   return res;
 }
@@ -16,7 +16,7 @@ export async function post(url, data) {
   Vue.$ga.time({
     timingCategory: 'POST ' + url,
     timingVar: 'load',
-    timingValue: res.loadTime
+    timingValue: Math.round(res.loadTime)
   });
   return res;
 }

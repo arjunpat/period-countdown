@@ -13,7 +13,7 @@ Vue.use(VueAnalytics, {
   router,
   set: [
     {
-      field: 'appVersion',
+      field: 'dimension1',
       value: accountVersion
     }
   ],
@@ -26,10 +26,8 @@ Vue.use(VueAnalytics, {
   }
 });
 
-new Vue({
+let instance = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app');
-
-

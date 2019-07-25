@@ -7,8 +7,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    email: '',
   	profile_pic: '',
     school: '',
+    admin: false,
     periods: [],
     schools: [],
     themes: [],

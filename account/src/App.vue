@@ -1,7 +1,6 @@
 <template>
   <div>
-    <div style="padding: 20px; font-size: 40px;" v-if="!show">{{ msg }}</div>
-    <div id="nav-links" v-if="show">
+    <div id="nav-links">
       <div>
         <router-link to="/admin/analytics" v-if="admin">Analytics</router-link>
         <router-link to="/admin/chart" v-if="admin">Chart</router-link>
@@ -12,7 +11,7 @@
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
     </div>
     <transition name="page-change">
-      <router-view v-if="show" />
+      <router-view />
     </transition>
   </div>
 </template>
@@ -23,12 +22,6 @@ import { get, post } from '@/utils.js';
 import { getClientInformation, generateGoogleSignInLink } from '../../common.js';
 
 export default {
-  data() {
-    return {
-      show: false,
-      msg: ''
-    }
-  },
   async mounted() {
     let accessTokenLocation = window.location.href.indexOf('access_token=');
     if (accessTokenLocation > -1) {
@@ -51,9 +44,10 @@ export default {
     let res = await get('/v4/account');
 
     if (res.json.success) {
-      this.$store.commit('setAccount', res.json.data);
-      this.show = true;
-      this.$router.push({ path: window.location.pathname });
+      setTimeout(() => {
+        this.$store.commit('setAccount', res.json.data);
+        this.$router.push({ path: window.location.pathname });
+      }, 1500);
     } else {
       window.location.href = generateGoogleSignInLink();
     }

@@ -1,6 +1,5 @@
-export const serverHost = 'http://localhost:8081';
-// export const serverHost = 'https://api.periods.io';
-export const accountVersion = '1.1.3';
+export const serverHost = process.env.NODE_ENV === 'production' ? 'https://api.periods.io' : 'http://localhost:8081';
+export const accountVersion = '1.1.4';
 export const mainVersion = '4.0.3';
 
 export function get(url) {

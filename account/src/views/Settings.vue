@@ -1,7 +1,7 @@
 <template>
   <div class="main-div">
-    <span class="title">Your Settings</span>
-    <div>
+    <span class="title">Settings</span>
+    <div v-if="email">
       <div class="settings-tabs">
         <div class="header">
           <div
@@ -27,13 +27,17 @@
           </transition>
         </div>
       </div>
+      <br><br>
+      <SaveSettingsButton />
     </div>
-    <br><br>
-    <SaveSettingsButton />
+    <div v-else style="display: flex; height: 50vh; width: 100%; justify-content: center; align-items: center;">
+      <div class="loader"></div>
+    </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import PeriodNamesEnter from '@/components/settings/PeriodNamesEnter.vue';
 import SchoolEnter from '@/components/settings/SchoolEnter.vue';
 import ThemeEnter from '@/components/settings/ThemeEnter.vue';
@@ -58,6 +62,9 @@ export default {
         eventAction: 'click'
       });
     }
+  },
+  computed: {
+    ...mapState(['email'])
   }
 }
 </script>
