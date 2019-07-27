@@ -39,20 +39,11 @@ const schedule = {
 		{
 			date: '10/10/2018',
 			content: {
-				name: 'PSAT Testing',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:00'
-					},
-					{
-						n: 'Testing',
-						f: '8:05'
-					},
-					{
-						n: 'Free',
-						f: '12:15'
-					}
+				n: 'PSAT Testing',
+				s: [
+					'8:00 Passing',
+					'8:05 Testing',
+					'12:15 Free'
 				]
 			}
 		},
@@ -71,131 +62,62 @@ const schedule = {
 		{
 			date: '11/12/2018',
 			content: {
-				schedule: [],
-				name: 'Veteran\'s Day'
+				s: [],
+				n: 'Veteran\'s Day'
 			}
 		},
 		{
 			from: '11/21/2018',
 			to: '11/23/2018',
 			content: {
-				schedule: [],
-				name: 'Holiday'
+				s: [],
+				n: 'Holiday'
 			}
 		},
 		{
 			date: '12/19/2018',
 			content: {
-				name: 'Finals',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 2',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:45'
-					},
-					{
-						n: 'Passing',
-						f: '10:05'
-					},
-					{
-						n: 'Period 6',
-						f: '10:10'
-					},
-					{
-						n: 'Lunch',
-						f: '11:45'
-					},
-					{
-						n: 'Passing',
-						f: '12:30'
-					},
-					{
-						n: 'Period 7',
-						f: '12:35'
-					},
-					{
-						n: 'Free',
-						f: '14:10'
-					}
+				n: 'Finals',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 2',
+					'9:45 Brunch',
+					'10:05 Passing',
+					'10:10 Period 6',
+					'11:45 Lunch',
+					'12:30 Passing',
+					'12:35 Period 7',
+					'14:10 Free'
 				]
 			}
 		},
 		{
 			date: '12/20/2018',
 			content: {
-				name: 'Finals',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 0',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:45'
-					},
-					{
-						n: 'Passing',
-						f: '10:05'
-					},
-					{
-						n: 'Period 1',
-						f: '10:10'
-					},
-					{
-						n: 'Lunch',
-						f: '11:45'
-					},
-					{
-						n: 'Passing',
-						f: '12:30'
-					},
-					{
-						n: 'Period 5',
-						f: '12:35'
-					},
-					{
-						n: 'Free',
-						f: '14:10'
-					}
+				n: 'Finals',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 0',
+					'9:45 Brunch',
+					'10:05 Passing',
+					'10:10 Period 1',
+					'11:45 Lunch',
+					'12:30 Passing',
+					'12:35 Period 5',
+					'14:10 Free'
 				]
 			}
 		},
 		{
 			date: '12/21/2018',
 			content: {
-				name: 'Finals',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 3',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:45'
-					},
-					{
-						n: 'Period 4',
-						f: '10:10'
-					},
-					{
-						n: 'Free',
-						f: '11:45'
-					}
+				n: 'Finals',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 3',
+					'9:45 Brunch',
+					'10:10 Period 4',
+					'11:45 Free'
 				]
 			}
 		},
@@ -203,126 +125,54 @@ const schedule = {
 			from: '12/22/2018',
 			to: '1/7/2019',
 			content: {
-				name: 'Holiday Break',
-				schedule: []
+				n: 'Holiday Break',
+				s: []
 			}
 		},
 		{
 			date: '1/21/2019',
 			content: {
 				type: 'weekend',
-				name: 'MLK Day'
+				n: 'MLK Day'
 			}
 		},
 		{
 			date: '1/23/2019',
 			content: {
-				name: 'Advisory Block',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '7:10'
-					},
-					{
-						n: 'Period 0',
-						f: '7:15'
-					},
-					{
-						n: 'Passing',
-						f: '8:40'
-					},
-					{
-						n: 'Period 2',
-						f: '8:45'
-					},
-					{
-						n: 'Brunch',
-						f: '10:10'
-					},
-					{
-						n: 'Passing',
-						f: '10:25'
-					},
-					{
-						n: 'Period 4',
-						f: '10:30'
-					},
-					{
-						n: 'Advisory',
-						f: '11:55'
-					},
-					{
-						n: 'Lunch',
-						f: '12:20'
-					},
-					{
-						n: 'Passing',
-						f: '13:05'
-					},
-					{
-						n: 'Period 6',
-						f: '13:10'
-					},
-					{
-						n: 'Free',
-						f: '14:35'
-					}
+				n: 'Advisory Block',
+				s: [
+					'7:10 Passing',
+					'7:15 Period 0',
+					'8:40 Passing',
+					'8:45 Period 2',
+					'10:10 Brunch',
+					'10:25 Passing',
+					'10:30 Period 4',
+					'11:55 Advisory',
+					'12:20 Lunch',
+					'13:05 Passing',
+					'13:10 Period 6',
+					'14:35 Free'
 				]
 			}
 		},
 		{
 			date: '1/24/2019',
 			content: {
-				name: 'Advisory Block',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 1',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:35'
-					},
-					{
-						n: 'Passing',
-						f: '9:50'
-					},
-					{
-						n: 'Period 3',
-						f: '9:55'
-					},
-					{
-						n: 'Advisory',
-						f: '11:20'
-					},
-					{
-						n: 'Lunch',
-						f: '11:45'
-					},
-					{
-						n: 'Passing',
-						f: '12:30'
-					},
-					{
-						n: 'Period 5',
-						f: '12:35'
-					},
-					{
-						n: 'Passing',
-						f: '14:00'
-					},
-					{
-						n: 'Period 7',
-						f: '14:05'
-					},
-					{
-						n: 'Free',
-						f: '15:30'
-					}
+				n: 'Advisory Block',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 1',
+					'9:35 Brunch',
+					'9:50 Passing',
+					'9:55 Period 3',
+					'11:20 Advisory',
+					'11:45 Lunch',
+					'12:30 Passing',
+					'12:35 Period 5',
+					'14:00 Passing',
+					'14:05 Period 7',
+					'15:30 Free'
 				]
 			}
 		},
@@ -354,16 +204,16 @@ const schedule = {
 			from: '2/18/2019',
 			to: '2/22/2019',
 			content: {
-				name: 'Winter Break',
-				schedule: []
+				n: 'Winter Break',
+				s: []
 			}
 		},
 		{
 			from: '3/16/2019',
 			to: '3/19/2019',
 			content: {
-				name: 'Long Weekend',
-				schedule: []
+				n: 'Long Weekend',
+				s: []
 			}
 		},
 		{
@@ -376,243 +226,90 @@ const schedule = {
 			from: '4/13/2019',
 			to: '4/21/2019',
 			content: {
-				name: 'Break',
-				schedule: []
+				n: 'Break',
+				s: []
 			}
 		},
 		{
 			date: '4/23/2019',
 			content: {
-				name: 'SBAC Testing',
-				schedule: [
-					{
-						f: '8:05',
-						n: 'Passing'
-					},
-					{
-						f: '8:10',
-						n: 'Junior SBAC Testing'
-					},
-					{
-						f: '10:45',
-						n: 'Passing'
-					},
-					{
-						f: '10:50',
-						n: 'Period 2'
-					},
-					{
-						f: '11:45',
-						n: 'Lunch'
-					},
-					{
-						f: '12:30',
-						n: 'Passing'
-					},
-					{
-						f: '12:35',
-						n: 'Period 4'
-					},
-					{
-						f: '13:30',
-						n: 'Passing'
-					},
-					{
-						f: '13:35',
-						n: 'Period 6'
-					},
-					{
-						f: '14:30',
-						n: 'Passing'
-					},
-					{
-						f: '14:35',
-						n: 'Period 0'
-					},
-					{
-						f: '15:30',
-						n: 'Free'
-					}
+				n: 'SBAC Testing',
+				s: [
+					'8:05 Passing',
+					'8:10 Junior SBAC Testing',
+					'10:45 Passing',
+					'10:50 Period 2',
+					'11:45 Lunch',
+					'12:30 Passing',
+					'12:35 Period 4',
+					'13:30 Passing',
+					'13:35 Period 6',
+					'14:30 Passing',
+					'14:35 Period 0',
+					'15:30 Free'
 				]
 			}
 		},
 		{
 			date: '4/24/2019',
 			content: {
-				name: 'SBAC Testing',
-				schedule: [
-					{
-						f: '8:05',
-						n: 'Passing'
-					},
-					{
-						f: '8:10',
-						n: 'Junior SBAC Testing'
-					},
-					{
-						f: '10:20',
-						n: 'Break'
-					},
-					{
-						f: '10:25',
-						n: 'Passing'
-					},
-					{
-						f: '10:30',
-						n: 'Period 1'
-					},
-					{
-						f: '11:30',
-						n: 'Lunch'
-					},
-					{
-						f: '12:15',
-						n: 'Passing'
-					},
-					{
-						f: '12:20',
-						n: 'Period 3'
-					},
-					{
-						f: '13:20',
-						n: 'Passing'
-					},
-					{
-						f: '13:25',
-						n: 'Period 5'
-					},
-					{
-						f: '14:25',
-						n: 'Passing'
-					},
-					{
-						f: '14:30',
-						n: 'Period 7'
-					},
-					{
-						f: '15:30',
-						n: 'Free'
-					}
+				n: 'SBAC Testing',
+				s: [
+					'8:05 Passing',
+					'8:10 Junior SBAC Testing',
+					'10:20 Break',
+					'10:25 Passing',
+					'10:30 Period 1',
+					'11:30 Lunch',
+					'12:15 Passing',
+					'12:20 Period 3',
+					'13:20 Passing',
+					'13:25 Period 5',
+					'14:25 Passing',
+					'14:30 Period 7',
+					'15:30 Free'
 				]
 			}
 		},
 		{
 			date: '4/25/2019',
 			content: {
-				name: 'SBAC & CAST Testing',
-				schedule: [
-					{
-						f: '8:05',
-						n: 'Passing'
-					},
-					{
-						f: '8:10',
-						n: 'SBAC & CSAT Testing'
-					},
-					{
-						f: '10:20',
-						n: 'Break'
-					},
-					{
-						f: '10:25',
-						n: 'Passing'
-					},
-					{
-						f: '10:30',
-						n: 'Period 2'
-					},
-					{
-						f: '11:30',
-						n: 'Lunch'
-					},
-					{
-						f: '12:15',
-						n: 'Passing'
-					},
-					{
-						f: '12:20',
-						n: 'Period 4'
-					},
-					{
-						f: '13:20',
-						n: 'Passing'
-					},
-					{
-						f: '13:25',
-						n: 'Period 6'
-					},
-					{
-						f: '14:25',
-						n: 'Passing'
-					},
-					{
-						f: '14:30',
-						n: 'Period 0'
-					},
-					{
-						f: '15:30',
-						n: 'Free'
-					}
+				n: 'SBAC & CAST Testing',
+				s: [
+					'8:05 Passing',
+					'8:10 SBAC & CSAT Testing',
+					'10:20 Break',
+					'10:25 Passing',
+					'10:30 Period 2',
+					'11:30 Lunch',
+					'12:15 Passing',
+					'12:20 Period 4',
+					'13:20 Passing',
+					'13:25 Period 6',
+					'14:25 Passing',
+					'14:30 Period 0',
+					'15:30 Free'
 				]
 			}
 		},
 		{
 			date: '4/26/2019',
 			content: {
-				name: 'SBAC Testing',
-				schedule: [
-					{
-						f: '8:05',
-						n: 'Passing'
-					},
-					{
-						f: '8:10',
-						n: 'SBAC Testing'
-					},
-					{
-						f: '10:20',
-						n: 'Break'
-					},
-					{
-						f: '10:25',
-						n: 'Passing'
-					},
-					{
-						f: '10:30',
-						n: 'Period 1'
-					},
-					{
-						f: '11:30',
-						n: 'Lunch'
-					},
-					{
-						f: '12:15',
-						n: 'Passing'
-					},
-					{
-						f: '12:20',
-						n: 'Period 3'
-					},
-					{
-						f: '13:20',
-						n: 'Passing'
-					},
-					{
-						f: '13:25',
-						n: 'Period 5'
-					},
-					{
-						f: '14:25',
-						n: 'Passing'
-					},
-					{
-						f: '14:30',
-						n: 'Period 7'
-					},
-					{
-						f: '15:30',
-						n: 'Free'
-					}
+				n: 'SBAC Testing',
+				s: [
+					'8:05 Passing',
+					'8:10 SBAC Testing',
+					'10:20 Break',
+					'10:25 Passing',
+					'10:30 Period 1',
+					'11:30 Lunch',
+					'12:15 Passing',
+					'12:20 Period 3',
+					'13:20 Passing',
+					'13:25 Period 5',
+					'14:25 Passing',
+					'14:30 Period 7',
+					'15:30 Free'
 				]
 			}
 		},
@@ -621,7 +318,7 @@ const schedule = {
 			content: {
 				type: 'G'
 			}
-		}
+		},
 		{
 			date: '6/4/2019',
 			content: {
@@ -631,125 +328,56 @@ const schedule = {
 		{
 			date: '6/5/2019',
 			content: {
-				name: 'Finals',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 2',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:45'
-					},
-					{
-						n: 'Passing',
-						f: '10:05'
-					},
-					{
-						n: 'Period 6',
-						f: '10:10'
-					},
-					{
-						n: 'Lunch',
-						f: '11:45'
-					},
-					{
-						n: 'Passing',
-						f: '12:30'
-					},
-					{
-						n: 'Period 7',
-						f: '12:35'
-					},
-					{
-						n: 'Free',
-						f: '14:10'
-					}
+				n: 'Finals',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 2',
+					'9:45 Brunch',
+					'10:05 Passing',
+					'10:10 Period 6',
+					'11:45 Lunch',
+					'12:30 Passing',
+					'12:35 Period 7',
+					'14:10 Free'
 				]
 			}
 		},
 		{
 			date: '6/6/2019',
 			content: {
-				name: 'Finals',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 0',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:45'
-					},
-					{
-						n: 'Passing',
-						f: '10:05'
-					},
-					{
-						n: 'Period 1',
-						f: '10:10'
-					},
-					{
-						n: 'Lunch',
-						f: '11:45'
-					},
-					{
-						n: 'Passing',
-						f: '12:30'
-					},
-					{
-						n: 'Period 5',
-						f: '12:35'
-					},
-					{
-						n: 'Free',
-						f: '14:10'
-					}
+				n: 'Finals',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 0',
+					'9:45 Brunch',
+					'10:05 Passing',
+					'10:10 Period 1',
+					'11:45 Lunch',
+					'12:30 Passing',
+					'12:35 Period 5',
+					'14:10 Free'
 				]
 			}
 		},
 		{
 			date: '6/7/2019',
 			content: {
-				name: 'Finals',
-				schedule: [
-					{
-						n: 'Passing',
-						f: '8:05'
-					},
-					{
-						n: 'Period 3',
-						f: '8:10'
-					},
-					{
-						n: 'Brunch',
-						f: '9:45'
-					},
-					{
-						n: 'Period 4',
-						f: '10:10'
-					},
-					{
-						n: 'Free',
-						f: '11:45'
-					}
+				n: 'Finals',
+				s: [
+					'8:05 Passing',
+					'8:10 Period 3',
+					'9:45 Brunch',
+					'10:10 Period 4',
+					'11:45 Free'
 				]
 			}
-		}*/
+		},*/
 		{
 			from: '6/8/2019',
 			to: '8/18/2019',
 			content: {
-				name: 'Summer Break',
-				schedule: []
+				n: 'Summer Break',
+				s: []
 			}
 		}
 	]
@@ -761,534 +389,163 @@ const school = {
 		A: {
 			n: 'Normal Schedule',
 			s: [
-				{
-					n: 'Passing',
-					f: '7:10'
-				},
-				{
-					n: 'Period 0',
-					f: '7:15'
-				},
-				{
-					n: 'Passing',
-					f: '8:05'
-				},
-				{
-					n: 'Period 1',
-					f: '8:10'
-				},
-				{
-					n: 'Passing',
-					f: '9:00'
-				},
-				{
-					n: 'Period 2',
-					f: '9:05'
-				},
-				{
-					n: 'Brunch',
-					f: '10:00'
-				},
-				{
-					n: 'Passing',
-					f: '10:10'
-				},
-				{
-					n: 'Period 3',
-					f: '10:15'
-				},
-				{
-					n: 'Passing',
-					f: '11:05'
-				},
-				{
-					n: 'Period 4',
-					f: '11:10'
-				},
-				{
-					n: 'Lunch',
-					f: '12:00'
-				},
-				{
-					n: 'Passing',
-					f: '12:45'
-				},
-				{
-					n: 'Period 5',
-					f: '12:50'
-				},
-				{
-					n: 'Passing',
-					f: '13:40'
-				},
-				{
-					n: 'Period 6',
-					f: '13:45'
-				},
-				{
-					n: 'Passing',
-					f: '14:35'
-				},
-				{
-					n: 'Period 7',
-					f: '14:40'
-				},
-				{
-					n: 'Free',
-					f: '15:30'
-				}
+				'7:10 Passing',
+				'7:15 Period 0',
+				'8:05 Passing',
+				'8:10 Period 1',
+				'9:00 Passing',
+				'9:05 Period 2',
+				'10:00 Brunch',
+				'10:10 Passing',
+				'10:15 Period 3',
+				'11:05 Passing',
+				'11:10 Period 4',
+				'12:00 Lunch',
+				'12:45 Passing',
+				'12:50 Period 5',
+				'13:40 Passing',
+				'13:45 Period 6',
+				'14:35 Passing',
+				'14:40 Period 7',
+				'15:30 Free'
 			]
 		},
 		B: {
 			n: 'Block Wednesday',
 			s: [
-				{
-					n: 'Passing',
-					f: '7:10'
-				},
-				{
-					n: 'Period 0',
-					f: '7:15'
-				},
-				{
-					n: 'Passing',
-					f: '8:45'
-				},
-				{
-					n: 'Period 2',
-					f: '8:50'
-
-				},
-				{
-					n: 'Brunch',
-					f: '10:25'
-
-				},
-				{
-					n: 'Passing',
-					f: '10:40'
-				},
-				{
-					n: 'Period 4',
-					f: '10:45'
-
-				},
-				{
-					n: 'Lunch',
-					f: '12:15'
-
-				},
-				{
-					n: 'Passing',
-					f: '13:00'
-				},
-				{
-					n: 'Period 6',
-					f: '13:05'
-
-				},
-				{
-					n: 'Free',
-					f: '14:35'
-				}
+				'7:10 Passing',
+				'7:15 Period 0',
+				'8:45 Passing',
+				'8:50 Period 2',
+				'10:25 Brunch',
+				'10:40 Passing',
+				'10:45 Period 4',
+				'12:15 Lunch',
+				'13:00 Passing',
+				'13:05 Period 6',
+				'14:35 Free'
 			]
 		},
 		C: {
 			n: 'Block Thursday',
 			s: [
-				{
-					n: 'Passing',
-					f: '8:05'
-				},
-				{
-					n: 'Period 1',
-					f: '8:10'
-				},
-				{
-					n: 'Brunch',
-					f: '9:45'
-				},
-				{
-					n: 'Passing',
-					f: '10:00'
-				},
-				{
-					n: 'Period 3',
-					f: '10:05'
-				},
-				{
-					n: 'Lunch',
-					f: '11:35'
-				},
-				{
-					n: 'Passing',
-					f: '12:20'
-				},
-				{
-					n: 'Period 5',
-					f: '12:25'
-				},
-				{
-					n: 'Passing',
-					f: '13:55'
-				},
-				{
-					n: 'Period 7',
-					f: '14:00'
-				},
-				{
-					n: 'Free',
-					f: '15:30'
-				}
+				'8:05 Passing',
+				'8:10 Period 1',
+				'9:45 Brunch',
+				'10:00 Passing',
+				'10:05 Period 3',
+				'11:35 Lunch',
+				'12:20 Passing',
+				'12:25 Period 5',
+				'13:55 Passing',
+				'14:00 Period 7',
+				'15:30 Free'
 			]
 		},
 		D: {
 			n: 'Modified Block Wednesday',
 			s: [
-				{
-					n: 'Passing',
-					f: '7:10'
-				},
-				{
-					n: 'Period 0',
-					f: '7:15'
-				},
-				{
-					n: 'Passing',
-					f: '8:15'
-				},
-				{
-					n: 'Period 2',
-					f: '8:20'
-				},
-				{
-					n: 'Brunch',
-					f: '9:20'
-				},
-				{
-					n: 'Passing',
-					f: '9:30'
-				},
-				{
-					n: 'Period 4',
-					f: '9:35'
-				},
-				{
-					n: 'Passing',
-					f: '10:35'
-				},
-				{
-					n: 'Period 6',
-					f: '10:40'
-				},
-				{
-					n: 'Lunch',
-					f: '11:40'
-				},
-				{
-					n: 'Free',
-					f: '12:25'
-				}
+				'7:10 Passing',
+				'7:15 Period 0',
+				'8:15 Passing',
+				'8:20 Period 2',
+				'9:20 Brunch',
+				'9:30 Passing',
+				'9:35 Period 4',
+				'10:35 Passing',
+				'10:40 Period 6',
+				'11:40 Lunch',
+				'12:25 Free'
 			]
 		},
 		E: {
 			n: 'Modified Block Thursday',
 			s: [
-				{
-					n: 'Passing',
-					f: '8:05'
-				},
-				{
-					n: 'Period 1',
-					f: '8:10'
-				},
-				{
-					n: 'Passing',
-					f: '9:10'
-				},
-				{
-					n: 'Period 3',
-					f: '9:15'
-				},
-				{
-					n: 'Brunch',
-					f: '10:15'
-				},
-				{
-					n: 'Passing',
-					f: '10:25'
-				},
-				{
-					n: 'Period 5',
-					f: '10:30'
-				},
-				{
-					n: 'Passing',
-					f: '11:30'
-				},
-				{
-					n: 'Period 7',
-					f: '11:35'
-				},
-				{
-					n: 'Lunch',
-					f: '12:35'
-				},
-				{
-					n: 'Free',
-					f: '13:20'
-				}
+				'8:05 Passing',
+				'8:10 Period 1',
+				'9:10 Passing',
+				'9:15 Period 3',
+				'10:15 Brunch',
+				'10:25 Passing',
+				'10:30 Period 5',
+				'11:30 Passing',
+				'11:35 Period 7',
+				'12:35 Lunch',
+				'13:20 Free'
 			]
 		},
 		F: {
 			n: 'Minimum Day',
 			s: [
-				{
-					n: 'Passing',
-					f: '7:25'
-				},
-				{
-					n: 'Period 0',
-					f: '7:30'
-				},
-				{
-					n: 'Passing',
-					f: '8:00'
-				},
-				{
-					n: 'Period 1',
-					f: '8:05'
-				},
-				{
-					n: 'Passing',
-					f: '8:35'
-				},
-				{
-					n: 'Period 2',
-					f: '8:40'
-				},
-				{
-					n: 'Passing',
-					f: '9:10'
-				},
-				{
-					n: 'Period 3',
-					f: '9:15'
-				},
-				{
-					n: 'Passing',
-					f: '9:45'
-				},
-				{
-					n: 'Period 4',
-					f: '9:50'
-				},
-				{
-					n: 'Brunch',
-					f: '10:20'
-				},
-				{
-					n: 'Passing',
-					f: '10:30'
-				},
-				{
-					n: 'Period 5',
-					f: '10:35'
-				},
-				{
-					n: 'Passing',
-					f: '11:05'
-				},
-				{
-					n: 'Period 6',
-					f: '11:10'
-				},
-				{
-					n: 'Passing',
-					f: '11:40'
-				},
-				{
-					n: 'Period 7',
-					f: '11:45'
-				},
-				{
-					n: 'Free',
-					f: '12:15'
-				}
+				'7:25 Passing',
+				'7:30 Period 0',
+				'8:00 Passing',
+				'8:05 Period 1',
+				'8:35 Passing',
+				'8:40 Period 2',
+				'9:10 Passing',
+				'9:15 Period 3',
+				'9:45 Passing',
+				'9:50 Period 4',
+				'10:20 Brunch',
+				'10:30 Passing',
+				'10:35 Period 5',
+				'11:05 Passing',
+				'11:10 Period 6',
+				'11:40 Passing',
+				'11:45 Period 7',
+				'12:15 Free'
 			]
 		},
 		G: {
 			n: 'Assembly Schedule',
 			s: [
-				{
-					n: 'Passing',
-					f: '7:15'
-				},
-				{
-					n: 'Period 0',
-					f: '7:20'
-				},
-				{
-					n: 'Passing',
-					f: '8:05'
-				},
-				{
-					n: 'Period 1',
-					f: '8:10'
-				},
-				{
-					n: 'Passing',
-					f: '8:55'
-				},
-				{
-					n: '2A',
-					f: '9:00'
-				},
-				{
-					n: 'Passing',
-					f: '9:45'
-				},
-				{
-					n: '2B',
-					f: '9:50'
-				},
-				{
-					n: 'Brunch',
-					f: '10:35'
-				},
-				{
-					n: 'Passing',
-					f: '10:45'
-				},
-				{
-					n: 'Period 3',
-					f: '10:50'
-				},
-				{
-					n: 'Passing',
-					f: '11:35'
-				},
-				{
-					n: 'Period 4',
-					f: '11:40'
-				},
-				{
-					n: 'Lunch',
-					f: '12:25'
-				},
-				{
-					n: 'Passing',
-					f: '13:00'
-				},
-				{
-					n: 'Period 5',
-					f: '13:05'
-				},
-				{
-					n: 'Passing',
-					f: '13:50'
-				},
-				{
-					n: 'Period 6',
-					f: '13:55'
-				},
-				{
-					n: 'Passing',
-					f: '14:40'
-				},
-				{
-					n: 'Period 7',
-					f: '14:45'
-				},
-				{
-					n: 'Free',
-					f: '15:30'
-				}
+				'7:15 Passing',
+				'7:20 Period 0',
+				'8:05 Passing',
+				'8:10 Period 1',
+				'8:55 Passing',
+				'9:00 2A',
+				'9:45 Passing',
+				'9:50 2B',
+				'10:35 Brunch',
+				'10:45 Passing',
+				'10:50 Period 3',
+				'11:35 Passing',
+				'11:40 Period 4',
+				'12:25 Lunch',
+				'13:00 Passing',
+				'13:05 Period 5',
+				'13:50 Passing',
+				'13:55 Period 6',
+				'14:40 Passing',
+				'14:45 Period 7',
+				'15:30 Free'
 			]
 		},
 		tutorial: {
 			n: 'Tutorial Schedule',
 			s: [
-				{
-					n: 'Passing',
-					f: '7:15'
-				},
-				{
-					n: 'Period 0',
-					f: '7:20'
-				},
-				{
-					n: 'Passing',
-					f: '8:05'
-				},
-				{
-					n: 'Period 1',
-					f: '8:10'
-				},
-				{
-					n: 'Passing',
-					f: '8:55'
-				},
-				{
-					n: 'Period 2',
-					f: '9:00'
-				},
-				{
-					n: 'Brunch',
-					f: '9:50'
-				},
-				{
-					n: 'Passing',
-					f: '10:00'
-				},
-				{
-					n: 'Period 3',
-					f: '10:05'
-				},
-				{
-					n: 'Tutorial',
-					f: '10:50'
-				},
-				{
-					n: 'Passing',
-					f: '11:25'
-				},
-				{
-					n: 'Period 4',
-					f: '11:30'
-				},
-				{
-					n: 'Lunch',
-					f: '12:15'
-				},
-				{
-					n: 'Passing',
-					f: '13:00'
-				},
-				{
-					n: 'Period 5',
-					f: '13:05'
-				},
-				{
-					n: 'Passing',
-					f: '13:50'
-				},
-				{
-					n: 'Period 6',
-					f: '13:55'
-				},
-				{
-					n: 'Passing',
-					f: '14:40'
-				},
-				{
-					n: 'Period 7',
-					f: '14:45'
-				},
-				{
-					n: 'Free',
-					f: '15:30'
-				}
+				'7:15 Passing',
+				'7:20 Period 0',
+				'8:05 Passing',
+				'8:10 Period 1',
+				'8:55 Passing',
+				'9:00 Period 2',
+				'9:50 Brunch',
+				'10:00 Passing',
+				'10:05 Period 3',
+				'10:50 Tutorial',
+				'11:25 Passing',
+				'11:30 Period 4',
+				'12:15 Lunch',
+				'13:00 Passing',
+				'13:05 Period 5',
+				'13:50 Passing',
+				'13:55 Period 6',
+				'14:40 Passing',
+				'14:45 Period 7',
+				'15:30 Free'
 			]
 		},
 		weekend: {
@@ -1298,4 +555,4 @@ const school = {
 	}
 }
 
-module.exports = { schedule, school };
+module.exports = { schedule, school }

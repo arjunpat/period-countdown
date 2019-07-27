@@ -2,15 +2,19 @@
 const schedule = {
 	offset: 0,
 	weekly_presets: {
-		pattern: ['weekend', 'even', 'odd', 'even', 'odd', 'even', 'weekend'],
-		start: '1/6/2019'
+		pattern: [
+			'weekend', 'odd', 'even', 'odd', 'even', 'odd', 'weekend',
+			'weekend', 'even', 'even', 'odd', 'even', 'odd', 'weekend'
+		],
+		start: '5/19/2019'
 	},
 	calendar: [
 		{
-			from: '7/21/2018',
-			to: '8/25/2018',
+			from: '6/1/2019',
+			to: '8/11/2019',
 			content: {
-				type: 'even'
+				n: 'Summer Break',
+				s: []
 			}
 		}
 	]
@@ -22,107 +26,35 @@ const school = {
 		even: {
 			n: 'Even Block',
 			s: [
-				{
-					n: 'Passing',
-					f: '8:15'
-				},
-				{
-					n: 'Period 2',
-					f: '8:20'
-				},
-				{
-					n: 'Brunch',
-					f: '9:50'
-				},
-				{
-					n: 'Passing',
-					f: '10:00'
-				},
-				{
-					n: 'Period 4',
-					f: '10:05'
-				},
-				{
-					n: 'Lunch',
-					f: '11:35'
-				},
-				{
-					n: 'Passing',
-					f: '12:05'
-				},
-				{
-					n: 'Period 6',
-					f: '12:15'
-				},
-				{
-					n: 'InFocus',
-					f: '13:45'
-				},
-				{
-					n: 'Passing',
-					f: '13:55'
-				},
-				{
-					n: 'Advisory',
-					f: '14:05'
-				},
-				{
-					n: 'Free',
-					f: '14:50'
-				}
+				'8:15 Passing',
+				'8:20 Period 2',
+				'9:50 Brunch',
+				'10:00 Passing',
+				'10:05 Period 4',
+				'11:35 Lunch',
+				'12:05 Passing',
+				'12:15 Period 6',
+				'13:45 InFocus',
+				'13:55 Passing',
+				'14:05 Advisory',
+				'14:50 Free'
 			]
 		},
 		odd: {
 			n: 'Odd Block',
 			s: [
-				{
-					n: 'Passing',
-					f: '8:15'
-				},
-				{
-					n: 'Period 1',
-					f: '8:20'
-				},
-				{
-					n: 'Brunch',
-					f: '9:50'
-				},
-				{
-					n: 'Passing',
-					f: '10:00'
-				},
-				{
-					n: 'Period 3',
-					f: '10:05'
-				},
-				{
-					n: 'Lunch',
-					f: '11:35'
-				},
-				{
-					n: 'Passing',
-					f: '12:05'
-				},
-				{
-					n: 'Period 5',
-					f: '12:15'
-				},
-				{
-					n: 'InFocus',
-					f: '13:45'
-				},
-				{
-					n: 'Passing',
-					f: '13:55'
-				},
-				{
-					n: 'Period 7',
-					f: '14:05'
-				},
-				{
-					n: 'Free',
-					f: '15:35'
-				}
+				'8:15 Passing',
+				'8:20 Period 1',
+				'9:50 Brunch',
+				'10:00 Passing',
+				'10:05 Period 3',
+				'11:35 Lunch',
+				'12:05 Passing',
+				'12:15 Period 5',
+				'13:45 InFocus',
+				'13:55 Passing',
+				'14:05 Period 7',
+				'15:35 Free'
 			]
 		},
 		weekend: {
@@ -132,4 +64,4 @@ const school = {
 	}
 }
 
-module.exports = { schedule, school };
+module.exports = { schedule, school }

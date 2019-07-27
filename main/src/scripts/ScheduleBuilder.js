@@ -8,23 +8,44 @@ export default class ScheduleBuilder {
 		// moves all inline calendar schedules to presets
 		let c = schedule.calendar;
 		for (let i = 0; i < c.length; i++) {
-			if (c[i].content.schedule) {
+			if (c[i].content.s) {
 				let presetName = 'preset-' + Math.random();
 
 				school.presets[presetName] = {
-					n: c[i].content.name,
-					s: c[i].content.schedule
+					n: c[i].content.n,
+					s: c[i].content.s
 				}
 
-				delete c[i].content.schedule;
+				delete c[i].content.s;
 				c[i].content.type = presetName;
 			}
+		}
+
+		// parse all string presets
+		for (let key in school.presets) {
+			school.presets[key].s = this.parseScheduleArray(school.presets[key].s);
 		}
 
 		this.school = JSON.stringify(school);
 		this.periods = school.periods;
 		this.schedule = JSON.stringify(schedule);
 		this.initialized = true;
+	}
+
+	parseScheduleArray(arr) {
+		let data = [];
+
+		for (let i = 0; i < arr.length; i++) {
+			let str = arr[i];
+			let s = str.indexOf(' ');
+
+			data.push({
+				f: str.substr(0, s),
+				n: str.substr(s + 1)
+			});
+		}
+
+		return data;
 	}
 
 	generatePresets() {

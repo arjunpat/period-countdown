@@ -8,7 +8,7 @@
             :class="{ selected: tab === 'period_names' }"
             style="padding-left: 0;"
             @click="tab = 'period_names'"
-          >Period Names</div>
+          >Class Names</div>
           <div
             :class="{ selected: tab === 'school' }"
             @click="tab = 'school'"

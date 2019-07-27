@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import VueAnalytics from 'vue-analytics';
-import { accountVersion } from '../../common';
+import { accountVersion, isProd } from '../../common';
 import '@/assets/global.css';
 
 Vue.config.productionTip = false;
@@ -22,7 +22,7 @@ Vue.use(VueAnalytics, {
   },
   debug: {
     enabled: false,
-    sendHitTask: process.env.NODE_ENV === 'production'
+    sendHitTask: isProd
   }
 });
 

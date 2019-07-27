@@ -1,5 +1,4 @@
 const mvhs = require('./mvhs.js');
-const lahs = require('./lahs.js');
 const paly = require('./paly.js');
 
 const obj = {
@@ -11,9 +10,12 @@ const obj = {
 	},
 	lahs: {
 		name: 'Los Altos High School',
-		schedule: JSON.stringify(lahs.schedule),
+		schedule: JSON.stringify(mvhs.schedule),
+		school: JSON.stringify(mvhs.school),
+		periods: JSON.stringify(mvhs.school.periods)
+		/*schedule: JSON.stringify(lahs.schedule),
 		school: JSON.stringify(lahs.school),
-		periods: JSON.stringify(lahs.school.periods)
+		periods: JSON.stringify(lahs.school.periods)*/
 	},
 	paly: {
 		name: 'Palo Alto High School',
