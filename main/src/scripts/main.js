@@ -36,7 +36,7 @@ RequestManager.init().then(json => {
 
 	analytics.setTheme(prefManager.getThemeNum());
 	analytics.setSchool(prefManager.getSchoolId());
-}).catch(err => {	
+}).catch(err => {
 	RequestManager.sendError(err);
 });
 
@@ -57,7 +57,9 @@ if (isExtn) {
 
 if (!isExtn && window.Notification && Notification.permission === 'default' && (!Storage.askedAboutNotifications() || Math.random() < .05)) {
 	setTimeout(() => {
-		view.showModal('show-notifications');
+		// view.showModal('show-notifications');
+		view.showModal('Notifications?','We can <span style="font-weight: bold;">notify you when 5 minutes</span> are left of a period!<br><br>To enable notifications, <a id="enable-notifications">click here.</a><br><br>Note: you\'ll only receive these notifications when you have a tab of periods.io open.');
+
 		Storage.setAskedAboutNotifications();
 	}, 10000);
 }

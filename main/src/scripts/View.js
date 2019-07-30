@@ -2,6 +2,7 @@ import { logger } from './init';
 import { isExtn } from './extras';
 import Storage from './Storage';
 
+import Modal from './components/Modal';
 import Canvas from './components/Canvas';
 
 export default class View {
@@ -25,24 +26,12 @@ export default class View {
 			isACrawler: /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)
 		}
 
-		this.modal = {
-			open: false,
-			modal: document.getElementById('modal'),
-			title: document.getElementById('modal-title'),
-			body: document.getElementById('modal-body'),
-			footer: document.getElementById('modal-footer')
-		}
-
+		this.modal = new Modal(document.getElementById('modal'));
 		this.canvas = new Canvas(this.index.mainCanvas);
 
-		this.notification.querySelectorAll('span')[1].onclick = (() => this.hideNotification()).bind(this);
-		this.modal.footer.querySelector('a').onclick = this.closeModal.bind(this);
+		this.notification.querySelectorAll('span')[1].onclick = this.hideNotification.bind(this);
 
 		logger.timeEnd('View', 'grabbed-elements');
-
-		document.getElementById('enable-notifications').onclick = () => {
-			Notification.requestPermission();
-		}
 	}
 
 	updateScreen(time, showVisuals) {
@@ -63,20 +52,16 @@ export default class View {
 			// the cringier, the better
 			let bodies = [
 				'Did you turn in your homework?',
-				'Give your teacher a hug',
+				'Go give your teacher a hug!',
 				'Grab your things!',
 				'Whew!',
-				'Finally, right?',
-				'Prepare for blast off',
-				'Are you looking at me? Do your work!',
-				'You better be going',
+				'Finally!!',
+				'Prepare to blast',
 				'Gone so soon?',
-				'It\'s hard to say goodbye',
+				'It\'ll be hard to say goodbye',
 				'Your partner will miss you',
 				'Farewell',
-				'See you later, alligator',
 				'Bye Felicia',
-				'Tootle-loo'
 			]
 
 			if (timeString === '5:00') {
@@ -232,45 +217,13 @@ export default class View {
 		setTimeout(this.hideNotification, 5000);
 	}
 
-	showModal(screen) {
-		let screens = this.modal.body.children;
-
-		for (let i = 0; i < screens.length; i++) {
-			if (screens[i].classList.contains(screen)) {
-				screens[i].style.display = 'block';
-			} else {
-				screens[i].style.display = 'none';
-			}
-		}
-
-		let titles = this.modal.title.children;
-
-		for (let i = 0; i < titles.length; i++) {
-			if (titles[i].classList.contains(screen)) {
-				titles[i].style.display = 'block';
-			} else {
-				titles[i].style.display = 'none';
-			}
-		}
-
-		let modalStyle = this.modal.modal.style;
-		modalStyle.display = 'block';
-
+	showModal(title, body) {
+		this.modal.show(title, body);
 		setTimeout(() => {
-			modalStyle.opacity = '1';
-			modalStyle.transform = 'translateY(0)';
-		}, 20);
-
-		this.modal.open = true;
-	}
-
-	closeModal() {
-		this.modal.modal.style.opacity = '0';
-		setTimeout(() => {
-			this.modal.modal.style.display = 'none';
-			this.modal.modal.style.transform = 'translateY(-500px)';
-		}, 400);
-		this.modal.open = false; // TODO pls no reference like this! fix
+			document.getElementById('enable-notifications').onclick = () => {
+				Notification.requestPermission();
+			}
+		}, 100);
 	}
 
 	dimensionCanvas() { this.canvas.dimension(); }

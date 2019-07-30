@@ -5,7 +5,7 @@ export default class Component {
 
 	constructor(element) {
 		this.element = element;
-		this.props = {};
+		this.state = {};
 	}
 
 	render() {
@@ -18,11 +18,6 @@ export default class Component {
 	}
 
 	draw() {
-		let html = this.render();
-		this._paint(html);
-	}
-
-	redraw() {
 		// TODO make this just change necessary parts. lit-html?
 
 		let html = this.render();
@@ -31,11 +26,14 @@ export default class Component {
 		}
 	}
 
-	setProp(key, value) {
-		if (!this.props[key] || this.props[key] !== value) {
-			this.props[key] = value;
-			this.draw();
+	setState(obj) {
+		for (let key in obj) {
+			if (!this.state[key] || this.state[key] !== obj[key]) {
+				this.state[key] = obj[key];
+			}
 		}
+
+		this.draw();
 	}
 
 	getElement() { return this.element; }
