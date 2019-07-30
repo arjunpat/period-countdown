@@ -9,11 +9,11 @@ export default class TimingEngine {
 		this.calculateOffset();
 	}
 
-	init(presets, calendar, weeklyPresets) {
+	init(presets, calendar, defaults) {
 		this.presets = presets;
 		this.calendar = this.parseCalendar(calendar);
-		this.weeklyPresets = weeklyPresets;
-		this.weeklyPresets.start = new Date(this.weeklyPresets.start).getTime();
+		this.defaults = defaults;
+		this.defaults.start = new Date(this.defaults.start).getTime();
 		this.timeline = [];
 		this.stats = {};
 
@@ -64,7 +64,7 @@ export default class TimingEngine {
 			minutes,
 			seconds,
 			period: this.timeline[0].n,
-			dayType: this.calendar[this.getTodayDateString()].name,
+			dayType: this.calendar[this.getTodayDateString()].n,
 			periodLength
 		}
 
@@ -77,7 +77,7 @@ export default class TimingEngine {
 		this.prepareDay(dateString);
 		this.stats.parsedUpTo = dateString;
 
-		this.timeline = [].concat(this.calendar[dateString].schedule);
+		this.timeline = [].concat(this.calendar[dateString].s);
 
 		// account for days with no schedule (weekends/holidays) & when first event of day is coming up
 		while (this.timeline.length === 0 || this.timeline[0].f > this.getCurrentTime()) {
@@ -86,7 +86,7 @@ export default class TimingEngine {
 			this.prepareDay(dateString);
 
 			// concat to the front
-			this.timeline = [].concat(this.calendar[dateString].schedule, this.timeline);
+			this.timeline = [].concat(this.calendar[dateString].s, this.timeline);
 		}
 
 		// remove all events that have already passed
@@ -105,25 +105,24 @@ export default class TimingEngine {
 
 		// otherwise
 		if (this.calendar[dateString]) {
+			let {s, n} = this.getPresetSchedule(this.calendar[dateString].t) || this.getPresetScheduleFromDateString(dateString);
 
-			let {s, n} = this.getPresetSchedule(this.calendar[dateString].type) || this.getPresetScheduleFromDateString(dateString);
-
-			this.calendar[dateString].schedule = s;
+			this.calendar[dateString].s = s;
 			
-			if (!this.calendar[dateString].name)
-				this.calendar[dateString].name = n;
+			if (!this.calendar[dateString].n)
+				this.calendar[dateString].n = n;
 
 		} else {
-			let {s: schedule, n: name} = this.getPresetScheduleFromDateString(dateString);
+			let {s, n} = this.getPresetScheduleFromDateString(dateString);
 
 			this.calendar[dateString] = {
-				schedule,
-				name
+				s,
+				n
 			}
 		}
 
 		// s is reference to object
-		let s = this.calendar[dateString].schedule;
+		let { s } = this.calendar[dateString];
 
 		// converts the day's sch to epoch ms time
 		for (let i = 0; i < s.length; i++) {
@@ -134,9 +133,9 @@ export default class TimingEngine {
 	}
 
 	calculateOffset(numOfRequests = 5) {
+
 		let offsets = [];
 		for (let i = 0; i < numOfRequests; i++) {
-
 			setTimeout(() => RequestManager.getTime().then(time => {
 				if (!time)
 					return;
@@ -157,7 +156,7 @@ export default class TimingEngine {
 	addAnotherDayToSchedule() {
 		this.stats.parsedUpTo = this.getNextDayDateString(this.stats.parsedUpTo);
 		this.prepareDay(this.stats.parsedUpTo);
-		this.timeline = this.timeline.concat(this.calendar[this.stats.parsedUpTo].schedule);
+		this.timeline = this.timeline.concat(this.calendar[this.stats.parsedUpTo].s);
 	}
 
 
@@ -197,10 +196,10 @@ export default class TimingEngine {
 
 	getPresetScheduleFromDateString(dateString) {
 		let d = new Date(dateString).getTime();
-		d = (d - this.weeklyPresets.start) / 86400000;
-		d = Math.round(d) % this.weeklyPresets.pattern.length;
+		d = (d - this.defaults.start) / 86400000;
+		d = Math.round(d) % this.defaults.pattern.length;
 
-		return this.getPresetSchedule(this.weeklyPresets.pattern[d]);
+		return this.getPresetSchedule(this.defaults.pattern[d]);
 	}
 
 	getCurrentTime() { return Math.round(this.offset) + Date.now() /* jic client doesn't like ms w/ decimal */ }

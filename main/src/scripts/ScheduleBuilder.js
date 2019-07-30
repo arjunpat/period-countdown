@@ -17,13 +17,14 @@ export default class ScheduleBuilder {
 				}
 
 				delete c[i].content.s;
-				c[i].content.type = presetName;
+				c[i].content.t = presetName;
 			}
 		}
 
 		// parse all string presets
 		for (let key in school.presets) {
-			school.presets[key].s = this.parseScheduleArray(school.presets[key].s);
+			let obj = school.presets[key];
+			obj.s = this.parseScheduleArray(typeof obj.s === 'string' ? obj.s.split(',') : obj.s);
 		}
 
 		this.school = JSON.stringify(school);

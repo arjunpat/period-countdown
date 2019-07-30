@@ -21,9 +21,9 @@ export const scheduleBuilder = new ScheduleBuilder();
 timingManager.setTimerPrepareMethod((school, schedule) => {
 	scheduleBuilder.init(school, schedule);
 	
-	let { presets, calendar, weekly_presets } = scheduleBuilder.buildAll();
+	let { presets, calendar, defaults } = scheduleBuilder.buildAll();
 
-	timingEngine.init(presets, calendar, weekly_presets);
+	timingEngine.init(presets, calendar, defaults);
 });
 
 timingManager.setLoop((firstRun = false) => {
