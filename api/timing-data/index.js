@@ -1,16 +1,14 @@
-const Parser = require('./Parser');
+const yaml = require('js-yaml');
 const Validator = require('./Validator');
 const fs = require('fs');
 
 function loadSchool(id) {
-	let school = fs.readFileSync(`./timing-data/${id}/school.txt`).toString();
-	let schedule = fs.readFileSync(`./timing-data/${id}/schedule.txt`).toString();
-
-	school = Parser.school(school);
-	schedule = Parser.schedule(schedule);
+	let school = yaml.safeLoad(fs.readFileSync(`./timing-data/${id}/school.yml`).toString());
+	let schedule = yaml.safeLoad(fs.readFileSync(`./timing-data/${id}/schedule.yml`).toString());
 
 	let validator = new Validator(school, schedule);
 	if (validator.areErrors()) {
+		console.log(id);
 		throw JSON.stringify(validator.getErrors());
 	}
 
@@ -25,22 +23,15 @@ const obj = {
 	mvhs: {
 		name: 'Mountain View High School',
 		...loadSchool('mvhs')
-		/*schedule: JSON.stringify(mvhs.schedule),
-		school: JSON.stringify(mvhs.school),
-		periods: JSON.stringify(mvhs.school.periods)*/
 	},
-	/*lahs: {
+	lahs: {
 		name: 'Los Altos High School',
-		schedule: JSON.stringify(mvhs.schedule),
-		school: JSON.stringify(mvhs.school),
-		periods: JSON.stringify(mvhs.school.periods)
+		...loadSchool('mvhs')	
 	},
 	paly: {
 		name: 'Palo Alto High School',
-		schedule: JSON.stringify(paly.schedule),
-		school: JSON.stringify(paly.school),
-		periods: JSON.stringify(paly.school.periods)
-	}*/
+		...loadSchool('paly')
+	}
 }
 
 const schools = [];
@@ -53,7 +44,6 @@ for (let key in obj) {
     id: key
   });
 }
-
 obj.schools = schools;
 
 module.exports = obj;
