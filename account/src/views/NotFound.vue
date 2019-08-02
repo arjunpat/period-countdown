@@ -21,7 +21,7 @@ export default {
   methods: {
     hi() {
       setTimeout(() => {
-        // this.num--;
+        this.num--;
         if (this.num === 0) {
           this.$router.push({ path: '/settings' });
         } else {

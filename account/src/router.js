@@ -48,6 +48,20 @@ let router = new Router({
       }
     },
     {
+      path: '/schedules/home',
+      component: () => import(/* webpackChunkName: "schedules" */'@/views/schedules/Home.vue'),
+      meta: {
+        title: 'schedules - periods.io'
+      }
+    },
+    {
+      path: '/schedules/new',
+      component: () => import(/* webpackChunkName : "schedules */'@/views/schedules/New.vue'),
+      meta: {
+        title: 'new schedule - periods.io'
+      }
+    },
+    {
       path: '*',
       component: NotFound
     }

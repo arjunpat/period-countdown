@@ -110,3 +110,79 @@ textarea {
     transform: rotateY(180deg) rotateX(180deg);
   }
 }
+
+/* input forms */
+.material-input-group {
+  position: relative;
+  margin: auto;
+  margin-bottom: 60px;
+}
+.material-input {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 35px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid #d9d9d9;
+  background-color: transparent;
+  border-radius: 0;
+}
+.material-input:disabled {
+  cursor: not-allowed;
+}
+.material-input:focus {
+  outline: none;
+  border-width: 2px;
+  border-color: #f17600;
+  transition: all .2s ease-out;
+}
+.has-value:valid + label {
+  top: -15px;
+  color: #757575;
+  font-size: 12px;
+}
+.material-input:focus + label {
+  top: -15px;
+  color: #f17600;
+  font-size: 12px;
+}
+.material-input + label {
+  position: absolute;
+  top: 10px;
+  left: 3px;
+  font-size: 16px;
+  color: #999999;
+  transition: all .2s ease-out;
+  z-index: 2;
+  cursor: text;
+  user-select: none;
+}
+
+.material-form-button {
+  background: #fccb0b;
+  color: #000;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  outline: none;
+  font-family: 'Product Sans', 'Roboto', sans-serif;
+  cursor: pointer;
+  width: 160px;
+  transition: background 0.2s ease;
+  margin: auto;
+  display: block;
+}
+
+.material-form-button:hover {
+  box-shadow: 0 1px 1px 0 rgba(252, 203, 11, 0.45), 0 1px 3px 1px rgba(252, 203, 11, 0.3);
+  background: #ffd014;
+}
+
+.material-form-button:disabled {
+  background: #a6a6a6;
+  cursor: not-allowed;
+}
