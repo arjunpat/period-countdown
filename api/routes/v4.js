@@ -71,6 +71,7 @@ router.all('*', async (req, res, next) => {
 });
 
 router.use('/admin', require('./admin')(mysql));
+router.use('/schedules', require('./schedules')(mysql, generateId));
 
 /*
 POST /v4/init

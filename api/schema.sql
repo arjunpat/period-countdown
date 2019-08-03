@@ -17,6 +17,21 @@ CREATE TABLE IF NOT EXISTS users (
 	theme TINYINT UNSIGNED,
 	period_names JSON
 );
+CREATE TABLE IF NOT EXISTS schools (
+	id VARCHAR(10) PRIMARY KEY,
+	status VARCHAR(20),
+	name TINYTEXT,
+	editor VARCHAR(100),
+	zip VARCHAR(15),
+	city VARCHAR(100),
+	state VARCHAR(5),
+	timezone VARCHAR(5),
+	lon VARCHAR(50),
+	lat VARCHAR(50),
+	website TINYTEXT,
+	relation TINYTEXT,
+	INDEX(editor)
+);
 CREATE TABLE IF NOT EXISTS hits (
 	time BIGINT UNSIGNED PRIMARY KEY,
 	device_id VARCHAR(30),

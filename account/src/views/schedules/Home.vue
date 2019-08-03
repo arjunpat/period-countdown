@@ -5,9 +5,9 @@
       <div style="max-width: 800px; padding: 20px; margin: 0 auto; border: 4px solid red; border-radius: 8px;">
         <h2 style="font-weight: bold;">IMPORTANT!</h2><br>
         <h3>If your school's schedule isn't currently available on periods.io, you can <strong>create and maintain</strong> the schedule for your school. By using this, you agree:</h3><br>
-        <p>1. Before any schedule is publically listed on periods.io for any user  to select, you and your schedule will undergo a semi-rigorous <strong>approval process</strong> to ensure the current and expected validity of your schedule.</p><br>
-        <p>2. Your <strong>contact information (your email and your first name)</strong> will be displayed publically for users to file complaints regarding issues with the timings or names of your schedule.</p><br>
-        <p>3. If your schedule is approved, you will have <strong>full control and responsibility</strong> for the maintainence of the schedule. You will need to <strong>manually input</strong> your school's holidays, summer break, minimum days, assembly days, etc. throughout the school year.</p><br>
+        <p>1. Before any schedule is publicly listed on periods.io for any user  to select, you and your schedule will undergo a semi-rigorous <strong>approval process</strong> to ensure the current and expected validity of your schedule.</p><br>
+        <p>2. Your <strong>contact information (your email and your first name)</strong> will be displayed publicly for users to file complaints regarding issues with the timings or names of your schedule. A <strong>hisory of all changes</strong> you make to schedules will also be publicly available under your email.</p><br>
+        <p>3. If your schedule is approved, you will have <strong>full control and responsibility</strong> for the maintenance of the schedule. You will need to <strong>manually input</strong> your school's holidays, summer break, minimum days, assembly days, etc. throughout the school year.</p><br>
         <p>4. New schedules should be created for schools that do not already have a schedule on periods.io. Repeated schools will not be approved.</p><br>
         <p>5. Any abuse of this feature will result in <strong>account termination.</strong></p><br>
       </div>
@@ -56,7 +56,6 @@ p {
 }
 
 h1 {
-  font-family: 'Product Sans';
   font-weight: bold;
 }
 

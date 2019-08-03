@@ -3,7 +3,7 @@
     <span class="title">New Schedule</span>
     <div style="margin-top: 40px;">
       <div style="width: 80%; padding: 0 40px;">
-        <span style="font-size: 24px; color: #444;">this schedule is for</span><br>
+        <span style="font-size: 24px; color: #444;">this schedule is for:</span><br>
         <div class="material-input-group">
           <input
             maxlength="500"
@@ -14,7 +14,7 @@
             style="font-size: 50px; height: auto;"
           >
         </div>
-        <span style="font-size: 24px; color: #444;">{{schoolName || 'the school'}}'s ZIP Code is</span><br><br>
+        <span style="font-size: 24px; color: #444;">{{schoolName || 'the school'}}'s ZIP Code is:</span><br><br>
         <div class="material-input-group" style="display: inline-block; margin-right: 30px; width: 250px; margin-bottom: 0;">
           <input
             maxlength="80"
@@ -41,11 +41,32 @@
         </div>
         <br><br>
         <span style="color: red;" v-show="zipCodeAgain && zipCodeAgain !== zipCode">ZIP Codes don't match</span>
+        <br><br>
+        <span style="font-size: 24px; color: #444;">school website:</span><br><br>
+        <div class="material-input-group" style="display: inline-block; margin-right: 30px; width: 250px; margin-bottom: 0;">
+          <input
+            class="material-input"
+            :class="{ 'has-value': !!website }"
+            v-model="website"
+            placeholder="school URL here"
+          >
+        </div>
+        <br><br><br><br>
+        <span style="font-size: 24px; color: #444;">your relation to {{ schoolName || 'this school' }}:</span><br><br>
+        <div class="material-input-group" style="display: inline-block; margin-right: 30px; width: 250px; margin-bottom: 0;">
+          <input
+            class="material-input"
+            :class="{ 'has-value': !!relation }"
+            v-model="relation"
+            placeholder="student, teacher, administrator, etc."
+          >
+        </div>
       </div>
       <button
         class="material-form-button"
         style="margin: 40px 0 0 40px; font-size: 32px; height: auto; width: auto; padding: 10px 36px; border-radius: 10px;"
-        v-show="zipCode.length === 5 && zipCode === zipCodeAgain"
+        v-show="zipCode.length === 5 && zipCode === zipCodeAgain && website && relation"
+        @click="$router.push({ path: '/schedules/setup/mvhs' })"
       >Create</button>
     </div>
   </div>
@@ -57,7 +78,9 @@ export default {
     return {
       schoolName: '',
       zipCode: '',
-      zipCodeAgain: ''
+      zipCodeAgain: '',
+      website: '',
+      relation: ''
     }
   }
 }
