@@ -39,6 +39,10 @@
             <h2>Unique Users</h2>
             <h1 class="big">{{ numberWithCommas(ana.hits.unique_users.length) }}</h1>
           </div>
+          <div>
+            <h2>Max Hits By Device</h2>
+            <h1 class="big">{{ numberWithCommas(ana.hits.top_devices[0] ? ana.hits.top_devices[0].count : 0) }}</h1>
+          </div>
         </div>
         <br><br>
         <div class="tiles">
@@ -49,6 +53,7 @@
           <List title="Period Names" :data="ana.hits.user_period" :total="ana.hits.count" />
           <List title="Themes" :data="ana.hits.user_theme" :total="ana.hits.count" />
           <List title="Referrers" :data="ana.hits.referrer" :total="ana.hits.count" />
+          <List title="IP" :data="ana.hits.ip" :total="ana.hits.count" />
         </div>
       </div>
 
@@ -95,6 +100,10 @@
         <div>
           <h2>Update Preferences</h2>
           <h1 class="big">{{ numberWithCommas(ana.events.upt_pref) }}</h1>
+        </div>
+        <div>
+          <h2>Notifications On</h2>
+          <h1 class="big">{{ numberWithCommas(ana.events.notif_on) }}</h1>
         </div>
       </div>
 

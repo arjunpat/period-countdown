@@ -59,8 +59,10 @@ export default new Vuex.Store({
     },
     async saveSettings({ state }) {
       for (let key in state.period_names) {
-        if (!state.periods.includes(key)) {
+        if (!state.periods.includes(key) || !state.period_names[key]) {
           delete state.period_names[key];
+        } else {
+          state.period_names[key] = state.period_names[key].trim();
         }
       }
 

@@ -39,6 +39,10 @@ export default class RequestManager {
 		post('/v4/thanks-again', {});
 	}
 
+	static notifOn() {
+		post('/v4/notif-on', {});
+	}
+
 	static getTime() {
 		return get('/time').then(res => res.json.data + res.loadTime).catch(err => {
 			return false;

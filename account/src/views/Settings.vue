@@ -33,6 +33,7 @@
     <div v-else style="display: flex; height: 50vh; width: 100%; justify-content: center; align-items: center;">
       <div class="loader"></div>
     </div>
+    <p style="text-align: right;">Report bugs and ideas to <a href="mailto:help@periods.io">help@periods.io</a></p>
   </div>
 </template>
 
@@ -48,7 +49,7 @@ export default {
     PeriodNamesEnter,
     SchoolEnter,
     ThemeEnter,
-    SaveSettingsButton
+    SaveSettingsButton,
   },
   data() {
     return {

@@ -1,6 +1,7 @@
 import { logger } from './init';
 import { isExtn } from './extras';
 import Storage from './Storage';
+import RequestManager from './RequestManager';
 
 import Modal from './components/Modal';
 import Canvas from './components/Canvas';
@@ -222,6 +223,7 @@ export default class View {
 		setTimeout(() => {
 			document.getElementById('enable-notifications').onclick = () => {
 				Notification.requestPermission();
+				RequestManager.notifOn();
 			}
 		}, 100);
 	}

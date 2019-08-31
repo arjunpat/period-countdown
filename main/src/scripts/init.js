@@ -90,7 +90,7 @@ export function render() {
 
 	// login button
 	view.index.googleSignin.querySelector('button').onclick = () => {
-		window.open(generateGoogleSignInLink());
+		window.location.href = generateGoogleSignInLink();
 	}
 
 	// settings button
@@ -98,7 +98,7 @@ export function render() {
 		if (prefManager.isLoggedIn()) {
 			window.location.href = 'https://account.periods.io/settings';
 		} else {
-			window.open(generateGoogleSignInLink());
+			window.location.href = generateGoogleSignInLink();
 		}
 	}
 

@@ -46,7 +46,7 @@ router.all('*', async (req, res, next) => {
     if (!user_agent || !platform || !browser)
       return res.send(responses.error('bad_token_and_body'));
 
-    let device_id = generateId(20);
+    let device_id = generateId(10);
 
     await mysql.insert('devices', {
       device_id,
@@ -71,7 +71,6 @@ router.all('*', async (req, res, next) => {
 });
 
 router.use('/admin', require('./admin')(mysql));
-router.use('/schedules', require('./schedules')(mysql, generateId));
 
 /*
 POST /v4/init
@@ -359,10 +358,39 @@ async function recordUptPref(email) {
   );
 
   await mysql.insert('events', {
-    time: Date.now(),
+    time: now,
     email,
     event: 'upt_pref'
   });
 }
+
+/*
+POST /v4/notif-on
+{}
+*/
+
+router.post('/notif-on', async (req, res) => {
+  let email = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
+  email = email[0].registered_to;
+
+  if (!email) {
+    return res.send(responses.error('not_logged_in'));
+  }
+
+  let resp = await mysql.query('SELECT event FROM events WHERE email = ? AND event = "notif_on" AND item_id = ?', [email, req.device_id]);
+
+  if (resp.length !== 0) {
+    return res.send(responses.error('already_on'));
+  }
+
+  await mysql.insert('events', {
+    time: Date.now(),
+    email,
+    event: 'notif_on',
+    item_id: req.device_id
+  });
+
+  res.send(responses.success());
+});
 
 module.exports = router;

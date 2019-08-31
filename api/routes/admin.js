@@ -121,10 +121,9 @@ router.get('/analytics', async (req, res) => {
     [from, to]
   );
   data.hits.unique_devices = resp[0]['COUNT(DISTINCT device_id)'];
-  resp = await mysql.query(
-    'SELECT * FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?))', [from, to]
-  );
-  data.hits.unique_users = resp;
+  data.hits.unique_users = await mysql.query(
+    'SELECT * FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?))', [from, to]);
+  data.hits.top_devices = await mysql.query('SELECT a.device_id, b.platform, b.browser, COUNT(a.device_id) as count, b.first_name, b.last_name, b.registered_to FROM hits a LEFT JOIN (SELECT c.device_id, c.registered_to, c.platform, c.browser, d.first_name, d.last_name FROM devices c LEFT JOIN users d ON c.registered_to = d.email) b ON a.device_id = b.device_id WHERE time > ? AND time < ? GROUP BY a.device_id ORDER BY count DESC LIMIT 10', [from, to]);
 
   // devices
   resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE time > ? AND time < ?', [from, to]);
@@ -143,6 +142,8 @@ router.get('/analytics', async (req, res) => {
   data.events.count = resp[0]['COUNT(*)'];
   resp = await mysql.query('SELECT COUNT(*) FROM events WHERE event = ? AND time > ? AND time < ?', ['upt_pref', from, to]);
   data.events.upt_pref = resp[0]['COUNT(*)'];
+  resp = await mysql.query('SELECT COUNT(*) FROM events WHERE event = ? AND time > ? AND time < ?', ['notif_on', from, to]);
+  data.events.notif_on = resp[0]['COUNT(*)'];
   
   // users
   resp = await mysql.query('SELECT * FROM users WHERE time > ? AND time < ?', [from, to]);
