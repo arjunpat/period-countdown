@@ -61,7 +61,8 @@ router.all('*', async (req, res, next) => {
     }, JWT_SECRET);
 
     res.cookie('periods_io', cookie, {
-      domain: process.env.NODE_ENV === 'production' ? '.periods.io' : undefined
+      domain: process.env.NODE_ENV === 'production' ? '.periods.io' : undefined,
+      maxAge: 4.73e11
     });
 
     req.device_id = device_id;
