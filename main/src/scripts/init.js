@@ -95,13 +95,13 @@ export function render() {
 
 	// settings button
 
-		view.index.settingsButton.querySelector('div').onclick = () => {
-			if (prefManager.isLoggedIn()) {
-				isExt ? window.open('https://account.periods.io/settings', '_blank') : (window.location.href = 'https://account.periods.io/settings');
-			} else {
-				window.location.href = generateGoogleSignInLink();
-			}
+	view.index.settingsButton.querySelector('div').onclick = () => {
+		if (prefManager.isLoggedIn()) {
+			isExt ? window.open('https://account.periods.io/settings', '_blank') : (window.location.href = 'https://account.periods.io/settings');
+		} else {
+			window.location.href = generateGoogleSignInLink();
 		}
+	}
 
 
 	// profile picture
