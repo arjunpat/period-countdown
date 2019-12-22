@@ -63,6 +63,9 @@ export default class View {
 				'Your partner will miss you',
 				'Farewell',
 				'Bye Felicia',
+				'Give a care, push in your chair!',
+				'Too cool for class?',
+				'Promise you\'ll come back?',
 			]
 
 			if (timeString === '5:00') {
