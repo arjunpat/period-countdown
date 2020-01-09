@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
 	time BIGINT UNSIGNED,
 	first_name VARCHAR(50),
 	last_name VARCHAR(50),
-	profile_pic VARCHAR(150),
+	profile_pic VARCHAR(1000),
 	school VARCHAR(20),
 	theme TINYINT UNSIGNED,
 	period_names JSON
