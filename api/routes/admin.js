@@ -48,7 +48,7 @@ router.get('/bucket/:table', async (req, res) => {
   let incrementSize = Math.round((to - from) / increments);
   let buckets = {};
 
-  let resp = await mysql.query(`SELECT time FROM ${table} WHERE time > ? AND time < ?`, [from, to]);
+  let resp = await mysql.query(`SELECT time FROM ${table} WHERE time > ? AND time < ? ORDER BY time ASC`, [from, to]);
   resp = resp.map(a => a.time);
 
   let key = from;
