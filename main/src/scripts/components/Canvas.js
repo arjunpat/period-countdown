@@ -60,10 +60,10 @@ export default class Canvas {
 
 	createSineRegression(from, to, length) {
 		let amp = (to - from) / 2,
-			verticleShift = (from + to) / 2,
+			verticalShift = (from + to) / 2,
 			b = (2 * Math.PI) / (2 * length);
 
-		return x => (amp * (Math.sin(b * (x - (length / 2))))) + verticleShift;
+		return x => (amp * (Math.sin(b * (x - (length / 2))))) + verticalShift;
 	}
 
 	redraw() { this.draw(this.props.decimalCompleted); }
