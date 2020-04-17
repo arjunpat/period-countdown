@@ -1,7 +1,7 @@
 export const isProd = window.location.origin.includes('periods.io');
 export const serverHost = isProd ? 'https://api.periods.io' : 'http://localhost:8081';
-export const accountVersion = '1.1.6';
-export const mainVersion = '4.0.5';
+export const accountVersion = '1.2.0';
+export const mainVersion = '4.1.0';
 
 export function get(url) {
   if (!url.includes('http')) {
@@ -79,18 +79,9 @@ export function isFreePeriod(name) {
 }
 
 export function generateGoogleSignInLink() {
-  let redirectURI;
-
-  if (isProd) {
-    redirectURI = 'https://account.periods.io/';
-  } else {
-    redirectURI = 'http://localhost:8082/';
-  }
-
-  redirectURI = encodeURIComponent(redirectURI);
+  
+  let redirectURI = encodeURIComponent(isProd ? 'https://account.periods.io/' : 'http://localhost:8082/');
   let client_id = '770077939711-hbanoschq9p65gr8st8grsfbku4bsnhl.apps.googleusercontent.com';
-
-  let url = `https://accounts.google.com/o/oauth2/auth?client_id=${client_id}&redirect_uri=${redirectURI}&scope=profile%20email&response_type=token&prompt=select_account`;
-
-  return url;
+  
+  return `https://accounts.google.com/o/oauth2/auth?client_id=${client_id}&redirect_uri=${redirectURI}&scope=profile%20email&response_type=token&prompt=select_account`;
 }

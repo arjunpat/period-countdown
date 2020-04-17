@@ -19,7 +19,7 @@ app.set('x-powered-by', false);
 
 app.use((req, res, next) => {
   res.set({
-    'Server': 'Spice',
+    'Server': 'periods.io',
     'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type,X-Requested-With',
     'Access-Control-Allow-Credentials': 'true',

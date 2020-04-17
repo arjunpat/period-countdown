@@ -14,7 +14,9 @@ export default new Vuex.Store({
     periods: [],
     schools: [],
     themes: [],
-    themeNum: 0
+    themeNum: 0,
+    first_name: '',
+    last_name: ''
   },  
   mutations: {
     setAccount(state, payload) {

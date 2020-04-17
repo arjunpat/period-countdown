@@ -28,7 +28,6 @@ export default class Canvas {
 	}
 
 	animate(to, length) {
-
 		if (to === this.props.decimalAnimatingTowards) return;
 
 		this.props.decimalAnimatingTowards = to;
@@ -69,18 +68,7 @@ export default class Canvas {
 	redraw() { this.draw(this.props.decimalCompleted); }
 
 	updateColors(background, completed) {
-
-		if (typeof background === 'object') {
-			let str = 'linear-gradient(90deg';
-			for (let i = 0 ; i < background.stops.length; i++) {
-				str += ', ' + background.stops[i];
-			}
-			str += ')';
-
-			this.canvas.style.background = str;
-		} else {
-			this.canvas.style.background = background;
-		}
+		this.canvas.style.background = background;
 
 		this.props.colors.completed = completed;
 		this.redraw();

@@ -12,16 +12,6 @@ export default class RequestManager {
 		return get('/v4/account').then(res => res.json);
 	}
 
-	static login(google_token) {
-		return post('/v4/login', {
-			google_token
-		}).then(res => res.json);
-	}
-
-	static logout() {
-		return post('/v4/logout', {}).then(res => res.json);
-	}
-
 	static sendAnalytics(data) {
 		return post('/v4/thanks', data).then(res => res.json);
 	}

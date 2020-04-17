@@ -1,34 +1,17 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const fetch = require('node-fetch');
 
-const MySQL = require('../lib/MySQL');
+const db = require('../models');
+
 const responses = require('../lib/responses');
 const helpers = require('../lib/helpers');
-const { JWT_SECRET, MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB } = process.env;
+const { JWT_SECRET } = process.env;
 
 const admins = process.env.ADMIN_EMAILS.split(',');
 
-const mysql = new MySQL(
-  MYSQL_USER,
-  MYSQL_PASS,
-  MYSQL_DB,
-  MYSQL_HOST
-);
-
-const timingData = require('../timing-data');
 const themes = require('../options/themes');
 const schoolIds = Object.keys(require('../timing-data'));
-
-function generateId(length) {
-  let chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-  let id = '';
-  for (let i = 0; i < length; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return id;
-}
 
 router.all('*', async (req, res, next) => {
   if (req.method === 'OPTIONS') {
@@ -46,15 +29,7 @@ router.all('*', async (req, res, next) => {
     if (!user_agent || !platform || !browser)
       return res.send(responses.error('bad_token_and_body'));
 
-    let device_id = generateId(10);
-
-    await mysql.insert('devices', {
-      device_id,
-      time: Date.now(),
-      platform,
-      user_agent,
-      browser: browser.join(',')
-    });
+    let device_id = await db.devices.create(platform, browser.join(','), user_agent);
 
     let cookie = jwt.sign({
       device_id
@@ -71,7 +46,7 @@ router.all('*', async (req, res, next) => {
   }
 });
 
-router.use('/admin', require('./admin')(mysql));
+// router.use('/admin', require('./admin')(mysql));
 
 /*
 POST /v4/init
@@ -86,23 +61,13 @@ router.post('/init', async (req, res) => {
   res.send(responses.success());
 });
 
-
 router.get('/account', async (req, res) => {
-  let resp = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
+  let user = await db.users.byDeviceId(req.device_id);
 
-  if (resp.length === 0) {
-    return res.send(responses.error('no_device_exists'));
-  }
+  if (!user)
+    return res.send(responses.error());
 
-  resp = resp[0].registered_to;
-
-  resp = await mysql.query('SELECT email, profile_pic, first_name, last_name, theme, period_names, school FROM users WHERE email = ?', [resp]);
-
-  if (resp.length === 0) {
-    return res.send(responses.error('not_registered'))
-  }
-
-  let { email, profile_pic, first_name, last_name, theme, period_names, school } = resp[0];
+  let { email, profile_pic, first_name, last_name, theme, period_names, school } = user;
 
   if (typeof theme !== 'number' || theme > themes.length) {
     theme = 0;
@@ -130,79 +95,27 @@ POST /v4/login
 }
 */
 
-router.post('/login',
-  [
-    body('google_token').not().isEmpty()
-  ],
-  async (req, res) => {
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.send(responses.error({
-        params: helpers.generateRequestIssues(errors.array())
-      }));
-    }
+router.post('/login', async (req, res) => {
+  let resp = await helpers.validateGoogleToken(req.body.google_token);
 
-    let resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo?access_token=' + encodeURIComponent(req.body.google_token));
-    resp = await resp.json();
+  if (!resp)
+    return res.send(responses.error('bad_token'));
 
-    let {
-      email,
-      given_name: first_name,
-      family_name: last_name,
-      picture: profile_pic,
-      email_verified
-    } = resp;
+  let {
+    email,
+    given_name: first_name,
+    family_name: last_name,
+    picture: profile_pic,
+  } = resp;
 
-    if (!email_verified) {
-      return res.send(responses.error('email_not_verified'));
-    }
+  await db.users.createOrUpdate(email, first_name, last_name, profile_pic);
+  await db.devices.login(req.device_id, email);
 
-    resp = await mysql.query('SELECT email FROM users WHERE email = ?', [email]);
-
-    let status;
-
-    if (resp.length === 1) {
-      await mysql.update('users', {
-        profile_pic,
-        first_name,
-        last_name,
-      }, {
-        email
-      });
-
-      status = 'returning_user';
-    } else {
-      await mysql.insert('users', {
-        email,
-        first_name,
-        last_name,
-        profile_pic,
-        time: Date.now()
-      });
-
-      status = 'new_user';
-    }
-
-    await mysql.update('devices', {
-      registered_to: email,
-      time_registered: Date.now()
-    }, {
-      device_id: req.device_id
-    });
-
-    res.send(responses.success({
-      status
-    }));
-  }
-);
+  res.send(responses.success());
+});
 
 router.post('/logout', async (req, res) => {
-  await mysql.update('devices', {
-    time_registered: null,
-    registered_to: null
-  }, {
-    device_id: req.device_id
-  });
+  await db.devices.logout(req.device_id);
 
   res.send(responses.success());
 });
@@ -231,7 +144,7 @@ POST /v4/thanks
 }
 */
 
-router.post('/thanks',
+router.post('/thanks', // to prevent ad blocker stuff, etc
   [
     body('pathname').not().isEmpty(),
     body('version').not().isEmpty(),
@@ -239,7 +152,7 @@ router.post('/thanks',
     body('period').not().isEmpty(),
     body('speed').not().isEmpty()
   ],
-  async (req, res) => { // to prevent ad blocker stuff, etc
+  async (req, res) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.send(responses.error({
@@ -249,8 +162,7 @@ router.post('/thanks',
 
     let { pathname, referrer, version, school, period, speed, user } = req.body;
 
-    await mysql.insert('hits', {
-      time: Date.now(),
+    await db.hits.create({
       device_id: req.device_id,
       ip: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
       pathname,
@@ -273,8 +185,7 @@ router.post('/thanks',
 );
 
 router.post('/thanks-again', async (req, res) => {
-  await mysql.query('UPDATE hits SET leave_time = ? WHERE device_id = ? ORDER BY time DESC LIMIT 1', [Date.now(), req.device_id]);
-
+  await db.hits.leave(req.device_id);
   res.send(responses.success());
 });
 
@@ -286,15 +197,10 @@ POST /v4/error
 router.post('/error', async (req, res) => {
   let error = JSON.stringify(req.body);
 
-  if (error.length > 4000) {
+  if (error.length > 4000)
     return res.send(responses.success('error_too_long'));
-  }
 
-  await mysql.insert('errors', {
-    device_id: req.device_id,
-    time: Date.now(),
-    error
-  });
+  await db.errors.create(req.device_id, error);
 
   res.send(responses.success());
 });
@@ -314,7 +220,7 @@ POST /v4/update-preferences
 router.post('/update-preferences', async (req, res) => {
   let { period_names, theme, school } = req.body;
 
-  if (typeof theme !== 'number' || theme > 40 || typeof school !== 'string' || school.length > 40) {
+  if (typeof theme !== 'number' || theme > 40 || typeof school !== 'string' || !schoolIds.includes(school)) {
     return res.send(responses.error('bad_data'));
   }
 
@@ -331,39 +237,15 @@ router.post('/update-preferences', async (req, res) => {
     }
   }
 
-  let email = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
-  email = email[0].registered_to;
+  let email = await db.users.updatePrefs(req.device_id, school, theme, JSON.stringify(period_names));
 
-  if (!email) {
+  if (!email)
     return res.send(responses.error('not_logged_in'));
-  }
 
-  await mysql.update('users', {
-    school,
-    theme,
-    period_names: JSON.stringify(period_names)
-  }, {
-    email
-  });
-
-  await recordUptPref(email);
+  await db.events.recordUptPref(email, req.device_id);
 
   res.send(responses.success());
 });
-
-async function recordUptPref(email) {
-  let now = Date.now();
-  await mysql.query(
-    'DELETE FROM events WHERE time > ? AND email = ? AND event = ?',
-    [now - 300000, email, 'upt_pref']
-  );
-
-  await mysql.insert('events', {
-    time: now,
-    email,
-    event: 'upt_pref'
-  });
-}
 
 /*
 POST /v4/notif-on
@@ -371,25 +253,9 @@ POST /v4/notif-on
 */
 
 router.post('/notif-on', async (req, res) => {
-  let email = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [req.device_id]);
-  email = email[0].registered_to;
+  let resp = await db.events.notifOn(req.device_id);
 
-  if (!email) {
-    return res.send(responses.error('not_logged_in'));
-  }
-
-  let resp = await mysql.query('SELECT event FROM events WHERE email = ? AND event = "notif_on" AND item_id = ?', [email, req.device_id]);
-
-  if (resp.length !== 0) {
-    return res.send(responses.error('already_on'));
-  }
-
-  await mysql.insert('events', {
-    time: Date.now(),
-    email,
-    event: 'notif_on',
-    item_id: req.device_id
-  });
+  if (!resp) return res.send(responses.error('already_on'));
 
   res.send(responses.success());
 });

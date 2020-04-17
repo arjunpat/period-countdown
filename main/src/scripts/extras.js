@@ -1,17 +1,17 @@
 import { mainVersion } from '../../../common';
 
 Object.defineProperty(Error.prototype, 'toJSON', {
-    value: function () {
-        var alt = {};
+	value: function () {
+		var alt = {};
 
-        Object.getOwnPropertyNames(this).forEach(function (key) {
-            alt[key] = this[key];
-        }, this);
+		Object.getOwnPropertyNames(this).forEach(function (key) {
+			alt[key] = this[key];
+		}, this);
 
-        return alt;
-    },
-    configurable: true,
-    writable: true
+		return alt;
+	},
+	configurable: true,
+	writable: true
 });
 
 export function removeServiceWorker() {

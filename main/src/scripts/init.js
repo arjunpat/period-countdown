@@ -1,6 +1,4 @@
 import Logger from './Logger';
-export const logger = new Logger();
-import Storage from './Storage';
 import TimingManager from './TimingManager';
 import TimingEngine from './TimingEngine';
 import View from './View';
@@ -8,9 +6,10 @@ import Analytics from './Analytics';
 import PrefManager from './PrefManager';
 import RequestManager from './RequestManager';
 import ScheduleBuilder from './ScheduleBuilder';
-import { generateGoogleSignInLink } from '../../../common.js';
+import { generateGoogleSignInLink, isProd } from '../../../common.js';
 import { isExtn } from './extras';
 
+export const logger = new Logger();
 export const timingManager = new TimingManager();
 export const timingEngine = new TimingEngine();
 export const view = new View();
@@ -97,7 +96,10 @@ export function render() {
 
 	view.index.settingsButton.querySelector('div').onclick = () => {
 		if (prefManager.isLoggedIn()) {
-			isExt ? window.open('https://account.periods.io/settings', '_blank') : (window.location.href = 'https://account.periods.io/settings');
+			if (isProd)
+				isExtn ? window.open('https://account.periods.io/settings', '_blank') : (window.location.href = 'https://account.periods.io/settings');
+			else
+				window.location.href = 'http://localhost:8082';
 		} else {
 			window.location.href = generateGoogleSignInLink();
 		}

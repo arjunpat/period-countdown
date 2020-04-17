@@ -5,7 +5,7 @@
         <router-link to="/admin/analytics" v-if="admin">Analytics</router-link>
         <router-link to="/admin/chart" v-if="admin">Chart</router-link>
         <router-link to="/settings" v-if="admin">Settings</router-link>
-        <a v-if="!admin" href="https://periods.io">Back to periods.io</a>
+        <a v-if="!admin" :href="isProd ? 'https://periods.io' : 'http://localhost:8080'">Back to periods.io</a>
         <router-link to="/logout">Logout</router-link>
       </div>
       <img id="profile-pic" v-show="profile_pic" :src="profile_pic">
@@ -19,9 +19,14 @@
 <script type="text/javascript">
 import { mapState } from 'vuex';
 import { get, post } from '@/utils.js';
-import { getClientInformation, generateGoogleSignInLink } from '../../common.js';
+import { getClientInformation, generateGoogleSignInLink, isProd } from '../../common.js';
 
 export default {
+  data() {
+    return {
+      isProd
+    }
+  },
   async mounted() {
     let accessTokenLocation = window.location.href.indexOf('access_token=');
     if (accessTokenLocation > -1) {

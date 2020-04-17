@@ -1,6 +1,5 @@
 import { logger } from './init';
 import { isExtn } from './extras';
-import Storage from './Storage';
 import RequestManager from './RequestManager';
 
 import Modal from './components/Modal';
@@ -164,7 +163,6 @@ export default class View {
 
 				added++;
 			}
-
 		}
 
 		if (added === 0)
