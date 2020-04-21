@@ -91,10 +91,9 @@ export default class ScheduleBuilder {
 	}
 
 	setFreePeriods(obj) {
-		let firstRun = false;
+		let firstRun = !this.free;
 
-		if (!this.free) {
-			firstRun = true;
+		if (firstRun) {
 			this.free = {};
 		}
 

@@ -126,7 +126,6 @@ export default class View {
 		let b = preferences.theme.b;
 		sb.querySelector('div').style.background = preferences.theme.t;
 		sb.querySelector('div > i').style.color = b.substring(b.lastIndexOf('#'), b.lastIndexOf(')'));
-		// sb.querySelector('div > i').style.color = b;
 
 		if (preferences.googleAccount) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';

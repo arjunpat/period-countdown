@@ -18,6 +18,7 @@ export const prefManager = new PrefManager();
 export const scheduleBuilder = new ScheduleBuilder();
 
 timingManager.setTimerPrepareMethod((school, schedule) => {
+	scheduleBuilder.setFreePeriods(prefManager.getAllPreferences().freePeriods || {});
 	scheduleBuilder.init(school, schedule);
 	
 	let { presets, calendar, defaults } = scheduleBuilder.buildAll();
