@@ -37,6 +37,7 @@ RequestManager.init().then(json => {
 	analytics.setTheme(prefManager.getThemeNum());
 	analytics.setSchool(prefManager.getSchoolId());
 }).catch(err => {
+	err.location = 'RequestManager.init';
 	RequestManager.sendError(err);
 });
 

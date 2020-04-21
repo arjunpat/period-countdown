@@ -16,7 +16,7 @@
         <span>You currently maintain {{ schedules.length }} schedule(s)</span>
         <br><br>
         <div style="display: flex; flex-wrap: wrap;">
-          <div v-for="schedule in schedules" class="schedule">
+          <div v-for="schedule in schedules" class="schedule" :key="schedule.id" @click="$router.push({ path: 'edit/' + schedule.id })">
             <span style="font-weight: bold; font-size: 28px; display: block;">{{ schedule.name }}</span>
             <span style="color: #666; font-size: 22px; display: block;">{{ schedule.id }}</span>
           </div>

@@ -2,13 +2,13 @@ const router = require('express').Router();
 const responses = require('../lib/responses');
 
 const admins = process.env.ADMIN_EMAILS.split(',');
-let mysql;
+let db;
 
 router.all('*', async (req, res, next) => {
   try {
-    let res = await mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [ req.device_id ]);
+    let email = await db.devices.getEmail(req.device_id);
 
-    if (admins.includes(res[0].registered_to)) {
+    if (admins.includes(email)) {
       next();
     } else {
       throw 'Not admin';
@@ -20,14 +20,14 @@ router.all('*', async (req, res, next) => {
 });
 
 async function colStats(table, col, from, to) {
-  return (await mysql.query(
+  return (await db.mysql.query(
     `SELECT MAX(${col}) AS max, MIN(${col}) AS min, AVG(${col}) AS avg, STD(${col}) as std FROM ${table} WHERE time > ? AND time < ?`,
     [from, to]
   ))[0];
 }
 
 async function colPopular(table, col, limit, from, to) {
-  return await mysql.query(
+  return await db.mysql.query(
     `SELECT ${col} as value, COUNT(*) AS count FROM ${table} WHERE time > ? AND time < ? GROUP BY value ORDER BY count DESC LIMIT ${limit}`,
     [from, to]
   );
@@ -48,7 +48,7 @@ router.get('/bucket/:table', async (req, res) => {
   let incrementSize = Math.round((to - from) / increments);
   let buckets = {};
 
-  let resp = await mysql.query(`SELECT time FROM ${table} WHERE time > ? AND time < ? ORDER BY time ASC`, [from, to]);
+  let resp = await db.mysql.query(`SELECT time FROM ${table} WHERE time > ? AND time < ? ORDER BY time ASC`, [from, to]);
   resp = resp.map(a => a.time);
 
   let key = from;
@@ -95,9 +95,9 @@ router.get('/analytics', async (req, res) => {
   let start = Date.now();
 
   // hits
-  resp = await mysql.query('SELECT COUNT(*) FROM hits WHERE time > ? AND time < ?', [from, to]);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM hits WHERE time > ? AND time < ?', [from, to]);
   data.hits.count = resp[0]['COUNT(*)'];
-  resp = await mysql.query(
+  resp = await db.mysql.query(
     'SELECT COUNT(*) FROM hits WHERE time > ? AND time < ? AND device_id IN (SELECT device_id FROM devices WHERE registered_to IS NOT NULL)',
     [from, to]
   );
@@ -116,65 +116,64 @@ router.get('/analytics', async (req, res) => {
   data.hits.dns = await colStats('hits', 'dns', from, to);
   data.hits.tti = await colStats('hits', 'tti', from, to);
   data.hits.ttfb = await colStats('hits', 'ttfb', from, to);
-  resp = await mysql.query(
+  resp = await db.mysql.query(
     'SELECT COUNT(DISTINCT device_id) FROM hits WHERE time > ? AND time < ?',
     [from, to]
   );
   data.hits.unique_devices = resp[0]['COUNT(DISTINCT device_id)'];
-  data.hits.unique_users = await mysql.query(
+  data.hits.unique_users = await db.mysql.query(
     'SELECT * FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?))', [from, to]);
-  data.hits.top_devices = await mysql.query('SELECT a.device_id, b.platform, b.browser, COUNT(a.device_id) as count, b.first_name, b.last_name, b.registered_to FROM hits a LEFT JOIN (SELECT c.device_id, c.registered_to, c.platform, c.browser, d.first_name, d.last_name FROM devices c LEFT JOIN users d ON c.registered_to = d.email) b ON a.device_id = b.device_id WHERE time > ? AND time < ? GROUP BY a.device_id ORDER BY count DESC LIMIT 10', [from, to]);
+  data.hits.top_devices = await db.mysql.query('SELECT a.device_id, b.platform, b.browser, COUNT(a.device_id) as count, b.first_name, b.last_name, b.registered_to FROM hits a LEFT JOIN (SELECT c.device_id, c.registered_to, c.platform, c.browser, d.first_name, d.last_name FROM devices c LEFT JOIN users d ON c.registered_to = d.email) b ON a.device_id = b.device_id WHERE time > ? AND time < ? GROUP BY a.device_id ORDER BY count DESC LIMIT 10', [from, to]);
 
   // devices
-  resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE time > ? AND time < ?', [from, to]);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM devices WHERE time > ? AND time < ?', [from, to]);
   data.devices.count = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE time_registered > ? AND time_registered < ?', [from, to]);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM devices WHERE time_registered > ? AND time_registered < ?', [from, to]);
   data.devices.count_registered = resp[0]['COUNT(*)'];
   data.devices.platform = await colPopular('devices', 'platform', 18, from, to);
   data.devices.browser = await colPopular('devices', 'browser', 18, from, to);
 
   // errors
-  resp = await mysql.query('SELECT * FROM errors WHERE time > ? AND time < ?', [from, to]);
-  data.errors = resp;
+  data.errors = await db.mysql.query('SELECT * FROM errors WHERE time > ? AND time < ?', [from, to]);
 
   // events
-  resp = await mysql.query('SELECT COUNT(*) FROM events WHERE time > ? AND time < ?', [from, to]);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM events WHERE time > ? AND time < ?', [from, to]);
   data.events.count = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM events WHERE event = ? AND time > ? AND time < ?', ['upt_pref', from, to]);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM events WHERE event = ? AND time > ? AND time < ?', ['upt_pref', from, to]);
   data.events.upt_pref = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM events WHERE event = ? AND time > ? AND time < ?', ['notif_on', from, to]);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM events WHERE event = ? AND time > ? AND time < ?', ['notif_on', from, to]);
   data.events.notif_on = resp[0]['COUNT(*)'];
   
   // users
-  resp = await mysql.query('SELECT * FROM users WHERE time > ? AND time < ?', [from, to]);
+  resp = await db.mysql.query('SELECT * FROM users WHERE time > ? AND time < ?', [from, to]);
   data.users.list = resp;
   data.users.theme = await colPopular('users', 'theme', 18, from, to);
   data.users.school = await colPopular('users', 'school', 18, from, to);
 
   // totals
-  resp = await mysql.query('SELECT COUNT(*) FROM hits');
+  resp = await db.mysql.query('SELECT COUNT(*) FROM hits');
   data.totals.hits = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM devices');
+  resp = await db.mysql.query('SELECT COUNT(*) FROM devices');
   data.totals.devices.count = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM devices WHERE registered_to IS NOT NULL');
+  resp = await db.mysql.query('SELECT COUNT(*) FROM devices WHERE registered_to IS NOT NULL');
   data.totals.devices.registered = resp[0]['COUNT(*)'];
-  data.totals.devices.platform = await mysql.query(`SELECT platform as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18`);
-  data.totals.devices.browser = await mysql.query(`SELECT browser as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18`);
-  resp = await mysql.query('SELECT COUNT(*) FROM errors');
+  data.totals.devices.platform = await db.mysql.query(`SELECT platform as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18`);
+  data.totals.devices.browser = await db.mysql.query(`SELECT browser as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18`);
+  resp = await db.mysql.query('SELECT COUNT(*) FROM errors');
   data.totals.errors = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM events');
+  resp = await db.mysql.query('SELECT COUNT(*) FROM events');
   data.totals.events = resp[0]['COUNT(*)'];
-  resp = await mysql.query('SELECT COUNT(*) FROM users');
+  resp = await db.mysql.query('SELECT COUNT(*) FROM users');
   data.totals.users.count = resp[0]['COUNT(*)'];
-  data.totals.users.theme = await mysql.query(`SELECT theme as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18`);
-  data.totals.users.school = await mysql.query(`SELECT school as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18`);
+  data.totals.users.theme = await db.mysql.query(`SELECT theme as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18`);
+  data.totals.users.school = await db.mysql.query(`SELECT school as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18`);
 
   data.analysis_time = Date.now() - start;
   res.send(responses.success(data));
 });
 
 module.exports = a => {
-  mysql = a;
+  db = a;
 
   return router;
 }

@@ -4,27 +4,10 @@ export default class ScheduleBuilder {
 	constructor() {}
 
 	init(school, schedule) {
-
-		// moves all inline calendar schedules to presets
-		let c = schedule.calendar;
-		for (let i = 0; i < c.length; i++) {
-			if (c[i].content.s) {
-				let presetName = 'preset-' + Math.random();
-
-				school.presets[presetName] = {
-					n: c[i].content.n,
-					s: c[i].content.s
-				}
-
-				delete c[i].content.s;
-				c[i].content.t = presetName;
-			}
-		}
-
 		// parse all string presets
 		for (let key in school.presets) {
 			let obj = school.presets[key];
-			obj.s = this.parseScheduleArray(typeof obj.s === 'string' ? obj.s.split(',') : obj.s);
+			obj.s = typeof obj.s === 'string' ? this.parseScheduleArray(obj.s.split(',')) : obj.s;
 		}
 
 		this.school = JSON.stringify(school);
@@ -36,8 +19,7 @@ export default class ScheduleBuilder {
 	parseScheduleArray(arr) {
 		let data = [];
 
-		for (let i = 0; i < arr.length; i++) {
-			let str = arr[i];
+		for (let str of arr) {
 			let s = str.indexOf(' ');
 
 			data.push({
@@ -50,7 +32,6 @@ export default class ScheduleBuilder {
 	}
 
 	generatePresets() {
-
 		if (!this.isInitialized())
 			throw 'has not been initialized';
 
@@ -67,10 +48,10 @@ export default class ScheduleBuilder {
 
 			// removes free periods at the beginning of the day
 			while (schedule.length > 0) {
-				if (this.isPeriod(schedule[0].n) && !this.free[schedule[0].n]) {
-					break;
-				} else {
+				if (!this.isPeriod(schedule[0].n) || this.free[schedule[0].n]) {
 					schedule.splice(0, 1);
+				} else {
+					break;
 				}
 			}
 

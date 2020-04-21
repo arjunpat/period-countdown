@@ -46,7 +46,7 @@ timingManager.setLoop((firstRun = false) => {
 
 	view.updateScreen(time, false);
 
-	return timingManager.repeatLoopIn(1000); // .5s when user not on the page; helps with cpu usage
+	return timingManager.repeatLoopIn(1000); // 1s when user not on the page; helps with cpu usage
 });
 
 export function render() {
@@ -93,7 +93,6 @@ export function render() {
 	}
 
 	// settings button
-
 	view.index.settingsButton.querySelector('div').onclick = () => {
 		if (prefManager.isLoggedIn()) {
 			if (isProd)
@@ -105,7 +104,6 @@ export function render() {
 		}
 	}
 
-
 	// profile picture
 	view.index.googleSignin.querySelector('div').onclick = () => {
 		window.location.href = 'https://account.periods.io/settings';
@@ -114,14 +112,9 @@ export function render() {
 
 export async function showPrefs() {
 	let prefs = prefManager.getAllPreferences();
-	let schoolId = timingManager.getSchoolId();
 
 	scheduleBuilder.setFreePeriods(prefs.freePeriods || {});
-
-	if (prefs.school !== schoolId) {
-		timingManager.setSchoolId(prefs.school);
-		schoolId = prefs.school;
-	}
+	timingManager.setSchoolId(prefs.school);
 
 	view.updateViewWithState(prefs);
 

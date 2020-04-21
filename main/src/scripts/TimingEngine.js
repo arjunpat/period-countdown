@@ -115,10 +115,7 @@ export default class TimingEngine {
 		} else {
 			let {s, n} = this.getPresetScheduleFromDateString(dateString);
 
-			this.calendar[dateString] = {
-				s,
-				n
-			}
+			this.calendar[dateString] = { s, n };
 		}
 
 		// s is reference to object
@@ -161,7 +158,6 @@ export default class TimingEngine {
 
 
 	/* helper methods below */
-
 	parseCalendar(calendar) {
 		let parsed = {};
 

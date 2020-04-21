@@ -68,11 +68,7 @@ export default class View {
 			]
 
 			if (timeString === '5:00') {
-				let body;
-
-				if (Math.random() < .4) {
-					body = bodies[Math.floor(Math.random() * bodies.length)]
-				}
+				let body = (Math.random() < .4) ? bodies[Math.floor(Math.random() * bodies.length)] : undefined;
 
 				new Notification(`5 min left of '${periodName}'`, {
 					icon: '/img/1024.png',
@@ -124,11 +120,13 @@ export default class View {
 		// theme stuff
 		this.canvas.updateColors(preferences.theme.b, preferences.theme.c);
 		this.index.mainCanvasOverlay.style.color = preferences.theme.t;
-		this.index.settingsButton.querySelector('div').style.background = preferences.theme.t;
 
+		let sb = this.index.settingsButton;
+		
 		let b = preferences.theme.b;
-		this.index.settingsButton.querySelector('div > i').style.color = b.substring(b.lastIndexOf('#'), b.lastIndexOf(')'));
-		this.index.settingsButton.querySelector('div > i').style.color = b;
+		sb.querySelector('div').style.background = preferences.theme.t;
+		sb.querySelector('div > i').style.color = b.substring(b.lastIndexOf('#'), b.lastIndexOf(')'));
+		// sb.querySelector('div > i').style.color = b;
 
 		if (preferences.googleAccount) {
 			this.index.googleSignin.querySelector('button').style.display = 'none';

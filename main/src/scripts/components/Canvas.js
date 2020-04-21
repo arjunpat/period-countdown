@@ -54,7 +54,6 @@ export default class Canvas {
 		}
 
 		this.animationInterval = window.requestAnimationFrame(func);
-
 	}
 
 	createSineRegression(from, to, length) {

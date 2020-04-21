@@ -29,6 +29,8 @@ class Events {
       event: 'notif_on',
       item_id: device_id
     });
+    
+    return true;
   }
 }
 

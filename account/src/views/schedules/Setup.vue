@@ -93,7 +93,7 @@ export default {
       if (!period) return;
 
       while (!this.periods.includes(period)) {
-        period = prompt(`"${period}" is not defined above in the "Set up periods" section. Either add ${period} above or try a different period.`);
+        period = prompt(`"${period}" is not defined above in the "Set up periods" section. Either add ${period} above or enter a different period.`);
         if (!period) return;
       }
 

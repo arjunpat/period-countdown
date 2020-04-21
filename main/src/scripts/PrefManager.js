@@ -1,5 +1,4 @@
 import Storage from './Storage';
-import RequestManager from './RequestManager';
 import { isFreePeriod } from '../../../common.js';
 
 export default class PrefManager {

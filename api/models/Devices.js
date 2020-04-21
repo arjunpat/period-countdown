@@ -39,6 +39,10 @@ class Devices {
       device_id
     });
   }
+
+  getEmail(device_id) {
+    return this.mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [ device_id ]).then(d => d[0].registered_to);
+  }
 }
 
 module.exports = Devices;

@@ -34,9 +34,7 @@ export default class RequestManager {
 	}
 
 	static getTime() {
-		return get('/time').then(res => res.json.data + res.loadTime).catch(err => {
-			return false;
-		});
+		return get('/time').then(res => res.json.data + res.loadTime).catch(() => false);
 	}
 
 	static getSchoolMeta(school) {

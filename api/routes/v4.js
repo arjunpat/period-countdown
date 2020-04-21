@@ -46,7 +46,7 @@ router.all('*', async (req, res, next) => {
   }
 });
 
-// router.use('/admin', require('./admin')(mysql));
+router.use('/admin', require('./admin')(db));
 
 /*
 POST /v4/init

@@ -10,9 +10,10 @@ class MySQL {
       database,
       host
     });
+  }
 
-    // open the schema file and create the tables if they haven't been created
-    let sql = fs.readFileSync(__dirname + '/../schema.sql').toString().split(';');
+  init(sql) {
+    sql = sql.split(';');
 
     for (let i = 0; i < sql.length; i++) {
       if (!sql[i].trim())

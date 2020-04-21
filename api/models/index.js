@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB } = process.env;
 
 const MySQL = require('../lib/MySQL');
@@ -13,11 +14,13 @@ const mysql = new MySQL(
   MYSQL_DB,
   MYSQL_HOST
 );
+mysql.init(fs.readFileSync(__dirname + '/../schema.sql').toString());
 
 module.exports = {
   devices: new Devices(mysql),
   users: new Users(mysql),
   hits: new Hits(mysql),
   errors: new Errors(mysql),
-  events: new Events(mysql)
+  events: new Events(mysql),
+  mysql
 }
