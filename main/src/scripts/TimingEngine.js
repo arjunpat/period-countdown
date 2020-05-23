@@ -1,5 +1,4 @@
 import RequestManager from './RequestManager';
-import { logger } from './init';
 import { clone } from './extras';
 
 export default class TimingEngine {

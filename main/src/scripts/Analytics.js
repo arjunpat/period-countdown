@@ -3,14 +3,15 @@ import RequestManager from './RequestManager';
 
 export default class Analytics {
 	constructor() {
+		this.data = {};
 		this.sent = false;
 	}
 
-	async a() { // checks data values and sends if all are there
-
+	async send() { // checks data values and sends if all are there
 		if (this.sent) return;
 
-		if (!this.pathname || typeof this.theme !== 'number' || !this.version || !this.school || !this.period || !this.periodName)
+		let { pathname, version, school, period } = this.data;
+		if (!pathname || !version || !school || !period)
 			return;
 
 		this.sent = true;
@@ -19,33 +20,22 @@ export default class Analytics {
 			await this.sleep(1);
 		}
 
-		let data = {};
-		if (this.pathname === '/' || this.pathname === '/extn') { // index page or extn
-			if (this.loggedIn) {
-				data.user = {
-					theme: this.theme
-				}
-
-
-				if (this.period !== this.periodName) {
-					data.user.period = this.periodName;
-				}
-			}
+		let data = {
+			...this.data,
+			...this.getSpeed(),
+			referrer: window.document.referrer
 		}
-
-		data.pathname = this.pathname;
-		data.referrer = window.document.referrer;
-		data.school = this.school;
-		data.speed = this.getSpeed();
-		data.period = this.period;
-		data.version = this.version;
 
 		let res = await RequestManager.sendAnalytics(data);
 
 		if (res.success) {
 			logger.log('Analytics', 'analytics sent!');
+		} else {
+			RequestManager.sendError({
+				error: 'analytics',
+				res
+			});
 		}
-
 	}
 
 	getSpeed() {
@@ -66,39 +56,9 @@ export default class Analytics {
 		return speed;
 	}
 
-	setTheme(x) {
-		this.theme = x;
-		this.a();
-	}
-
-	setPeriod(x) {
-		this.period = x;
-		this.a();
-	}
-
-	setPeriodName(x) {
-		this.periodName = x;
-		this.a();
-	}
-
-	setPathname(x) {
-		this.pathname = x;
-		this.a();
-	}
-
-	setVersion(x) {
-		this.version = x;
-		this.a();
-	}
-
-	setSchool(x) {
-		this.school = x;
-		this.a();
-	}
-
-	setLoggedIn(x) {
-		this.loggedIn = x;
-		this.a();
+	set(key, value) {
+		this.data[key] = value;
+		this.send();
 	}
 
 	leaving() {

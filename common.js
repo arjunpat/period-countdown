@@ -1,7 +1,7 @@
 export const isProd = window.location.origin.includes('periods.io');
 export const serverHost = isProd ? 'https://api.periods.io' : 'http://localhost:8081';
 export const accountVersion = '1.2.0';
-export const mainVersion = '4.1.0';
+export const mainVersion = '4.1.1';
 
 export function get(url) {
   if (!url.includes('http')) {
@@ -12,10 +12,10 @@ export function get(url) {
   return fetch(url, {
     credentials: 'include'
   }).then(async res => {
-    res.json = await res.json();
-    res.loadTime = window.performance.now() - startTime;
-
-    return res;
+    return {
+      json: await res.json(),
+      loadTime: window.performance.now() - startTime
+    }
   });
 }
 
@@ -25,7 +25,6 @@ export function post(url, json) {
   }
 
   let startTime = window.performance.now();
-
   return window.fetch(url, {
     method: 'POST',
     credentials: 'include',
@@ -34,24 +33,25 @@ export function post(url, json) {
     },
     body: JSON.stringify(json)
   }).then(async res => {
-    res.json = await res.json();
-    res.loadTime = window.performance.now() - startTime;
-
-    return res;
+    return {
+      json: await res.json(),
+      loadTime: window.performance.now() - startTime
+    }
   });
 }
 
 export function getClientInformation() {
   let ua = window.navigator.userAgent;
+  let chrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+  let int_exp = /*@cc_on!@*/false || !!document.documentMode;
 
   let temp = {
-    chrome: !!window.chrome,
-    int_exp: /*@cc_on!@*/false || !!document.documentMode,
-    edge: !!window.StyleMedia,
+    chrome,
+    int_exp,
+    edge: !int_exp && !!window.StyleMedia,
+    edge_chromium: chrome && (navigator.userAgent.indexOf("Edg") != -1),
     safari: (
-      /constructor/i.test(window.HTMLElement)
-      || (function (p) { return p.toString() === "[object SafariRemoteNotification]" })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification)))
-      || ((!!ua.match(/iPad/i) || !!ua.match(/iPhone/i) && !window.chrome)
+      /constructor/i.test(window.HTMLElement) || (function (p) { return p.toString() === "[object SafariRemoteNotification]"; })(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification))
     ),
     firefox: typeof InstallTrigger !== 'undefined',
     opera: (!!window.opr && !!opr.addons) || !!window.opera || ua.indexOf(' OPR/') >= 0
@@ -79,7 +79,6 @@ export function isFreePeriod(name) {
 }
 
 export function generateGoogleSignInLink() {
-  
   let redirectURI = encodeURIComponent(isProd ? 'https://account.periods.io/' : 'http://localhost:8082/');
   let client_id = '770077939711-hbanoschq9p65gr8st8grsfbku4bsnhl.apps.googleusercontent.com';
   

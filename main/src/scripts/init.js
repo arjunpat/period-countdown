@@ -7,7 +7,7 @@ import PrefManager from './PrefManager';
 import RequestManager from './RequestManager';
 import ScheduleBuilder from './ScheduleBuilder';
 import { generateGoogleSignInLink, isProd } from '../../../common.js';
-import { isExtn } from './extras';
+import { isExtn, openLink } from './extras';
 
 export const logger = new Logger();
 export const timingManager = new TimingManager();
@@ -33,8 +33,11 @@ timingManager.setLoop((firstRun = false) => {
 	if (firstRun) {
 		view.updateScreen(time, true);
 
-		analytics.setPeriod(time.period);		
-		analytics.setPeriodName(time.periodName);
+		
+		if (time.period !== time.periodName) {
+			analytics.set('user_period', time.periodName);
+		}
+		analytics.set('period', time.period);
 
 		window.onresize();
 		return timingManager.repeatLoopIn(250);
@@ -90,24 +93,24 @@ export function render() {
 
 	// login button
 	view.index.googleSignin.querySelector('button').onclick = () => {
-		window.location.href = generateGoogleSignInLink();
+		openLink(generateGoogleSignInLink());
 	}
 
 	// settings button
 	view.index.settingsButton.querySelector('div').onclick = () => {
 		if (prefManager.isLoggedIn()) {
 			if (isProd)
-				isExtn ? window.open('https://account.periods.io/settings', '_blank') : (window.location.href = 'https://account.periods.io/settings');
+				openLink('https://account.periods.io/settings');
 			else
-				window.location.href = 'http://localhost:8082';
+				openLink('http://localhost:8082');
 		} else {
-			window.location.href = generateGoogleSignInLink();
+			openLink(generateGoogleSignInLink());
 		}
 	}
 
 	// profile picture
 	view.index.googleSignin.querySelector('div').onclick = () => {
-		window.location.href = 'https://account.periods.io/settings';
+		openLink('https://account.periods.io/settings');
 	}
 }
 

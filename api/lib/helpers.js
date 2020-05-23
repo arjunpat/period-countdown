@@ -24,7 +24,7 @@ module.exports = {
     let resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo?access_token=' + encodeURIComponent(token));
     resp = await resp.json();
 
-    if (!resp.email_verified) return false;
+    if (!resp.email_verified || resp.error) return false;
     return resp;
   }
 }

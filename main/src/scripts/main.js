@@ -25,7 +25,7 @@ RequestManager.init().then(json => {
 
 	if (json.success) {
 		prefManager.setGoogleAccount(json.data);
-		analytics.setLoggedIn(true);
+		analytics.set('user_theme', prefManager.getThemeNum());
 		showPrefs();
 	} else {
 		if (Storage.prefsExist()) {
@@ -33,16 +33,15 @@ RequestManager.init().then(json => {
 			location.reload();
 		}
 	}
-
-	analytics.setTheme(prefManager.getThemeNum());
-	analytics.setSchool(prefManager.getSchoolId());
+	
+	analytics.set('school', prefManager.getSchoolId());
 }).catch(err => {
 	err.location = 'RequestManager.init';
 	RequestManager.sendError(err);
 });
 
-analytics.setVersion(getVersion());
-analytics.setPathname(window.location.pathname);
+analytics.set('version', getVersion());
+analytics.set('pathname', window.location.pathname);
 
 window.onbeforeunload = () => {
 	analytics.leaving();

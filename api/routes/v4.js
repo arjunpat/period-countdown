@@ -13,7 +13,7 @@ const admins = process.env.ADMIN_EMAILS.split(',');
 const themes = require('../options/themes');
 const schoolIds = Object.keys(require('../timing-data'));
 
-router.all('*', async (req, res, next) => {
+router.use(async (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return res.send({});
   }
@@ -125,32 +125,36 @@ router.post('/logout', async (req, res) => {
 POST /v4/thanks
 {
   "pathname": "/",
-  "user": {
-    "theme": 3,
-    "period": "Personal Period Name"
-  },
   "referrer": "https://www.google.com",
   "school": "mvhs",
-  "speed": {
-    "dns": 0,
-    "dom_complete": 1371,
-    "page_complete": 1774,
-    "response_time": 233,
-    "ttfb": 392,
-    "tti": 1062
-  },
   "version": "3.0.10",
-  "period": "Period 6"
+  "period": "Period 6",
+  "dns": 0,
+  "dc": 1371,
+  "pc": 1774,
+  "rt": 233,
+  "ttfb": 392,
+  "tti": 1062,
+  "user_theme": 3,
+  "user_period": "Personal Period Name",
 }
 */
 
 router.post('/thanks', // to prevent ad blocker stuff, etc
   [
-    body('pathname').not().isEmpty(),
-    body('version').not().isEmpty(),
-    body('school').not().isEmpty(),
-    body('period').not().isEmpty(),
-    body('speed').not().isEmpty()
+    body('pathname').isString(),
+    body('referrer').isString(),
+    body('school').isString(),
+    body('version').isString(),
+    body('period').isString(),
+    body('dns').isInt(),
+    body('dc').isInt(),
+    body('pc').isInt(),
+    body('rt').isInt(),
+    body('ttfb').isInt(),
+    body('tti').isInt(),
+    body('user_theme').optional().isInt(),
+    body('user_period').optional().isString()
   ],
   async (req, res) => {
     let errors = validationResult(req);
@@ -160,7 +164,8 @@ router.post('/thanks', // to prevent ad blocker stuff, etc
       }));
     }
 
-    let { pathname, referrer, version, school, period, speed, user } = req.body;
+    let { pathname, referrer, version, school, period, user } = req.body;
+    let d = req.body;
 
     await db.hits.create({
       device_id: req.device_id,
@@ -170,14 +175,14 @@ router.post('/thanks', // to prevent ad blocker stuff, etc
       version,
       school,
       period,
-      dc: speed.dc, // dom complete
-      pc: speed.pc, // page complete
-      rt: speed.rt, // response time
-      dns: speed.dns, // dns response time
-      tti: speed.tti, // time to interactivity
-      ttfb: speed.ttfb, // time to first byte
-      user_theme: (user && user.theme) || null,
-      user_period: (user && user.period) || null
+      dc: d.dc, // dom complete
+      pc: d.pc, // page complete
+      rt: d.rt, // response time
+      dns: d.dns, // dns response time
+      tti: d.tti, // time to interactivity
+      ttfb: d.ttfb, // time to first byte
+      user_theme: d.user_theme || null,
+      user_period: d.user_period || null
     });
 
     res.send(responses.success());

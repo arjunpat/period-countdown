@@ -44,3 +44,11 @@ export function clone(obj) {
 }
 
 export const isExtn = window.location.pathname === '/extn';
+
+export function openLink(url) {
+	if (isExtn) {
+		window.open(url, '_blank')
+	} else {
+		window.location.href = url;
+	}
+}
