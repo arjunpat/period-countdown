@@ -3,10 +3,11 @@
     <span>Your school is how we determine which schedule to use.</span>
     <br><br>
     <select id="school-select" v-model="value">
-      <option v-for="school in schools" :value="school.id">{{ school.n }}</option>
+      <option v-for="school in schools" :key="school.id" :value="school.id">{{ school.n }}</option>
     </select>
     <br>
     <span>Is your school not listed as an option here? <a href="https://docs.google.com/forms/d/e/1FAIpQLSfx5M5IXoaqotrffX4yU1YEBwVl8X7xyPqMpsdBCULY7na4aw/viewform" target="_blank">Request your school</a></span>
+    <div style="height: 290px;"></div>
   </div>
 </template>
 

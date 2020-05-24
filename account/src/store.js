@@ -68,7 +68,7 @@ export default new Vuex.Store({
         }
       }
 
-      let res = await post('/v4/update-preferences', {
+      await post('/v4/update-preferences', {
         period_names: state.period_names,
         theme: state.themeNum,
         school: state.school

@@ -1,14 +1,13 @@
 <template>
   <div class="main">
-    <select id="theme-select" v-model="value">
-      <option v-for="(theme, index) in themes" :value="index">{{ theme.n }}</option>
-    </select>
     <br>
-    <span>This is a sample of what <span style="font-style: italic;">{{ themeName }}</span> looks like:</span>
-    <br><br>
     <ThemeDisplay :theme="themeToDisplay" />
     <br>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4Uf1aRuWsvvFAn4gQKQwP3P4JpiGoDFrEMwzjhti9X55wDQ/viewform?usp=sf_link" target="_blank">Request a theme</a>
+    <select id="theme-select" v-model="value">
+      <option v-for="(theme, index) in themes" :key="index" :value="index">{{ theme.n }}</option>
+    </select>
+    <br><br>
+    <a style="float: right;" href="https://docs.google.com/forms/d/e/1FAIpQLSd4Uf1aRuWsvvFAn4gQKQwP3P4JpiGoDFrEMwzjhti9X55wDQ/viewform?usp=sf_link" target="_blank">Request a theme</a>
   </div>
 </template>
 
@@ -88,6 +87,7 @@ export default {
   height: 30px;
   font-size: 20px;
   outline: 0;
+  margin: auto;
 }
 
 </style>

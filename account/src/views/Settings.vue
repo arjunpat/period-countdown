@@ -77,14 +77,18 @@ export default {
 }
 
 .settings-tabs {
-  width: 70%;
   margin: 0 auto;
   margin-top: 34px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: 70%;
+  box-shadow: 1px 1px 7px 1px rgba(0, 0, 0, 0.17);
+  max-width: 800px;
 }
 
 .header {
   display: flex;
-  /*border-bottom: 3px solid #f17600;*/
+  border-bottom: 3px solid #f17600;
 }
 
 .header > div {
@@ -107,10 +111,10 @@ export default {
   font-weight: bold;
 }
 
-.input-area {
+/* .input-area {
   border: 2px solid #f17600;
   border-radius: 6px;
-}
+} */
 
 .tab-change-enter-active {
   transition: all 250ms ease;
@@ -139,6 +143,11 @@ export default {
   .settings-tabs {
     width: 90%;
     margin-top: 20px;
+    box-shadow: none;
+  }
+
+  .header {
+    border-width: 2px;
   }
 
   .header > div {

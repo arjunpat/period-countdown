@@ -2,7 +2,7 @@
   <div>
     <div class="margin-top"></div>
     <div class="container">
-      <div v-for="column in columns" class="col">
+      <div v-for="column in columns" :key="column.id" class="col">
         <PeriodNameInput v-for="period in column" :key="period" :period-name="period" />
       </div>
     </div>
@@ -24,12 +24,12 @@ export default {
   computed: {
     ...mapState(['periods', 'school']),
     columns () {
-      let columns = []
-      let mid = Math.ceil(this.periods.length / 2)
+      let columns = [];
+      let mid = Math.ceil(this.periods.length / 2);
       for (let col = 0; col < 2; col++) {
-        columns.push(this.periods.slice(col * mid, col * mid + mid))
+        columns.push(this.periods.slice(col * mid, col * mid + mid));
       }
-      return columns
+      return columns;
     },
   },
   watch: {

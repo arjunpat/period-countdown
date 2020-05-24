@@ -1,10 +1,13 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const appHash = 'dev';
 
 module.exports = {
   entry: ['./src/scripts/main.js', './src/styles/main.css'],
   output: {
-    filename: 'dist/bundle.js',
+    filename: `dist/bundle.${appHash}.js`,
     publicPath: '/dist',
     path: path.resolve(__dirname, 'public')
   },
@@ -31,7 +34,13 @@ module.exports = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'dist/bundle.css'
+      filename: `dist/bundle.${appHash}.css`
+    }),
+    new HtmlWebpackPlugin({
+      template: 'src/index.ejs',
+      filename: 'index.html',
+      inject: false,
+      appHash
     })
   ],
   devtool: 'inline-source-map',

@@ -26,7 +26,7 @@ Vue.use(VueAnalytics, {
   }
 });
 
-let instance = new Vue({
+new Vue({
   router,
   store,
   render: h => h(App)

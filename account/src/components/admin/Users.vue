@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 style="font-weight: bold; font-size: 50px;">{{ title }}</h1>
-    <div v-for="user in users" style="border-top: 1px solid #ccc; padding: 10px; margin: 10px; padding-bottom: 5px;">
+    <div v-for="user in users" :key="user.email" style="border-top: 1px solid #ccc; padding: 10px; margin: 10px; padding-bottom: 5px;">
       <div style="display: flex;">
         <img :src="user.profile_pic" style="height: 90px;">
         <div style="margin-left: 14px;">

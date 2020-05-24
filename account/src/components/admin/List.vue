@@ -2,7 +2,7 @@
   <div class="list">
     <h2 class="big">{{ title }}</h2>
     <br>
-    <div v-for="each in data">
+    <div v-for="each in data" :key="each.value">
       <span>{{ typeof each.value === 'object' ? 'null' : each.value }}</span>
       <span style="float: right;">{{ each.count }} <span style="color: #444;">({{ percent(each.count, total) }})</span></span>
     </div>

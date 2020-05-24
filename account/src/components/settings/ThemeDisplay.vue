@@ -49,7 +49,6 @@ export default {
       try {
         this.textColor = this.theme.t;
         this.themeName = this.theme.n;
-
         this.background = this.theme.b;
       } catch (e) {
         console.log(e);

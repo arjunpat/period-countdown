@@ -51,7 +51,6 @@ export default {
     if (res.json.success) {
       setTimeout(() => {
         this.$store.commit('setAccount', res.json.data);
-        this.$router.push({ path: window.location.pathname });
       }, 1500);
     } else {
       window.location.href = generateGoogleSignInLink();
@@ -69,7 +68,6 @@ export default {
   margin: 50px;
   padding: 10px 10px 10px 5px;
   display: flex;
-  border: 2px solid rgba(241, 116, 0, .7);
   border-radius: 10px;
 }
 
@@ -100,6 +98,7 @@ export default {
   margin-left: 10px;
   cursor: pointer;
   transition: .2s ease all;
+  border: 2px solid #f17600;
 }
 
 @media only screen and (max-width: 500px) {
