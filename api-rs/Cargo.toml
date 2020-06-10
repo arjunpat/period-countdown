@@ -1,0 +1,15 @@
+[package]
+name = "api"
+version = "0.1.0"
+authors = ["Arjun Patrawala <ajpat1234@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dotenv = "0.15.0"
+actix-web = "2.0"
+actix-rt = "1.1.1"
+mysql = "*"
+serde = "1.0"
+serde_json = "1.0"
