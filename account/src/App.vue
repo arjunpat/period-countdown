@@ -32,6 +32,7 @@ export default {
     if (accessTokenLocation > -1) {
       this.msg = 'Signing you in. Please wait...';
       let accessToken = window.location.href.substring(accessTokenLocation + 13);
+      window.history.replaceState(null, null, window.location.pathname);
       while (accessToken.includes('&')) {
         accessToken = accessToken.substring(0, accessToken.indexOf('&'));
       }
@@ -49,7 +50,7 @@ export default {
     let res = await get('/v4/account');
 
     if (res.json.success) {
-      this.$store.commit('setAccount', res.json.data);
+      setTimeout(() => { this.$store.commit('setAccount', res.json.data); }, 1500);
     } else {
       window.location.href = generateGoogleSignInLink();
     }

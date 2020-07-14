@@ -24,7 +24,7 @@ class PeriodsIoPlugin {
 }
 
 module.exports = {
-  entry: ['whatwg-fetch', './src/scripts/main.js', './src/styles/main.css'],
+  entry: ['./src/scripts/main.js', './src/styles/main.css'],
   output: {
     filename: `dist/bundle.${appHash}.js`,
     publicPath: '/dist',
