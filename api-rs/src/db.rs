@@ -1,11 +1,12 @@
 #![allow(unused)]
 
+use std::time::{SystemTime, UNIX_EPOCH};
 use mysql::{
   Pool, Row, Params,
   prelude::{Queryable}
 };
-
 use serde::{Serialize, Deserialize};
+use crate::utils::now;
 
 fn exec_first<P>(pool: &Pool, sql: &str, params: P) -> Option<Row>
 where
@@ -54,7 +55,7 @@ pub struct Device {
 }
 
 pub fn get_device(pool: &Pool, device_id: &String) -> Option<Device> {
-  let mut row = exec_first(pool, "SELECT * FROM devices_id", (device_id,))?;
+  let mut row = exec_first(pool, "SELECT * FROM devices_id WHERE device_id = ?", (device_id,))?;
   
   Some(Device {
     device_id: row.take("device_id").unwrap(),
@@ -71,4 +72,12 @@ pub fn get_account_by_device_id(pool: &Pool, device_id: &String) -> Option<Strin
   let mut row = exec_first(pool, "SELECT registered_to FROM devices WHERE device_id = ?", (device_id,))?;
 
   row.take("registered_to")?
+}
+
+pub fn login(pool: &Pool, device_id: &String, email: &String) -> bool {
+  exec_first(
+    pool,
+    "UPDATE devices SET registered_to = ?, time_registered = ? WHERE device_id = ?",
+    (email, now(), device_id)
+  ).is_some()
 }

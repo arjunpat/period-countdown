@@ -36,8 +36,8 @@ export default {
         accessToken = accessToken.substring(0, accessToken.indexOf('&'));
       }
 
-      let res = await post('/v4/init', getClientInformation());
-      res = await post('/v4/login', {
+      await post('/v4/init', getClientInformation());
+      let res = await post('/v4/login', {
         google_token: accessToken
       });
 
@@ -49,9 +49,7 @@ export default {
     let res = await get('/v4/account');
 
     if (res.json.success) {
-      setTimeout(() => {
-        this.$store.commit('setAccount', res.json.data);
-      }, 1500);
+      this.$store.commit('setAccount', res.json.data);
     } else {
       window.location.href = generateGoogleSignInLink();
     }
