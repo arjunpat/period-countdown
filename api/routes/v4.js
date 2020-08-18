@@ -21,7 +21,7 @@ router.use(async (req, res, next) => {
   try {
     let contents = jwt.verify(req.cookies.periods_io, JWT_SECRET);
     req.device_id = contents.device_id;
-    
+
     next();
   } catch (e) {
     let { user_agent, platform, browser } = req.body
@@ -67,7 +67,7 @@ router.get('/account', async (req, res) => {
   if (!user)
     return res.send(responses.error());
 
-  let { email, profile_pic, first_name, last_name, theme, period_names, school } = user;
+  let { email, profile_pic, first_name, last_name, theme, period_names, school, rooms } = user;
 
   if (typeof theme !== 'number' || theme > themes.length) {
     theme = 0;
@@ -84,7 +84,8 @@ router.get('/account', async (req, res) => {
     },
     admin: admins.includes(email) ? true : undefined,
     school: schoolIds.includes(school) ? school : 'mvhs',
-    period_names: JSON.parse(period_names) || {}
+    period_names: JSON.parse(period_names) || {},
+    rooms: JSON.parse(rooms) || {}
   }));
 });
 
@@ -217,13 +218,19 @@ POST /v4/update-preferences
     "Period 1": "Math",
     "Period 5": "English"
   },
+  "rooms": {
+    "Period 1": {
+      "type": "url",
+      "url": ""
+    }
+  },
   "theme": 12,
   "school": "mvhs"
 }
 */
 
 router.post('/update-preferences', async (req, res) => {
-  let { period_names, theme, school } = req.body;
+  let { period_names, theme, school, rooms } = req.body;
 
   if (typeof theme !== 'number' || theme > 40 || typeof school !== 'string' || !schoolIds.includes(school)) {
     return res.send(responses.error('bad_data'));
@@ -234,19 +241,25 @@ router.post('/update-preferences', async (req, res) => {
   }
 
   for (let key in period_names) {
-    if (!period_names.hasOwnProperty(key))
-      continue;
-
     if (key.length > 40 || period_names[key].length > 40) {
       return res.send(responses.error('bad_data'));
     }
   }
 
-  let email = await db.users.updatePrefs(req.device_id, school, theme, JSON.stringify(period_names));
+  const goodRooms = {};
+  for (let key in rooms) {
+    if (key.length < 40 && rooms[key].type === 'url' && typeof rooms[key].url === 'string') {
+      goodRooms[key] = {
+        type: 'url',
+        url: rooms[key].url
+      };
+    }
+  }
+
+  let email = await db.users.updatePrefs(req.device_id, school, theme, JSON.stringify(period_names), JSON.stringify(rooms));
 
   if (!email)
     return res.send(responses.error('not_logged_in'));
-
   await db.events.recordUptPref(email, req.device_id);
 
   res.send(responses.success());

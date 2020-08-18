@@ -7,9 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dotenv = "0.15.0"
-actix-web = "2.0"
+sqlx = {version = "0.3.5", default-features = false, features = ["mysql", "runtime-tokio", "macros"]}
+actix-web = "2.0.0"
 actix-rt = "1.1.1"
-mysql = "*"
-serde = "1.0"
-serde_json = "1.0"
+serde = "1.0.114"
+serde_json = "1.0.56"

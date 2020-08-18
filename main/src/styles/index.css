@@ -24,12 +24,12 @@
 
 #index #day-type {
 	font-family: 'Product Sans';
-	cursor: pointer;
+	/* cursor: pointer; */
 }
 
-#index #day-type:hover {
+/* #index #day-type:hover {
 	text-decoration: underline;
-}
+} */
 
 #index #current-period-text {
 	font-family: 'Product Sans';
@@ -58,7 +58,6 @@
 	color: #fff;
 	padding: 12px 26px;
 	float: right;
-	display: inline-block;
 	font-size: 16px;
 	transition: .2s background ease;
 	cursor: pointer;
@@ -110,21 +109,24 @@
 
 /* table stuff */
 #index #schedule-table {
-	width: 250px;
-	background: #fff;
+	width: 350px;
+	/* width: 250px; */
+	/* background: #fff; */
+	background: #ffffffee;
 	position: absolute;
 	border-radius: 8px;
 	bottom: 95%;
 	z-index: 10;
-	box-shadow: 0 0 100vmax 100vmax rgba(0,0,0,0.6);
 	padding: 20px;
 	white-space: nowrap;
 	transition: opacity 0.4s ease;
-	opacity: 0;
+	box-shadow: 1px 1px 7px 1px rgba(0, 0, 0, 0.17);
+	/* box-shadow: 0 0 100vmax 100vmax rgba(0,0,0,0.6); */
+	/* opacity: 0; */
 	display: none;
 }
 
-#index #schedule-table:after {
+/* #index #schedule-table:after {
 	content:'';
 	position: absolute;
 	top: 100%;
@@ -136,7 +138,7 @@
 	border-top: solid 10px #fff;
 	border-left: solid 10px transparent;
 	border-right: solid 10px transparent;
-}
+} */
 
 #index #schedule-table > span {
 	text-align: center;

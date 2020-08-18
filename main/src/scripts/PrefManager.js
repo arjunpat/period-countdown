@@ -31,6 +31,7 @@ export default class PrefManager {
 		this.periodNames = this.periodNames || {};
 		this.googleAccount = this.googleAccount;
 		this.school = this.school || 'mvhs';
+		this.rooms = this.rooms || {};
 	}
 
 	getAllPreferences() {
@@ -46,7 +47,8 @@ export default class PrefManager {
 			googleAccount: this.googleAccount,
 			school: this.school,
 			schoolOptions: this.schoolOptions,
-			freePeriods
+			rooms: this.rooms,
+			freePeriods,
 		}
 	}
 
@@ -71,6 +73,7 @@ export default class PrefManager {
 		this.periodNames = values.period_names;
 		this.theme = values.theme;
 		this.school = values.school;
+		this.rooms = values.rooms;
 
 		this.save();
 	}

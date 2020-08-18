@@ -1,9 +1,14 @@
 <template>
   <div>
-    <div class="margin-top"></div>
+    <br>
+    <div style="margin-left: 20px;">
+      <p>Does your class use the <span style="font-weight: bold;">same (recurring) meeting link</span>?</p>
+      <p>Paste the link here, and it will be easily accessible from periods.io.</p>
+    </div>
+    <br><br>
     <div class="container">
       <div v-for="column in columns" :key="column.id" class="col">
-        <PeriodNameInput
+        <MeetingLinkInput
           v-for="period in column"
           :key="period"
           :period-name="period"
@@ -15,11 +20,11 @@
 
 <script>
 import { mapState } from 'vuex';
-import PeriodNameInput from './PeriodNameInput.vue';
+import MeetingLinkInput from './MeetingLinkInput.vue';
 
 export default {
   components: {
-    PeriodNameInput
+    MeetingLinkInput
   },
   created() {
     if (this.school)
@@ -45,10 +50,6 @@ export default {
 </script>
 
 <style scoped>
-.margin-top {
-  height: 57px;
-}
-
 .container {
   display: flex;
   margin: 0 auto;
@@ -72,5 +73,4 @@ export default {
     padding: 0 10px;
   }
 }
-
 </style>

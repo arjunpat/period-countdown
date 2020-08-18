@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS users (
 	profile_pic VARCHAR(1000),
 	school VARCHAR(20),
 	theme TINYINT UNSIGNED,
-	period_names JSON
+	period_names JSON,
+	rooms JSON
 );
 CREATE TABLE IF NOT EXISTS schools (
 	id VARCHAR(10) PRIMARY KEY,

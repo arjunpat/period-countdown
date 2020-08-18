@@ -10,6 +10,10 @@
             @click="tab = 'period_names'"
           >Class Names</div>
           <div
+            :class="{ selected: tab === 'meeting_links' }"
+            @click="tab = 'meeting_links'"
+          >Meeting Links</div>
+          <div
             :class="{ selected: tab === 'school' }"
             @click="tab = 'school'"
           >School</div>
@@ -22,6 +26,7 @@
         <div class="input-area">
           <transition name="tab-change">
             <PeriodNamesEnter v-if="tab === 'period_names'" />
+            <MeetingLinksEnter v-if="tab === 'meeting_links'" />
             <SchoolEnter v-if="tab === 'school'" />
             <ThemeEnter v-if="tab === 'theme'" />
           </transition>
@@ -40,6 +45,7 @@
 <script>
 import { mapState } from 'vuex';
 import PeriodNamesEnter from '@/components/settings/PeriodNamesEnter.vue';
+import MeetingLinksEnter from '@/components/settings/MeetingLinksEnter.vue';
 import SchoolEnter from '@/components/settings/SchoolEnter.vue';
 import ThemeEnter from '@/components/settings/ThemeEnter.vue';
 import SaveSettingsButton from '@/components/settings/SaveSettingsButton.vue';
@@ -50,6 +56,7 @@ export default {
     SchoolEnter,
     ThemeEnter,
     SaveSettingsButton,
+    MeetingLinksEnter,
   },
   data() {
     return {
@@ -110,11 +117,6 @@ export default {
   color: #f17600;
   font-weight: bold;
 }
-
-/* .input-area {
-  border: 2px solid #f17600;
-  border-radius: 6px;
-} */
 
 .tab-change-enter-active {
   transition: all 250ms ease;

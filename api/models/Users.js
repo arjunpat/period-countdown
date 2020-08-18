@@ -6,7 +6,7 @@ class Users {
 
   async byDeviceId(device_id) {
     let resp = await this.mysql.query(
-      'SELECT email, profile_pic, first_name, last_name, theme, period_names, school FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id = ?)',
+      'SELECT email, profile_pic, first_name, last_name, theme, period_names, school, rooms FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id = ?)',
       [ device_id ]
     );
 
@@ -23,7 +23,7 @@ class Users {
     );
   }
 
-  async updatePrefs(device_id, school, theme, period_names) {
+  async updatePrefs(device_id, school, theme, period_names, rooms) {
     let email = await this.mysql.query('SELECT registered_to FROM devices WHERE device_id = ?', [device_id]);
     email = email[0].registered_to;
 
@@ -32,7 +32,8 @@ class Users {
     await this.mysql.update('users', {
       school,
       theme,
-      period_names
+      period_names,
+      rooms
     }, {
       email
     });

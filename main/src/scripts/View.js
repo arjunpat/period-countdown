@@ -136,7 +136,7 @@ export default class View {
 		}
 	}
 
-	updateScheduleTable(periods, periodNames, currentTime) {
+	updateScheduleTable(periods, periodNames, currentTime, rooms) {
 		let currentDate = (new Date(currentTime)).setHours(0, 0, 0, 0);
 
 		let html = '';
@@ -149,11 +149,16 @@ export default class View {
 				if ((new Date(p.f)).setHours(0, 0, 0, 0) !== currentDate)
 					continue;
 
+				let url = rooms[p.n] && rooms[p.n].url;
 				p.n = periodNames[p.n] || p.n;
+
+				if (p.n.length > 18) {
+					p.n = p.n.slice(0, 18) + '..';
+				}
 
 				html += `
 					<tr>
-						<td>${p.n}</td>
+						<td>${p.n}${url ? ` (<a href="${url}" target="_blank">Link</a>)` : ''}</td>
 						<td>${formatEpoch(p.f)} - ${formatEpoch(periods[i + 1].f)}</td>
 					</tr>
 				`;
@@ -163,7 +168,7 @@ export default class View {
 		}
 
 		if (added === 0)
-			html = '<span style="color: black; font-style: italic;">No classes today</span>'
+			html = '<span style="color: black; font-style: italic;">No more classes today</span>'
 
 		this.index.scheduleTable.querySelector('table > tbody').innerHTML = html;
 	}

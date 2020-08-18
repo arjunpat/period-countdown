@@ -21,8 +21,5 @@
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
     "node-fetch": "^2.6.0"
-  },
-  "devDependencies": {
-    "nodemon": "^1.19.4"
   }
 }

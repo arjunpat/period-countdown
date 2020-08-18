@@ -1,5 +1,5 @@
 use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder, get, middleware};
-use mysql::*;
+use sqlx::mysql::MySqlPool;
 
 mod db;
 mod utils;
@@ -10,34 +10,30 @@ async fn testing() -> impl Responder {
 }
 
 #[get("/test/{id}")]
-async fn test(req: HttpRequest, db: web::Data<Pool>) -> impl Responder {
+async fn test(req: HttpRequest, db: web::Data<MySqlPool>) -> impl Responder {
   let id = String::from(req.match_info().query("id"));
 
   // let result = db::get_user(&db, &id);
-  let result = db::get_account_by_device_id(&db, &id);
+  // let result = db::get_account_by_device_id(&db, &id);
+  // let result = db::get_device(&db, &id);
 
-  match result {
-    Some(d) => HttpResponse::Ok().json(d),
-    None => HttpResponse::Ok().body(id)
-  }
-
-  /*
-  match db::get_device(&db, &id) {
+  /* match result {
     Some(d) => HttpResponse::Ok().json(d),
     None => HttpResponse::Ok().body(id)
   } */
+
+  HttpResponse::Ok().body("wassup")
 }
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
 
   let mysql_url = "mysql://root@127.0.0.1/periods_io";
+  let pool = MySqlPool::new(mysql_url).await.unwrap();
   
   HttpServer::new(move || {
-    let pool = Pool::new(mysql_url).unwrap();
-
     App::new()
-      .data(pool)
+      .data(&pool)
       .wrap(middleware::Logger::default())
       .service(testing)
       .service(test)

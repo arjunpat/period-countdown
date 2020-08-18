@@ -16,18 +16,30 @@ export default new Vuex.Store({
     themes: [],
     themeNum: 0,
     first_name: '',
-    last_name: ''
+    last_name: '',
+    meetingLinks: {},
   },  
   mutations: {
     setAccount(state, payload) {
       Object.assign(state, payload);
       state.themeNum = payload.theme.theme;
+
+      for (let key in state.rooms) {
+        if (state.rooms[key].type === 'url') {
+          state.meetingLinks[key] = state.rooms[key].url;
+        }
+      }
     },
     setPeriods(state, payload) {
       state.periods = payload;
     },
     setPeriodName(state, { key, value }) {
       state.period_names[key] = value;
+    },
+    setMeetingLink(state, { key, value }) {
+      state.meetingLinks[key] = value;
+      if (value === '')
+        delete state.meetingLinks[key];
     },
     setSchools(state, payload) {
       state.schools = payload;
@@ -68,10 +80,19 @@ export default new Vuex.Store({
         }
       }
 
+      const rooms = {};
+      for (let key in state.meetingLinks) {
+        rooms[key] = {
+          type: 'url',
+          url: state.meetingLinks[key]
+        };
+      }
+
       await post('/v4/update-preferences', {
         period_names: state.period_names,
         theme: state.themeNum,
-        school: state.school
+        school: state.school,
+        rooms,
       });
     }
   },
@@ -84,6 +105,9 @@ export default new Vuex.Store({
     },
     theme(state) {
       return state.theme;
-    }
+    },
+    meetingLinks(state) {
+      return state.meetingLinks
+    },
   }
 });

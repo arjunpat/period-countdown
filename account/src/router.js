@@ -19,7 +19,7 @@ let router = new Router({
       path: '/settings',
       component: Settings,
       meta: {
-        title: 'settings — periods.io'
+        title: 'settings - periods.io'
       }
     },
     {
@@ -30,14 +30,14 @@ let router = new Router({
       path: '/logout',
       component: Logout,
       meta: {
-        title: 'logout — periods.io'
+        title: 'logout - periods.io'
       }
     },
     {
       path: '/admin/analytics',
       component: () => import(/* webpackChunkName: "admin" */ '@/views/admin/Analytics.vue'),
       meta: {
-        title: 'analytics — periods.io'
+        title: 'analytics - periods.io'
       }
     },
     {

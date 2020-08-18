@@ -43,9 +43,15 @@ timingManager.setLoop((firstRun = false) => {
 		return timingManager.repeatLoopIn(250);
 	}
 
+	// quick and dirty hack
+	if (!isExtn) {
+		let p = prefManager.getAllPreferences();
+		view.updateScheduleTable(timingEngine.getUpcomingEvents(), p.periodNames, timingEngine.getCurrentTime(), p.rooms);
+	}
+
 	if (!document.hidden || document.hasFocus()) {
 		view.updateScreen(time, true)
-		return timingManager.repeatLoopIn(250);
+		return timingManager.repeatLoopIn(1000);
 	}
 
 	view.updateScreen(time, false);
@@ -59,6 +65,9 @@ export function render() {
 	timingManager.initTimer().then(() => {
 		showPrefs();
 		view.hidePreloader();
+		
+		if (!isExtn)
+			view.index.scheduleTable.style.display = 'block';
 
 		logger.timeEnd('render', 'index');
 	}).catch(err => {
@@ -67,7 +76,7 @@ export function render() {
 		throw err;
 	});
 
-	if (!isExtn) {
+	/* if (!isExtn) {
 		view.index.dayType.onmouseover = () => {
 			view.updateScheduleTable(timingEngine.getUpcomingEvents(), prefManager.getAllPreferences().periodNames, timingEngine.getCurrentTime());
 			view.index.scheduleTable.style.display = 'block';
@@ -82,7 +91,7 @@ export function render() {
 				view.index.scheduleTable.style.display = 'none';
 			}, 500);
 		}	
-	}
+	} */
 
 	function resizeScreen() {
 		view.updateScreenDimensions();
@@ -95,6 +104,20 @@ export function render() {
 	view.index.googleSignin.querySelector('button').onclick = () => {
 		openLink(generateGoogleSignInLink());
 	}
+
+	/* temp stuff for DL */
+	function openHomePage() {
+		if (isProd)
+				openLink('https://periods.io');
+			else
+				openLink('http://localhost:8080');
+	}
+
+	if (isExtn) {
+		view.index.mainCanvas.onclick = openHomePage;
+		view.index.mainCanvasOverlay.onclick = openHomePage;
+	}
+	/* end temp stuff for DL */
 
 	// settings button
 	view.index.settingsButton.querySelector('div').onclick = () => {
