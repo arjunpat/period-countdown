@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, cookie } = require('express-validator');
 
 const db = require('../models');
 
@@ -13,6 +13,13 @@ const admins = process.env.ADMIN_EMAILS.split(',');
 const themes = require('../options/themes');
 const schoolIds = Object.keys(require('../timing-data'));
 
+const cookieOpts = {
+  domain: process.env.NODE_ENV === 'production' ? '.periods.io' : undefined,
+  maxAge: 4.73e11,
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : undefined,
+  secure: process.env.NODE_ENV === 'production' ? true : undefined,
+};
+
 router.use(async (req, res, next) => {
   if (req.method === 'OPTIONS') {
     return res.send({});
@@ -21,6 +28,8 @@ router.use(async (req, res, next) => {
   try {
     let contents = jwt.verify(req.cookies.periods_io, JWT_SECRET);
     req.device_id = contents.device_id;
+
+    res.cookie('periods_io', req.cookies.periods_io, cookieOpts);
 
     next();
   } catch (e) {
@@ -35,10 +44,7 @@ router.use(async (req, res, next) => {
       device_id
     }, JWT_SECRET);
 
-    res.cookie('periods_io', cookie, {
-      domain: process.env.NODE_ENV === 'production' ? '.periods.io' : undefined,
-      maxAge: 4.73e11
-    });
+    res.cookie('periods_io', cookie, cookieOpts);
 
     req.device_id = device_id;
 
