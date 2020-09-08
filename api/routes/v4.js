@@ -11,7 +11,7 @@ const { JWT_SECRET } = process.env;
 const admins = process.env.ADMIN_EMAILS.split(',');
 
 const themes = require('../options/themes');
-const schoolIds = Object.keys(require('../timing-data'));
+const schoolIds = Object.keys(require('../../../timing-data'));
 
 const cookieOpts = {
   domain: process.env.NODE_ENV === 'production' ? '.periods.io' : undefined,

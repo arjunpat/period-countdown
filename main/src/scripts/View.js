@@ -158,7 +158,7 @@ export default class View {
 
 				html += `
 					<tr>
-						<td>${p.n}${url ? ` (<a href="${url}" target="_blank">Link</a>)` : ''}</td>
+						<td>${p.n}${url ? ` (<a href="${url}" target="_blank">Join</a>)` : ''}</td>
 						<td>${formatEpoch(p.f)} - ${formatEpoch(periods[i + 1].f)}</td>
 					</tr>
 				`;

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const responses = require('../lib/responses');
-const timingData = require('../timing-data');
+const timingData = require('../../../timing-data');
 const themes = JSON.stringify(require('../options/themes'));
 const schools = JSON.stringify(timingData.schools);
 
