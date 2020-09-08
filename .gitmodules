@@ -1,3 +1,0 @@
-[submodule "api/timing-data"]
-	path = api/timing-data
-	url = git@github.com:arjunpat/timing-data.git
