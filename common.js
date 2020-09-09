@@ -1,6 +1,6 @@
 export const isProd = window.location.origin.includes('periods.io');
 export const serverHost = isProd ? 'https://api.periods.io' : 'http://localhost:8081';
-export const accountVersion = '1.3.0';
+export const accountVersion = '1.3.1';
 export const mainVersion = '4.2.1';
 
 export function get(url) {

@@ -8,8 +8,8 @@
     <br><br>
     <div style="font-weight: bold;">Is your school not listed as an option?</div>
     <div style="margin-left: 10px; margin-top: 6px;">
-      <div>1. <a href="https://docs.google.com/forms/d/e/1FAIpQLSfx5M5IXoaqotrffX4yU1YEBwVl8X7xyPqMpsdBCULY7na4aw/viewform" target="_blank">Request your school</a> <span style="font-style: italic;">OR</span></div><br>
-      <div>2. <a href="https://github.com/arjunpat/timing-data" target="_blank">Add your school yourself</a> (requires basic coding experience)</div>
+      <div>1. <a href="https://bit.ly/3iotrbS" target="_blank">Request your school</a> <span style="font-style: italic;">OR</span></div><br>
+      <div>2. <a href="https://bit.ly/3jYR2jT" target="_blank">Add your school yourself</a> (requires basic coding experience)</div>
     </div>
     <div style="height: 250px;"></div>
   </div>
