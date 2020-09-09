@@ -15,16 +15,16 @@ module.exports = [
     t: '#000'
   },
   {
-    n: 'Yellow on Black',
-    b: '#000000',
-    c: '#262626',
-    t: '#fccb0b'
+    n: 'Beach sunset',
+    b: 'linear-gradient(45deg, #d53369, #cbad6d)',
+    c: 'rgba(0, 0, 0, 0.16)',
+    t: '#fff'
   },
   {
-    n: 'Royal blue gradient',
-    b: 'linear-gradient(45deg, #243B55, #141E30)',
-    c: 'rgba(5, 6, 7, 0.22)',
-    t: '#ffffff'
+    n: 'Light blue gradient',
+    b: 'linear-gradient(45deg, #2980b9, #2c3e50)',
+    c: 'rgba(0, 0, 0, 0.24)',
+    t: '#fff'
   },
   {
     n: 'Cotton candy gradient',

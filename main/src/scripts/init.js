@@ -44,19 +44,13 @@ timingManager.setLoop((firstRun = false) => {
 	}
 
 	// quick and dirty hack
-	if (!isExtn) {
-		let p = prefManager.getAllPreferences();
+	let p = prefManager.getAllPreferences();
+	if (!isExtn)
 		view.updateScheduleTable(timingEngine.getUpcomingEvents(), p.periodNames, timingEngine.getCurrentTime(), p.rooms);
-	}
+	else view.setCurrentPeriodLink(p.rooms[time.period] && p.rooms[time.period].url);
 
-	if (!document.hidden || document.hasFocus()) {
-		view.updateScreen(time, true)
-		return timingManager.repeatLoopIn(1000);
-	}
-
-	view.updateScreen(time, false);
-
-	return timingManager.repeatLoopIn(1000); // 1s when user not on the page; helps with cpu usage
+	view.updateScreen(time, !document.hidden || document.hasFocus());
+	return timingManager.repeatLoopIn(1000);
 });
 
 export function render() {
@@ -115,7 +109,7 @@ export function render() {
 
 	if (isExtn) {
 		view.index.mainCanvas.onclick = openHomePage;
-		view.index.mainCanvasOverlay.onclick = openHomePage;
+		view.index.dayType.onclick = openHomePage;
 	}
 	/* end temp stuff for DL */
 

@@ -231,6 +231,20 @@ export default class View {
 		}, 100);
 	}
 
+	setCurrentPeriodLink(link) {
+		if (link) {
+			this.index.currentPeriodText.style.borderBottom = '2px solid #fccb0b';
+			this.index.currentPeriodText.onclick = () => {
+				window.open(link, '_blank');
+			}
+			this.index.currentPeriodText.style.cursor = 'pointer';
+		} else {
+			this.index.currentPeriodText.onclick = null;
+			this.index.currentPeriodText.style.borderBottom = '';
+			this.index.currentPeriodText.style.cursor = '';
+		}
+	}
+
 	dimensionCanvas() { this.canvas.dimension(); }
 }
 
