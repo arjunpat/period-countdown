@@ -1,6 +1,6 @@
 /**
  * period-countdown
- * Copyright(c) 2019 Arjun Patrawala
+ * Copyright(c) 2021 Arjun Patrawala
  * MIT Licensed
  */
 
