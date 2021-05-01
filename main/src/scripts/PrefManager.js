@@ -16,6 +16,7 @@ export default class PrefManager {
 		this.periodNames = values.periodNames;
 		this.googleAccount = values.googleAccount;
 		this.school = values.school;
+		this.rooms = values.rooms;
 	}
 
 	initVars() {
@@ -57,7 +58,8 @@ export default class PrefManager {
 			theme: this.theme,
 			periodNames: this.periodNames,
 			googleAccount: this.googleAccount,
-			school: this.school
+			school: this.school,
+			rooms: this.rooms
 		});
 	}
 	
