@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div style="padding: 20px; background: #eee;" v-show="showBanner">
+      <div>
+        <span style="float: right; display: block; cursor: pointer;" @click="closeBanner()">X</span>
+      </div>
+      <div>
+        <span style="font-weight: bold; font-size: 20px;">It costs over $140 each year to run periods.io</span>—an amount that is only growing as our user base expands. This is not sustainable; we need your help! If you have found periods.io useful, consider donating. <span style="font-weight: bold;">Even $3 or $5 can support our servers for more than a week.</span> Donate via Venmo: <a href="https://www.venmo.com/u/periodcountdown">@periodcountdown</a>. $14 donated already (updated daily).
+      </div>
+    </div>
     <div id="nav-links">
       <div>
         <router-link to="/admin/analytics" v-if="admin">Analytics</router-link>
@@ -24,7 +32,8 @@ import { getClientInformation, generateGoogleSignInLink, isProd } from '../../co
 export default {
   data() {
     return {
-      isProd
+      isProd,
+      showBanner: true
     }
   },
   async mounted() {
@@ -57,6 +66,15 @@ export default {
   },
   computed: {
     ...mapState(['profile_pic', 'admin'])
+  },
+  methods: {
+    closeBanner() {
+      this.showBanner = false;
+      this.$ga.event({
+        eventCategory: 'donatebanner.x',
+        eventAction: 'click'
+      });
+    }
   }
 }
 </script>
