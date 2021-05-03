@@ -1,0 +1,102 @@
+<template>
+  <MainScreen ref="main" />
+</template>
+
+<script>
+import MainScreen from './components/MainScreen.vue';
+
+export default {
+  name: 'App',
+  components: {
+    MainScreen
+  },
+  mounted() {
+    window.onresize = () => {
+      this.$refs.main.dimension();
+    }
+  }
+}
+</script>
+
+<style>
+/* all reset settings */
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-family: 'Roboto', sans-serif;
+	font-weight: normal;
+}
+a {
+	color: inherit;
+	text-decoration: none;
+	transition: padding 150ms ease;
+	cursor: pointer;
+	border-bottom: 2px solid #fccb0b;
+}
+
+a:hover {
+	padding-bottom: 2px;
+}
+
+body {
+	overflow: hidden;
+}
+
+input,
+button,
+select,
+textarea {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+.material-icons {
+	vertical-align: middle;
+}
+
+/* animations */
+@keyframes updatePeriod {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 100%, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* tooltip */
+[tooltip] {
+	position: relative;
+	display: inline-block;
+}
+
+[tooltip]::after {
+	content: attr(tooltip);
+	position: absolute;
+	left: 50%;
+	background: rgba(0, 0, 0, .42);
+	text-align: center;
+	color: #fff;
+	min-width: 65px;
+	border-radius: 3px;
+	font-size: 12px;
+	pointer-events: none;
+	padding: 4px 4px;
+	z-index: 5;
+	opacity: 0;
+	top: 85%;
+	margin-top: 8px;
+	transform: translateX(-50%) translateY(0%);
+	transition: opacity 150ms ease;
+	transition-delay: 250ms;
+}
+
+[tooltip]:hover::after,
+[tooltip]:hover::before {
+	opacity: 1;
+}
+</style>
