@@ -4,11 +4,11 @@
       <Canvas
         :backgroundColor="'transparent'"
         :completedColor="'#ccc'"
-        :percentCompleted="pCompleted"
+        :percentCompleted="time.percentCompleted || 0"
 				:innerWidth="innerWidth"
       />
-      <div id="main-canvas-overlay" style="position: absolute; width: 100%;">
-        <div id="google-signin">
+      <div style="position: absolute; width: 100%;">
+        <div class="google-signin">
           <button>Sign in with Google</button>
           <div tooltip="Logout"><img></div>
         </div>
@@ -21,8 +21,8 @@
             <table><tbody></tbody></table>
           </div>
           <TimeLeft
-						:currentPeriodText="currentPeriodText"
-						:dayType="dayType"
+						:currentPeriodText="time.periodName || ''"
+						:dayType="time.dayType || ''"
 						:timeLeft="timeLeft"
 						:innerWidth="innerWidth"
 					/>
@@ -43,35 +43,42 @@
 <script>
 import Canvas from './main-screen/Canvas.vue';
 import TimeLeft from './main-screen/TimeLeft.vue';
-import { isExtn } from '../logic/helpers.js';
+import { computeTimeStr, isExtn, isACrawler } from '@/logic/helpers.js';
 
 export default {
   components: {
     Canvas, TimeLeft
   },
+	props: ['time'],
   data() {
     return {
-      pCompleted: 0,
 			innerWidth: window.innerWidth,
-			timeLeft: '12:54:52',
-			currentPeriodText: 'Period 1',
-			dayType: 'Schedule A'
+			timeLeft: ''
     }
-  },
-  mounted() {
-    this.pCompleted = 10
   },
 	methods: {
 		dimension() {
+			console.log(this.innerWidth, window.innerWidth);
 			this.innerWidth = window.innerWidth;
-		}
+			console.log('called');
+		},
+	},
+	watch: {
+		time() {
+			let { hours, minutes, seconds, periodName } = this.time;
+			let timeString = computeTimeStr(hours, minutes, seconds);
+			this.timeLeft = timeString;
+
+			let documentTitle = `${timeString} \u2022 ${periodName}`;
+			if (document.title !== documentTitle && !isACrawler && !isExtn)
+				document.title = documentTitle;
+		},
 	}
 }
 </script>
 
 <style scoped>
-
-#google-signin {
+.google-signin {
 	top: 0;
 	right: 0;
 	position: fixed;
@@ -79,7 +86,7 @@ export default {
 	user-select: none;
 }
 
-#google-signin > button {
+.google-signin > button {
 	background: #1a73f6;
 	font-family: 'Product Sans';
 	border-radius: 8px;
@@ -93,11 +100,11 @@ export default {
 	cursor: pointer;
 }
 
-#google-signin > button:hover {
+.google-signin > button:hover {
 	background: #1362ca;
 }
 
-#google-signin > div > img {
+.google-signin > div > img {
 	cursor: pointer;
 	display: none;
 	border-radius: 50%;
@@ -106,7 +113,7 @@ export default {
 	box-shadow: 0px 2px 10px 0 rgba(0,0,0,0.14), 0 1px 0px 0 rgba(0,0,0,0.12), 0px 2px 2px 0px rgba(0,0,0,0.2);
 }
 
-#google-signin > div > img:hover {
+.google-signin > div > img:hover {
 	opacity: 0.80;
 }
 
@@ -183,7 +190,7 @@ export default {
 }
 
 @media (max-width: 375px) {
-	#google-signin {
+	.google-signin {
 		padding: 25px;
 	}
 }

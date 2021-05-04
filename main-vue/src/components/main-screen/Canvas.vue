@@ -82,12 +82,10 @@ export default {
       delete this.animationInterval;
 
       let reg = this.createSineRegression(this.decimalCompleted, to, length);
-
       let startTime = window.performance.now();
 
       let func = () => {
         let secondsPassed = (window.performance.now() - startTime) / 1e3;
-
         this.draw(reg(secondsPassed));
 
         if (length < secondsPassed) {

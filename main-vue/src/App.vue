@@ -1,19 +1,64 @@
 <template>
-  <MainScreen ref="main" />
+  <MainScreen :time="time" ref="main" />
 </template>
 
 <script>
 import MainScreen from './components/MainScreen.vue';
+import { timingManager, analytics, logger, scheduleBuilder, timingEngine } from './logic/init.js';
+import RequestManager from './logic/RequestManager.js';
 
 export default {
   name: 'App',
   components: {
     MainScreen
   },
+  data() {
+    return {
+      time: {}
+    }
+  },
   mounted() {
     window.onresize = () => {
       this.$refs.main.dimension();
     }
+  },
+  created() {
+    timingManager.init(this.$store.getters.schoolId);
+    timingManager.setTimerPrepareMethod((school, schedule) => {
+      scheduleBuilder.setFreePeriods(this.$store.getters.freePeriods || {});
+      scheduleBuilder.init(school, schedule);
+      
+      let { presets, calendar, defaults } = scheduleBuilder.buildAll();
+      timingEngine.init(presets, calendar, defaults);
+    });
+
+    timingManager.setLoop((firstRun = false) => {
+      let time = timingEngine.getRemainingTime();
+      time.periodName = this.$store.state.periodNames[time.period] || time.period;
+
+      if (firstRun) {
+        if (time.period !== time.periodName) {
+          analytics.set('user_period', time.periodName);
+        }
+        analytics.set('period', time.period);
+      }
+      
+      this.time = time;
+      return timingManager.repeatLoopIn(1000);
+    });
+
+    logger.time('App', 'timer-init');
+    timingManager.initTimer().then(() => {
+      logger.timeEnd('App', 'timer-init');
+      this.$refs.main.dimension();
+      setTimeout(() => {
+        console.log('bro');
+        this.$refs.main.dimension()
+      }, 2000);
+    }).catch(err => {
+      RequestManager.sendError(err);
+      throw err;
+    });
   }
 }
 </script>

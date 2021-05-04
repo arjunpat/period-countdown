@@ -1,64 +1,64 @@
 
 export default class Logger {
-	constructor() {
-		this.timings = {};
-	}
-	
-	log(from, what) {
-		if (!from || !what) throw TypeError('invalid arguments');
+  constructor() {
+    this.timings = {};
+  }
+  
+  log(from, what) {
+    if (!from || !what) throw TypeError('invalid arguments');
 
-		this.writeOut(from, what);
-	}
+    this.writeOut(from, what);
+  }
 
-	time(from, action) {
-		if (!from || !action) throw new TypeError('invalid arguments');
+  time(from, action) {
+    if (!from || !action) throw new TypeError('invalid arguments');
 
-		if (this.timings[from + action])
-			throw "Timing already exists";
+    if (this.timings[from + action])
+      throw "Timing already exists";
 
-		this.timings[from + action] = {
-			start: window.performance.now(),
-			from
-		}
-	}
+    this.timings[from + action] = {
+      start: window.performance.now(),
+      from
+    }
+  }
 
-	timingExists(from, action) {
-		if (this.timings[from + action])
-			return true;
-		return false;
-	}
+  timingExists(from, action) {
+    if (this.timings[from + action])
+      return true;
+    return false;
+  }
 
-	timeEnd(from, action) {
-		if (!from || !action) throw new TypeError('invalid arguments');
+  timeEnd(from, action) {
+    if (!from || !action) throw new TypeError('invalid arguments');
 
-		if (this.timings[from + action]) {
-			let time = window.performance.now() - this.timings[from + action].start;
+    if (this.timings[from + action]) {
+      let time = window.performance.now() - this.timings[from + action].start;
 
-			this.writeOut(this.timings[from + action].from, `${action} took ${time.toFixed(8)}ms`);
+      this.writeOut(this.timings[from + action].from, `${action} took ${time.toFixed(8)}ms`);
 
-			delete this.timings[from + action];
-		} else
-			throw "Timing does not exist";
-	}
+      delete this.timings[from + action];
+    } else
+      throw "Timing does not exist";
+  }
 
-	writeOut(from, text) {
-		console.log(`%c${this.getTimeSincePageLoad()} %c[${from}] %c${text}`, 'color: grey', 'color: black; font-weight: bold;', 'color: blue');
-	}
+  writeOut(from, text) {
+    console.log(`%c${this.getTimeSincePageLoad()} %c[${from}] %c${text}`, 'color: grey', 'color: black; font-weight: bold;', 'color: blue');
+  }
 
-	getTimeSincePageLoad() {
-		let now = window.performance.now();
+  getTimeSincePageLoad() {
+    let now = window.performance.now();
 
-		let hours = Math.floor(now / (1e3 * 60 * 60));
-		now -= hours * 1e3 * 60 * 60;
-		hours = (hours > 0) ? `${hours}:` : '';
+    let hours = Math.floor(now / (1e3 * 60 * 60));
+    now -= hours * 1e3 * 60 * 60;
+    hours = (hours > 0) ? `${hours}:` : '';
 
-		let minutes = Math.floor(now / (1e3 * 60));
-		now -= minutes * 1e3 * 60;
-		minutes = (minutes < 10 && hours > 0) ? `0${minutes}:` : `${minutes}:`;
+    let minutes = Math.floor(now / (1e3 * 60));
+    now -= minutes * 1e3 * 60;
+    minutes = (minutes < 10 && hours > 0) ? `0${minutes}:` : `${minutes}:`;
 
-		let seconds = (now / 1e3).toFixed(2);
-		seconds = (seconds < 10) ? `0${seconds}` : seconds;
+    let seconds = (now / 1e3).toFixed(2);
+    seconds = (seconds < 10) ? `0${seconds}` : seconds;
 
-		return hours + minutes + seconds;
-	}
+    return hours + minutes + seconds;
+  }
 }
