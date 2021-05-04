@@ -14,7 +14,7 @@ router.get('/schedule/:school', (req, res) => {
   let { school } = req.params;
 
   if (typeof timingData[school] === 'object') {
-    res.set('Cache-Control', 'max-age=900');
+    res.set('Cache-Control', 'public, max-age=900');
     return res.send(timingData[school].schedule);
   }
 
@@ -25,7 +25,7 @@ router.get('/school/:school', (req, res) => {
   let { school } = req.params;
 
   if (typeof timingData[school] === 'object') {
-    res.set('Cache-Control', 'max-age=43200');
+    res.set('Cache-Control', 'public, max-age=43200');
     return res.send(timingData[school].school);
   }
 
