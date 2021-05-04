@@ -35,26 +35,22 @@ export default {
     timingManager.setLoop((firstRun = false) => {
       let time = timingEngine.getRemainingTime();
       time.periodName = this.$store.state.periodNames[time.period] || time.period;
+      this.time = time;
 
       if (firstRun) {
         if (time.period !== time.periodName) {
           analytics.set('user_period', time.periodName);
         }
         analytics.set('period', time.period);
+        this.$refs.main.dimension();
       }
       
-      this.time = time;
       return timingManager.repeatLoopIn(1000);
     });
 
     logger.time('App', 'timer-init');
     timingManager.initTimer().then(() => {
       logger.timeEnd('App', 'timer-init');
-      this.$refs.main.dimension();
-      setTimeout(() => {
-        console.log('bro');
-        this.$refs.main.dimension()
-      }, 2000);
     }).catch(err => {
       RequestManager.sendError(err);
       throw err;

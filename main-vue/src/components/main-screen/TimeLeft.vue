@@ -9,7 +9,9 @@
   </span>
   <span
     :style="{ fontSize: timeLeftSize + 'px', display: 'block' }"
-  >{{ timeLeft }}</span>
+  >
+    {{ timeLeft }}
+  </span>
 </template>
 
 <script>

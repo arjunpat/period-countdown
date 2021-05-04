@@ -1,12 +1,12 @@
 <template>
-  <canvas ref="canvas" :style="{ background: backgroundColor }"></canvas>
+  <canvas ref="canvas" :style="{ background: theme.b }"></canvas>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   props: {
-    backgroundColor: String,
-    completedColor: String,
     percentCompleted: Number,
     innerWidth: Number
   },
@@ -24,6 +24,7 @@ export default {
     this.ctx = this.canvas.getContext('2d');
     this.dimension();
   },
+  computed: mapState(['theme']),
   watch: {
     percentCompleted() {
       if (
@@ -62,7 +63,7 @@ export default {
 
       this.ctx.clearRect(0, 0, w, h);
 
-      this.ctx.fillStyle = this.completedColor;
+      this.ctx.fillStyle = this.theme.c;
       this.ctx.fillRect(0, 0, to * w, h);
 
       this.decimalCompleted = to;

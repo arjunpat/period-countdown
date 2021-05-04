@@ -2,8 +2,6 @@
   <div>
     <div style="position: relative;">
       <Canvas
-        :backgroundColor="'transparent'"
-        :completedColor="'#ccc'"
         :percentCompleted="time.percentCompleted || 0"
 				:innerWidth="innerWidth"
       />
@@ -31,8 +29,13 @@
 					style="bottom: 0; right: 0; position: fixed;"
 					:style="{ padding: Math.min(45, innerWidth / 18) + 'px' }"
 				>
-          <div class="settings-button-div" tooltip="Settings" :style="{ padding: Math.min(18, innerWidth / 28) + 'px' }">
-            <i class="material-icons">settings</i>
+          <div class="settings-button-div" tooltip="Settings"
+						:style="{
+							padding: Math.min(18, innerWidth / 28) + 'px',
+							background: theme.t
+						}"
+						>
+            <i class="material-icons" :style="{ color: settingsBtnColor }">settings</i>
           </div>
         </div>
       </div>
@@ -41,6 +44,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import Canvas from './main-screen/Canvas.vue';
 import TimeLeft from './main-screen/TimeLeft.vue';
 import { computeTimeStr, isExtn, isACrawler } from '@/logic/helpers.js';
@@ -52,15 +56,13 @@ export default {
 	props: ['time'],
   data() {
     return {
-			innerWidth: window.innerWidth,
+			innerWidth: window.innerWidth + 2,
 			timeLeft: ''
     }
   },
 	methods: {
 		dimension() {
-			console.log(this.innerWidth, window.innerWidth);
 			this.innerWidth = window.innerWidth;
-			console.log('called');
 		},
 	},
 	watch: {
@@ -73,7 +75,14 @@ export default {
 			if (document.title !== documentTitle && !isACrawler && !isExtn)
 				document.title = documentTitle;
 		},
-	}
+	},
+	computed: mapState({
+		theme: 'theme',
+		settingsBtnColor(state) {
+			let { b } = state.theme;
+			return b.substring(b.lastIndexOf('#'), b.lastIndexOf(')'));
+		}
+	})
 }
 </script>
 
