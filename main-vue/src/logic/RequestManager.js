@@ -1,5 +1,5 @@
 import Storage from '@/store/Storage';
-import { get, post, serverHost, getClientInformation } from '../../../common.js';
+import { get, post, serverHost, getClientInformation } from '@/../../common.js';
 
 export default class RequestManager {
 

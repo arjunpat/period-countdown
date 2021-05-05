@@ -1,4 +1,4 @@
-import { logger } from './init';
+import { logger } from './init.js';
 
 export default class ScheduleBuilder {
   constructor() {}

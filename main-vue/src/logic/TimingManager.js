@@ -1,5 +1,5 @@
-import RequestManager from './RequestManager';
-import { logger } from './init';
+import RequestManager from './RequestManager.js';
+import { logger } from './init.js';
 
 export default class TimingManager {
   constructor() {

@@ -1,20 +1,21 @@
 <template>
   <span
     style="padding-left: 15px; font-family: 'Product Sans';"
-    :style="{ fontSize: subtextSize + 'px' }"
+    :style="{ fontSize: subtextSize + 'px', color: theme.t }"
   >
     {{ dayType }}
     &nbsp;&#x25B8;&nbsp;
     {{ currentPeriodText }}
   </span>
   <span
-    :style="{ fontSize: timeLeftSize + 'px', display: 'block' }"
+    :style="{ fontSize: timeLeftSize + 'px', display: 'block', color: theme.t }"
   >
     {{ timeLeft }}
   </span>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { isExtn } from '@/logic/helpers.js';
 
 export default {
@@ -33,6 +34,7 @@ export default {
   mounted() {
     this.dimension();
   },
+  computed: mapState(['theme']),
   methods: {
     dimension() {
       if (isExtn) {

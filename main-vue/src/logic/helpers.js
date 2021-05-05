@@ -1,4 +1,4 @@
-import { mainVersion } from '../../../common';
+import { mainVersion } from '@/../../common.js';
 
 Object.defineProperty(Error.prototype, 'toJSON', {
   value: function () {
