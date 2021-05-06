@@ -91,7 +91,7 @@ export default {
 
         if (length < secondsPassed) {
           window.cancelAnimationFrame(this.animationInterval);
-          delete this.animationInterval;
+          this.animationInterval = null;
           this.draw(this.decimalAnimatingTowards);
           return;
         }

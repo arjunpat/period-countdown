@@ -19,7 +19,7 @@ export default createStore({
   mutations: {
   },
   actions: {
-    init(state) {
+    init({ state }) {
       let payload = Storage.prefsExist() ? Storage.getPrefs() : {};
 
       state.theme = payload.theme || state.theme;
@@ -28,13 +28,13 @@ export default createStore({
       state.school = payload.school || state.school;
       state.rooms = payload.rooms || state.rooms;
     },
-    save() {
+    save({ state }) {
       Storage.setPrefs({
-        theme: this.theme,
-        periodNames: this.periodNames,
-        googleAccount: this.googleAccount,
-        school: this.school,
-        rooms: this.rooms
+        theme: state.theme,
+        periodNames: state.periodNames,
+        googleAccount: state.googleAccount,
+        school: state.school,
+        rooms: state.rooms
       });
     },
     setGoogleAccount(context, payload) {

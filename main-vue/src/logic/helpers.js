@@ -65,3 +65,14 @@ function padNum(n) {
   if (n < 10) return '0' + n;
   return n;
 }
+
+export function formatEpoch(t) {
+	let d = new Date(t);
+	let h = d.getHours();
+	let m = d.getMinutes();
+
+	if (h > 12)
+		h -= 12;
+
+	return `${h}:${padNum(m)}`;
+}

@@ -14,10 +14,8 @@
           style="bottom: 0; left: 0; position: fixed; padding: 50px; user-select: none;"
           :style="{ padding: Math.min(50, innerWidth / 22) + 'px' }"
         >
-          <div id="schedule-table">
-            <span>Upcoming Periods</span>
-            <table><tbody></tbody></table>
-          </div>
+          
+          <ScheduleTable :time="time" />
           <TimeLeft
             :currentPeriodText="time.periodName || ''"
             :dayType="time.dayType || ''"
@@ -48,12 +46,13 @@
 import { mapState } from 'vuex';
 import Canvas from './main-screen/Canvas.vue';
 import TimeLeft from './main-screen/TimeLeft.vue';
+import ScheduleTable from './main-screen/ScheduleTable.vue';
 import { computeTimeStr, isExtn, isACrawler, openLink } from '@/logic/helpers.js';
 import { generateGoogleSignInLink, isProd } from '@/../../common.js';
 
 export default {
   components: {
-    Canvas, TimeLeft
+    Canvas, TimeLeft, ScheduleTable
   },
   props: ['time'],
   data() {
@@ -161,59 +160,6 @@ export default {
   font-size: 40px;
   cursor: pointer;
   user-select: none;
-}
-
-/* table stuff */
-#schedule-table {
-  width: 350px;
-  /* width: 250px; */
-  /* background: #fff; */
-  background: #ffffffee;
-  position: absolute;
-  border-radius: 8px;
-  bottom: 95%;
-  z-index: 10;
-  padding: 20px;
-  white-space: nowrap;
-  transition: opacity 0.4s ease;
-  box-shadow: 1px 1px 7px 1px rgba(0, 0, 0, 0.17);
-  /* box-shadow: 0 0 100vmax 100vmax rgba(0,0,0,0.6); */
-  /* opacity: 0; */
-  display: none;
-}
-
-/* #schedule-table:after {
-  content:'';
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-  width: 0;
-  height: 0;
-  border-top: solid 10px #fff;
-  border-left: solid 10px transparent;
-  border-right: solid 10px transparent;
-} */
-
-#schedule-table > span {
-  text-align: center;
-  color: black;
-  font-weight: bold;
-  font-size: 30px;
-  margin: 0;
-  display: block;
-}
-
-#schedule-table > table {
-  margin: 0 auto;
-  margin-top: 20px;
-}
-
-#schedule-table > table > tbody > tr > td {
-  padding: 12px;
-  font-size: 15px;
-  color: #000;
 }
 
 @media (max-width: 375px) {
