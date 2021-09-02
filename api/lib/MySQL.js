@@ -4,7 +4,7 @@ const fs = require('fs');
 class MySQL {
 
   constructor(user, password, database, host) {
-    this.conn = mysql.createConnection({
+    this.conn = mysql.createPool({
       user,
       password,
       database,

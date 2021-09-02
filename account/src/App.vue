@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       isProd,
-      showBanner: true
+      showBanner: false
     }
   },
   async mounted() {
