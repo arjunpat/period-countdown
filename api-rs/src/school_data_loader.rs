@@ -24,11 +24,11 @@ impl SchoolDataLoader {
     }
 
     // Helper method to get cached or fresh data
-    async fn get_cached_data(&self, key: &str, file_path: &str) -> Result<Value, String> {
+    async fn get_cached_data(&self, file_path: &str) -> Result<Value, String> {
         // First check cache with read lock
         {
             let cache = self.cache.read().await;
-            if let Some(entry) = cache.get(key) {
+            if let Some(entry) = cache.get(file_path) {
                 if entry.timestamp.elapsed() < CACHE_TTL {
                     return Ok(entry.data.clone());
                 }
@@ -42,7 +42,7 @@ impl SchoolDataLoader {
                     // Update cache with write lock
                     let mut cache = self.cache.write().await;
                     cache.insert(
-                        key.to_string(),
+                        file_path.to_string(),
                         CacheEntry {
                             data: data.clone(),
                             timestamp: Instant::now(),
@@ -63,8 +63,7 @@ impl SchoolDataLoader {
         }
 
         let file_path = format!("data/{}/school.json", school);
-        self.get_cached_data(&format!("school_{}", school), &file_path)
-            .await
+        self.get_cached_data(&file_path).await
     }
 
     pub async fn get_schedule_data(&self, school: &str) -> Result<Value, String> {
@@ -73,8 +72,7 @@ impl SchoolDataLoader {
         }
 
         let file_path = format!("data/{}/schedule.json", school);
-        self.get_cached_data(&format!("schedule_{}", school), &file_path)
-            .await
+        self.get_cached_data(&file_path).await
     }
 
     pub async fn get_periods_data(&self, school: &str) -> Result<Value, String> {
@@ -91,8 +89,7 @@ impl SchoolDataLoader {
     }
 
     pub async fn get_schools_directory(&self) -> Result<Value, String> {
-        self.get_cached_data("school_directory", "data/school_directory.json")
-            .await
+        self.get_cached_data("data/school_directory.json").await
     }
 
     pub async fn is_valid_school(&self, school: &str) -> bool {
