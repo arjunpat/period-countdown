@@ -1,45 +1,35 @@
-use actix_web::{web, App, HttpRequest, HttpResponse, HttpServer, Responder, get, middleware};
-use sqlx::mysql::MySqlPool;
+use axum::http::{Method, header};
+use dotenvy::dotenv;
+use std::sync::Arc;
+use tokio::net::TcpListener;
+use tower_http::cors::{Any, CorsLayer};
 
-mod db;
-mod utils;
+mod responses;
+mod routes;
+mod school_data_loader;
+mod themes;
 
-#[get("/hello/mom")]
-async fn testing() -> impl Responder {
-  HttpResponse::Ok().body("What's up bro")
-}
+use school_data_loader::SchoolDataLoader;
 
-#[get("/test/{id}")]
-async fn test(req: HttpRequest, db: web::Data<MySqlPool>) -> impl Responder {
-  let id = String::from(req.match_info().query("id"));
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    dotenv().ok();
 
-  // let result = db::get_user(&db, &id);
-  // let result = db::get_account_by_device_id(&db, &id);
-  // let result = db::get_device(&db, &id);
+    // Create the school data loader
+    let school_data_loader = Arc::new(SchoolDataLoader::new());
 
-  /* match result {
-    Some(d) => HttpResponse::Ok().json(d),
-    None => HttpResponse::Ok().body(id)
-  } */
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods([Method::GET, Method::POST])
+        .allow_headers([header::AUTHORIZATION, header::CONTENT_TYPE]);
 
-  HttpResponse::Ok().body("wassup")
-}
+    let app = routes::create_router().with_state(school_data_loader).layer(cors);
 
-#[actix_rt::main]
-async fn main() -> std::io::Result<()> {
+    let port = std::env::var("PORT").unwrap_or("8080".to_string());
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", port)).await?;
 
-  let mysql_url = "mysql://root@127.0.0.1/periods_io";
-  let pool = MySqlPool::new(mysql_url).await.unwrap();
-  
-  HttpServer::new(move || {
-    App::new()
-      .data(&pool)
-      .wrap(middleware::Logger::default())
-      .service(testing)
-      .service(test)
-  })
-  .workers(1)
-  .bind("127.0.0.1:8080")?
-  .run()
-  .await
+    println!("Server running on port {}", port);
+    axum::serve(listener, app).await?;
+
+    Ok(())
 }
