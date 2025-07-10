@@ -64,7 +64,6 @@ pub struct DeviceId(pub String);
 #[derive(Clone)]
 pub struct ClientIp(pub Option<String>);
 
-#[axum::async_trait]
 impl<S> FromRequestParts<S> for DeviceId
 where
     S: Send + Sync,
@@ -84,7 +83,6 @@ where
     }
 }
 
-#[axum::async_trait]
 impl<S> FromRequestParts<S> for ClientIp
 where
     S: Send + Sync,
@@ -129,9 +127,8 @@ impl AuthMiddleware {
             .cloned()
             .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
 
-        let jwt_secret = std::env::var("JWT_SECRET").expect("JWT_SECRET must be set");
-        let is_production = std::env::var("NODE_ENV").unwrap_or_default() == "production";
-        let cookie_config = CookieConfig::new(is_production);
+        let jwt_secret = &app_state.config.jwt_secret;
+        let cookie_config = CookieConfig::new(app_state.config.is_production);
 
         // Try to get existing JWT from cookies
         if let Some(jwt_cookie) = cookies.get("periods_io") {
@@ -189,7 +186,7 @@ impl AuthMiddleware {
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
         // Create JWT token and set cookie
-        let token = create_jwt_token(&device_id, &jwt_secret)?;
+        let token = create_jwt_token(&device_id, jwt_secret)?;
         let mut cookie = Cookie::new("periods_io", token);
         configure_cookie(&mut cookie, &cookie_config);
         cookies.add(cookie);

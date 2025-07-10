@@ -6,6 +6,7 @@ use tower_cookies::CookieManagerLayer;
 use tower_http::cors::{Any, CorsLayer};
 
 mod auth;
+mod config;
 mod database;
 mod google_auth;
 mod responses;
@@ -15,6 +16,7 @@ mod themes;
 mod types;
 mod v4_routes;
 
+use config::AppConfig;
 use database::Database;
 use routes::{AppState, SharedAppState};
 use school_data_loader::SchoolDataLoader;
@@ -23,8 +25,12 @@ use school_data_loader::SchoolDataLoader;
 async fn main() -> anyhow::Result<()> {
     dotenv().ok();
 
-    // Create database connection
-    let database = Arc::new(Database::new().await?);
+    // Load configuration from environment variables
+    let config = AppConfig::from_env().map_err(|e| anyhow::anyhow!(e))?;
+    println!("Starting server with configuration loaded");
+
+    // Create database connection with config
+    let database = Arc::new(Database::new(&config).await?);
 
     // Run database migrations
     database.run_migrations().await?;
@@ -36,6 +42,7 @@ async fn main() -> anyhow::Result<()> {
     let app_state: SharedAppState = Arc::new(AppState {
         school_data_loader,
         database,
+        config: Arc::new(config),
     });
 
     let cors = CorsLayer::new()
@@ -52,14 +59,13 @@ async fn main() -> anyhow::Result<()> {
     // Combine routers
     let app = main_router
         .nest("/v4", v4_router)
-        .with_state(app_state)
+        .with_state(app_state.clone())
         .layer(CookieManagerLayer::new())
         .layer(cors);
 
-    let port = std::env::var("PORT").unwrap_or("8080".to_string());
-    let listener = TcpListener::bind(format!("0.0.0.0:{}", port)).await?;
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", app_state.config.port)).await?;
 
-    println!("Server running on port {}", port);
+    println!("Server running on port {}", app_state.config.port);
     axum::serve(listener, app).await?;
 
     Ok(())

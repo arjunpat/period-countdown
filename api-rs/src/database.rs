@@ -3,7 +3,8 @@ use rand::Rng;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::{Row, migrate::MigrateError, mysql::MySqlPool};
-use std::env;
+
+use crate::config::AppConfig;
 
 // Database structs matching the Node.js schema
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
@@ -73,17 +74,9 @@ pub struct Database {
 }
 
 impl Database {
-    pub async fn new() -> Result<Self, sqlx::Error> {
-        let database_url = format!(
-            "mysql://{}:{}@{}/{}",
-            env::var("MYSQL_USER").unwrap_or_else(|_| "root".to_string()),
-            env::var("MYSQL_PASS").unwrap_or_else(|_| "".to_string()),
-            env::var("MYSQL_HOST").unwrap_or_else(|_| "localhost".to_string()),
-            env::var("MYSQL_DB").unwrap_or_else(|_| "period_countdown".to_string())
-        );
-
+    pub async fn new(config: &AppConfig) -> Result<Self, sqlx::Error> {
+        let database_url = config.database_url();
         let pool = MySqlPool::connect(&database_url).await?;
-
         Ok(Database { pool })
     }
 

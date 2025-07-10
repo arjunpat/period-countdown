@@ -31,16 +31,6 @@ async fn get_valid_schools(app_state: &SharedAppState) -> Vec<String> {
     }
 }
 
-// Helper function to get admin emails
-fn get_admin_emails() -> Vec<String> {
-    std::env::var("ADMIN_EMAILS")
-        .unwrap_or_default()
-        .split(',')
-        .map(|s| s.trim().to_string())
-        .filter(|s| !s.is_empty())
-        .collect()
-}
-
 // Helper function to parse user JSON fields safely
 fn parse_user_data(
     user: &crate::database::User,
@@ -92,7 +82,7 @@ async fn account_handler(
         Err(_) => return error_response("database_error"),
     };
 
-    let admin_emails = get_admin_emails();
+    let admin_emails = &app_state.config.admin_emails;
     let valid_schools = get_valid_schools(&app_state).await;
     let (period_names, rooms) = parse_user_data(&user);
 

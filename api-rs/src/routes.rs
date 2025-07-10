@@ -7,6 +7,7 @@ use axum::{
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use crate::config::AppConfig;
 use crate::database::Database;
 use crate::responses::{ApiResponse, error_response, json_response};
 use crate::school_data_loader::SchoolDataLoader;
@@ -15,6 +16,7 @@ use crate::themes;
 pub struct AppState {
     pub school_data_loader: Arc<SchoolDataLoader>,
     pub database: Arc<Database>,
+    pub config: Arc<AppConfig>,
 }
 
 pub type SharedAppState = Arc<AppState>;
