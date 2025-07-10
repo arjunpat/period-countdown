@@ -71,7 +71,6 @@ pub struct ThemeResponse {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
     pub device_id: String,
-    pub exp: usize,
 }
 
 // Google OAuth response

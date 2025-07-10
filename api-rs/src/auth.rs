@@ -7,7 +7,6 @@ use axum::{
 };
 use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation, decode, encode};
 use serde_json;
-use std::time::{SystemTime, UNIX_EPOCH};
 use tower_cookies::Cookie;
 
 use crate::responses::error_response;
@@ -37,15 +36,8 @@ fn configure_cookie(cookie: &mut Cookie, config: &CookieConfig) {
 
 // Helper function to create JWT token
 fn create_jwt_token(device_id: &str, jwt_secret: &str) -> Result<String, StatusCode> {
-    let exp = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
-        + 15_552_000; // 180 days
-
     let claims = Claims {
         device_id: device_id.to_string(),
-        exp: exp as usize,
     };
 
     encode(
