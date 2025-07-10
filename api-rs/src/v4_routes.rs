@@ -1,6 +1,6 @@
 use axum::{
     Json, Router,
-    extract::{Request, State},
+    extract::State,
     middleware,
     response::{IntoResponse, Response},
     routing::{get, post},
@@ -16,6 +16,52 @@ use crate::themes;
 use crate::types::{
     AccountResponse, LoginRequest, ThanksRequest, ThemeResponse, UpdatePreferencesRequest,
 };
+
+// Helper function to get valid school IDs
+async fn get_valid_schools(app_state: &SharedAppState) -> Vec<String> {
+    match app_state.school_data_loader.get_schools_directory().await {
+        Ok(schools) => {
+            if let Some(schools_obj) = schools.as_object() {
+                schools_obj.keys().cloned().collect::<Vec<_>>()
+            } else {
+                vec!["mvhs".to_string()]
+            }
+        }
+        Err(_) => vec!["mvhs".to_string()],
+    }
+}
+
+// Helper function to get admin emails
+fn get_admin_emails() -> Vec<String> {
+    std::env::var("ADMIN_EMAILS")
+        .unwrap_or_default()
+        .split(',')
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect()
+}
+
+// Helper function to parse user JSON fields safely
+fn parse_user_data(
+    user: &crate::database::User,
+) -> (
+    HashMap<String, String>,
+    HashMap<String, crate::types::RoomData>,
+) {
+    let period_names: HashMap<String, String> = user
+        .period_names
+        .as_ref()
+        .and_then(|v| serde_json::from_value(v.clone()).ok())
+        .unwrap_or_default();
+
+    let rooms: HashMap<String, crate::types::RoomData> = user
+        .rooms
+        .as_ref()
+        .and_then(|v| serde_json::from_value(v.clone()).ok())
+        .unwrap_or_default();
+
+    (period_names, rooms)
+}
 
 pub fn create_v4_router() -> Router<SharedAppState> {
     Router::new()
@@ -46,24 +92,9 @@ async fn account_handler(
         Err(_) => return error_response("database_error"),
     };
 
-    let admin_emails: Vec<String> = std::env::var("ADMIN_EMAILS")
-        .unwrap_or_default()
-        .split(',')
-        .map(|s| s.trim().to_string())
-        .filter(|s| !s.is_empty())
-        .collect();
-
-    // Get valid school IDs
-    let valid_schools = match app_state.school_data_loader.get_schools_directory().await {
-        Ok(schools) => {
-            if let Some(schools_obj) = schools.as_object() {
-                schools_obj.keys().cloned().collect::<Vec<_>>()
-            } else {
-                vec!["mvhs".to_string()]
-            }
-        }
-        Err(_) => vec!["mvhs".to_string()],
-    };
+    let admin_emails = get_admin_emails();
+    let valid_schools = get_valid_schools(&app_state).await;
+    let (period_names, rooms) = parse_user_data(&user);
 
     // Validate theme
     let theme_index = user.theme.unwrap_or(0);
@@ -75,17 +106,6 @@ async fn account_handler(
     } else {
         0
     };
-
-    // Parse period names and rooms from JSON
-    let period_names: HashMap<String, String> = user
-        .period_names
-        .and_then(|v| serde_json::from_value(v).ok())
-        .unwrap_or_default();
-
-    let rooms: HashMap<String, crate::types::RoomData> = user
-        .rooms
-        .and_then(|v| serde_json::from_value(v).ok())
-        .unwrap_or_default();
 
     let school = if valid_schools.contains(&user.school.clone().unwrap_or_default()) {
         user.school.unwrap_or_else(|| "mvhs".to_string())
@@ -158,7 +178,6 @@ async fn logout_handler(
     if let Err(_) = app_state.database.logout_device(&device_id).await {
         return error_response("database_error");
     }
-
     success_response(())
 }
 
@@ -196,7 +215,6 @@ async fn thanks_handler(
     if let Err(_) = app_state.database.create_hit(hit).await {
         return error_response("database_error");
     }
-
     success_response(())
 }
 
@@ -238,17 +256,7 @@ async fn update_preferences_handler(
     State(app_state): State<SharedAppState>,
     Json(prefs_req): Json<UpdatePreferencesRequest>,
 ) -> Response {
-    // Get valid school IDs
-    let valid_schools = match app_state.school_data_loader.get_schools_directory().await {
-        Ok(schools) => {
-            if let Some(schools_obj) = schools.as_object() {
-                schools_obj.keys().cloned().collect::<Vec<_>>()
-            } else {
-                vec!["mvhs".to_string()]
-            }
-        }
-        Err(_) => vec!["mvhs".to_string()],
-    };
+    let valid_schools = get_valid_schools(&app_state).await;
 
     // Validate request
     if let Err(_msg) = prefs_req.validate(&valid_schools) {

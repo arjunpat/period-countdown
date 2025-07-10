@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 anyhow = { version = "1.0.98", features = ["backtrace"] }
+thiserror = "2.0"
 axum = "0.7.9"
 axum-extra = { version = "0.8.0", features = ["cookie"] }
 chrono = { version = "0.4", features = ["serde"] }

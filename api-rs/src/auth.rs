@@ -14,6 +14,48 @@ use crate::responses::error_response;
 use crate::routes::SharedAppState;
 use crate::types::{Claims, CookieConfig, InitRequest};
 
+// Helper function to configure cookie properties
+fn configure_cookie(cookie: &mut Cookie, config: &CookieConfig) {
+    if let Some(domain) = &config.domain {
+        cookie.set_domain(domain.clone());
+    }
+    cookie.set_max_age(tower_cookies::cookie::time::Duration::milliseconds(
+        config.max_age,
+    ));
+    if config.secure {
+        cookie.set_secure(true);
+    }
+    if let Some(same_site) = &config.same_site {
+        cookie.set_same_site(match same_site.as_str() {
+            "none" => tower_cookies::cookie::SameSite::None,
+            "lax" => tower_cookies::cookie::SameSite::Lax,
+            "strict" => tower_cookies::cookie::SameSite::Strict,
+            _ => tower_cookies::cookie::SameSite::None,
+        });
+    }
+}
+
+// Helper function to create JWT token
+fn create_jwt_token(device_id: &str, jwt_secret: &str) -> Result<String, StatusCode> {
+    let exp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+        + 15_552_000; // 180 days
+
+    let claims = Claims {
+        device_id: device_id.to_string(),
+        exp: exp as usize,
+    };
+
+    encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(jwt_secret.as_bytes()),
+    )
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+}
+
 // Custom extractor for device ID
 #[derive(Clone)]
 pub struct DeviceId(pub String);
@@ -101,23 +143,7 @@ impl AuthMiddleware {
             ) {
                 // Valid token - refresh cookie and add device_id to request
                 let mut cookie = Cookie::new("periods_io", jwt_value);
-                if let Some(domain) = &cookie_config.domain {
-                    cookie.set_domain(domain.clone());
-                }
-                cookie.set_max_age(tower_cookies::cookie::time::Duration::milliseconds(
-                    cookie_config.max_age,
-                ));
-                if cookie_config.secure {
-                    cookie.set_secure(true);
-                }
-                if let Some(same_site) = &cookie_config.same_site {
-                    cookie.set_same_site(match same_site.as_str() {
-                        "none" => tower_cookies::cookie::SameSite::None,
-                        "lax" => tower_cookies::cookie::SameSite::Lax,
-                        "strict" => tower_cookies::cookie::SameSite::Strict,
-                        _ => tower_cookies::cookie::SameSite::None,
-                    });
-                }
+                configure_cookie(&mut cookie, &cookie_config);
                 cookies.add(cookie);
 
                 // Add device_id to request extensions
@@ -162,44 +188,10 @@ impl AuthMiddleware {
             .await
             .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
-        // Create JWT token
-        let exp = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs()
-            + 15_552_000; // 180 days
-
-        let claims = Claims {
-            device_id: device_id.clone(),
-            exp: exp as usize,
-        };
-
-        let token = encode(
-            &Header::default(),
-            &claims,
-            &EncodingKey::from_secret(jwt_secret.as_bytes()),
-        )
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
-
-        // Set cookie
+        // Create JWT token and set cookie
+        let token = create_jwt_token(&device_id, &jwt_secret)?;
         let mut cookie = Cookie::new("periods_io", token);
-        if let Some(domain) = &cookie_config.domain {
-            cookie.set_domain(domain.clone());
-        }
-        cookie.set_max_age(tower_cookies::cookie::time::Duration::milliseconds(
-            cookie_config.max_age,
-        ));
-        if cookie_config.secure {
-            cookie.set_secure(true);
-        }
-        if let Some(same_site) = &cookie_config.same_site {
-            cookie.set_same_site(match same_site.as_str() {
-                "none" => tower_cookies::cookie::SameSite::None,
-                "lax" => tower_cookies::cookie::SameSite::Lax,
-                "strict" => tower_cookies::cookie::SameSite::Strict,
-                _ => tower_cookies::cookie::SameSite::None,
-            });
-        }
+        configure_cookie(&mut cookie, &cookie_config);
         cookies.add(cookie);
 
         // Add device_id to request extensions
@@ -207,24 +199,4 @@ impl AuthMiddleware {
 
         Ok(next.run(request).await)
     }
-}
-
-// Extension trait to get device_id from request
-pub trait DeviceIdExt {
-    fn device_id(&self) -> Option<String>;
-}
-
-impl DeviceIdExt for Request {
-    fn device_id(&self) -> Option<String> {
-        self.extensions().get::<String>().cloned()
-    }
-}
-
-// Helper function to get device_id from request in handlers
-pub fn get_device_id(request: &Request) -> Result<String, Response> {
-    request
-        .extensions()
-        .get::<String>()
-        .cloned()
-        .ok_or_else(|| error_response("unauthorized"))
 }
