@@ -47,3 +47,7 @@ pub fn json_response<T: Serialize>(data: T, cache_control: &str) -> Response {
 pub fn error_response(error: impl Into<String>) -> Response {
     Json(ApiResponse::<Value>::error(error)).into_response()
 }
+
+pub fn success_response<T: Serialize>(data: T) -> Response {
+    Json(ApiResponse::success(data)).into_response()
+}

@@ -254,6 +254,35 @@ impl Database {
         Ok(())
     }
 
+    pub async fn update_user_preferences_and_get_email(
+        &self,
+        device_id: &str,
+        school: Option<String>,
+        theme: Option<u8>,
+        period_names: Option<Value>,
+        rooms: Option<Value>,
+    ) -> Result<Option<String>, sqlx::Error> {
+        let result = sqlx::query(
+            "UPDATE users u 
+             JOIN devices d ON u.email = d.registered_to 
+             SET u.school = ?, u.theme = ?, u.period_names = ?, u.rooms = ? 
+             WHERE d.device_id = ?",
+        )
+        .bind(&school)
+        .bind(&theme)
+        .bind(&period_names)
+        .bind(&rooms)
+        .bind(device_id)
+        .execute(&self.pool)
+        .await?;
+
+        if result.rows_affected() > 0 {
+            self.get_email_by_device(device_id).await
+        } else {
+            Ok(None)
+        }
+    }
+
     // Hit operations
     pub async fn create_hit(&self, hit_data: Hit) -> Result<(), sqlx::Error> {
         sqlx::query(
