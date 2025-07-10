@@ -7,14 +7,20 @@ use axum::{
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::responses::{error_response, json_response, ApiResponse};
+use crate::database::Database;
+use crate::responses::{ApiResponse, error_response, json_response};
 use crate::school_data_loader::SchoolDataLoader;
 use crate::themes;
 
-pub type AppState = Arc<SchoolDataLoader>;
+pub struct AppState {
+    pub school_data_loader: Arc<SchoolDataLoader>,
+    pub database: Arc<Database>,
+}
+
+pub type SharedAppState = Arc<AppState>;
 
 // Create router with all routes
-pub fn create_router() -> Router<AppState> {
+pub fn create_router() -> Router<SharedAppState> {
     Router::new()
         .route("/time", get(get_time))
         .route("/schedule/{school}", get(get_schedule))
@@ -37,9 +43,13 @@ async fn get_time() -> impl IntoResponse {
 
 async fn get_schedule(
     Path(school): Path<String>,
-    State(school_data_loader): State<AppState>,
+    State(app_state): State<SharedAppState>,
 ) -> Response {
-    match school_data_loader.get_schedule_data(&school).await {
+    match app_state
+        .school_data_loader
+        .get_schedule_data(&school)
+        .await
+    {
         Ok(data) => json_response(data, "public, max-age=900"), // 15 minutes
         Err(error) => error_response(error),
     }
@@ -47,9 +57,9 @@ async fn get_schedule(
 
 async fn get_school(
     Path(school): Path<String>,
-    State(school_data_loader): State<AppState>,
+    State(app_state): State<SharedAppState>,
 ) -> Response {
-    match school_data_loader.get_school_data(&school).await {
+    match app_state.school_data_loader.get_school_data(&school).await {
         Ok(data) => json_response(data, "public, max-age=43200"), // 12 hours
         Err(error) => error_response(error),
     }
@@ -57,9 +67,9 @@ async fn get_school(
 
 async fn get_periods(
     Path(school): Path<String>,
-    State(school_data_loader): State<AppState>,
+    State(app_state): State<SharedAppState>,
 ) -> Response {
-    match school_data_loader.get_periods_data(&school).await {
+    match app_state.school_data_loader.get_periods_data(&school).await {
         Ok(data) => json_response(data, "max-age=43200"), // 12 hours
         Err(error) => error_response(error),
     }
@@ -70,8 +80,8 @@ async fn get_themes() -> Response {
     json_response(themes, "max-age=43200")
 }
 
-async fn get_schools(State(school_data_loader): State<AppState>) -> Response {
-    match school_data_loader.get_schools_directory().await {
+async fn get_schools(State(app_state): State<SharedAppState>) -> Response {
+    match app_state.school_data_loader.get_schools_directory().await {
         Ok(data) => json_response(data, "max-age=43200"), // 12 hours
         Err(error) => error_response(error),
     }
