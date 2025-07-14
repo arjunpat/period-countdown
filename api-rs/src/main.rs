@@ -3,7 +3,7 @@ use dotenvy::dotenv;
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::cors::CorsLayer;
 
 mod auth;
 mod config;
@@ -36,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
     database.run_migrations().await?;
 
     // Create the school data loader
-    let school_data_loader = Arc::new(SchoolDataLoader::new());
+    let school_data_loader = Arc::new(SchoolDataLoader::new().await?);
 
     // Create app state
     let app_state: SharedAppState = Arc::new(AppState {
@@ -46,9 +46,24 @@ async fn main() -> anyhow::Result<()> {
     });
 
     let cors = CorsLayer::new()
-        .allow_origin(Any)
-        .allow_methods([Method::GET, Method::POST])
-        .allow_headers([header::AUTHORIZATION, header::CONTENT_TYPE]);
+        .allow_origin([
+            "http://localhost:8080".parse().unwrap(),
+            "https://periods.io".parse().unwrap(),
+            "https://account.periods.io".parse().unwrap(),
+        ])
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([
+            header::AUTHORIZATION,
+            header::CONTENT_TYPE,
+            header::HeaderName::from_static("x-requested-with"),
+        ])
+        .allow_credentials(true);
 
     // Create main router with existing routes
     let main_router = routes::create_router();

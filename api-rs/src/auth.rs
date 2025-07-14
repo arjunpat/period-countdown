@@ -1,7 +1,6 @@
 use axum::{
     body::{Body, to_bytes},
     extract::{FromRequestParts, Request},
-    http::StatusCode,
     middleware::Next,
     response::Response,
 };
@@ -9,7 +8,7 @@ use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation, deco
 use serde_json;
 use tower_cookies::Cookie;
 
-use crate::responses::error_response;
+use crate::responses::{AppError, error_response};
 use crate::routes::SharedAppState;
 use crate::types::{Claims, CookieConfig, InitRequest};
 
@@ -35,17 +34,17 @@ fn configure_cookie(cookie: &mut Cookie, config: &CookieConfig) {
 }
 
 // Helper function to create JWT token
-fn create_jwt_token(device_id: &str, jwt_secret: &str) -> Result<String, StatusCode> {
+fn create_jwt_token(device_id: &str, jwt_secret: &str) -> Result<String, AppError> {
     let claims = Claims {
         device_id: device_id.to_string(),
     };
 
-    encode(
+    Ok(encode(
         &Header::default(),
         &claims,
         &EncodingKey::from_secret(jwt_secret.as_bytes()),
     )
-    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
+    .map_err(|e| anyhow::anyhow!("JWT encoding failed: {:?}", e))?)
 }
 
 // Custom extractor for device ID
@@ -99,7 +98,7 @@ where
 pub struct AuthMiddleware;
 
 impl AuthMiddleware {
-    pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, StatusCode> {
+    pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, AppError> {
         // Skip OPTIONS requests
         if request.method() == "OPTIONS" {
             return Ok(next.run(request).await);
@@ -110,14 +109,14 @@ impl AuthMiddleware {
             .extensions()
             .get::<tower_cookies::Cookies>()
             .cloned()
-            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+            .ok_or_else(|| anyhow::anyhow!("Cookies not found in request extensions"))?;
 
         // Get state from request extensions (set by with_state)
         let app_state = request
             .extensions()
             .get::<SharedAppState>()
             .cloned()
-            .ok_or(StatusCode::INTERNAL_SERVER_ERROR)?;
+            .ok_or_else(|| anyhow::anyhow!("App state not found in request extensions"))?;
 
         let jwt_secret = &app_state.config.jwt_secret;
         let cookie_config = CookieConfig::new(app_state.config.is_production);
@@ -146,7 +145,7 @@ impl AuthMiddleware {
         let (parts, body) = request.into_parts();
         let body_bytes = to_bytes(body, usize::MAX)
             .await
-            .map_err(|_| StatusCode::BAD_REQUEST)?;
+            .map_err(|e| anyhow::anyhow!("Failed to read request body: {:?}", e))?;
 
         // Parse the body as InitRequest
         let init_request = if body_bytes.is_empty() {
@@ -159,7 +158,7 @@ impl AuthMiddleware {
         } else {
             // Try to parse the JSON body
             serde_json::from_slice::<InitRequest>(&body_bytes)
-                .map_err(|_| StatusCode::BAD_REQUEST)?
+                .map_err(|e| anyhow::anyhow!("Failed to parse init request JSON: {:?}", e))?
         };
 
         // Reconstruct the request with the same body for downstream handlers
@@ -175,7 +174,7 @@ impl AuthMiddleware {
                 Some(init_request.user_agent),
             )
             .await
-            .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+            .map_err(|e| anyhow::anyhow!("Failed to create device: {:?}", e))?;
 
         // Create JWT token and set cookie
         let token = create_jwt_token(&device_id, jwt_secret)?;

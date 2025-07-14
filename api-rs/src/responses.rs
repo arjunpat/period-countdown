@@ -51,3 +51,25 @@ pub fn error_response(error: impl Into<String>) -> Response {
 pub fn success_response<T: Serialize>(data: T) -> Response {
     Json(ApiResponse::success(data)).into_response()
 }
+
+// Custom error type that wraps anyhow::Error and implements IntoResponse
+pub struct AppError(anyhow::Error);
+
+impl From<anyhow::Error> for AppError {
+    fn from(err: anyhow::Error) -> Self {
+        AppError(err)
+    }
+}
+
+impl From<sqlx::Error> for AppError {
+    fn from(err: sqlx::Error) -> Self {
+        AppError(anyhow::anyhow!("Database error: {:?}", err))
+    }
+}
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
+        eprintln!("Error: {:?}", self.0);
+        error_response("internal_error")
+    }
+}

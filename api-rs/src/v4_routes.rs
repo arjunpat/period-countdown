@@ -2,7 +2,7 @@ use axum::{
     Json, Router,
     extract::State,
     middleware,
-    response::{IntoResponse, Response},
+    response::Response,
     routing::{get, post},
 };
 use std::collections::HashMap;
@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use crate::auth::{AuthMiddleware, ClientIp, DeviceId};
 use crate::database::Hit;
 use crate::google_auth;
-use crate::responses::{error_response, success_response};
+use crate::responses::{AppError, success_response};
 use crate::routes::SharedAppState;
 use crate::themes;
 use crate::types::{
@@ -18,16 +18,17 @@ use crate::types::{
 };
 
 // Helper function to get valid school IDs
-async fn get_valid_schools(app_state: &SharedAppState) -> Vec<String> {
-    match app_state.school_data_loader.get_schools_directory().await {
-        Ok(schools) => {
-            if let Some(schools_obj) = schools.as_object() {
-                schools_obj.keys().cloned().collect::<Vec<_>>()
-            } else {
-                vec!["mvhs".to_string()]
-            }
-        }
-        Err(_) => vec!["mvhs".to_string()],
+async fn get_valid_schools(app_state: &SharedAppState) -> Result<Vec<String>, AppError> {
+    let schools = app_state
+        .school_data_loader
+        .get_schools_directory()
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to get schools directory: {}", e))?;
+
+    if let Some(schools_obj) = schools.as_object() {
+        Ok(schools_obj.keys().cloned().collect::<Vec<_>>())
+    } else {
+        Ok(vec!["mvhs".to_string()])
     }
 }
 
@@ -67,23 +68,23 @@ pub fn create_v4_router() -> Router<SharedAppState> {
         .layer(middleware::from_fn(AuthMiddleware::authenticate))
 }
 
-async fn init_handler() -> impl IntoResponse {
+async fn init_handler() -> Result<Response, AppError> {
     // The auth middleware handles device creation for init
-    success_response(())
+    Ok(success_response(()))
 }
 
 async fn account_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
-) -> Response {
-    let user = match app_state.database.get_user_by_device(&device_id).await {
-        Ok(Some(user)) => user,
-        Ok(None) => return error_response("user_not_found"),
-        Err(_) => return error_response("database_error"),
-    };
+) -> Result<Response, AppError> {
+    let user = app_state
+        .database
+        .get_user_by_device(&device_id)
+        .await?
+        .ok_or_else(|| anyhow::anyhow!("User not found for device: {}", device_id))?;
 
     let admin_emails = &app_state.config.admin_emails;
-    let valid_schools = get_valid_schools(&app_state).await;
+    let valid_schools = get_valid_schools(&app_state).await?;
     let (period_names, rooms) = parse_user_data(&user);
 
     // Validate theme
@@ -122,21 +123,20 @@ async fn account_handler(
         rooms,
     };
 
-    success_response(response)
+    Ok(success_response(response))
 }
 
 async fn login_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
     Json(login_req): Json<LoginRequest>,
-) -> Response {
-    let token_info = match google_auth::validate_google_token(&login_req.google_token).await {
-        Ok(info) => info,
-        Err(_) => return error_response("bad_token"),
-    };
+) -> Result<Response, AppError> {
+    let token_info = google_auth::validate_google_token(&login_req.google_token)
+        .await
+        .map_err(|e| anyhow::anyhow!("Google token validation failed: {:?}", e))?;
 
     // Create or update user
-    if let Err(_) = app_state
+    app_state
         .database
         .create_or_update_user(
             &token_info.email,
@@ -145,30 +145,28 @@ async fn login_handler(
             Some(token_info.picture),
         )
         .await
-    {
-        return error_response("database_error");
-    }
+        .map_err(|e| anyhow::anyhow!("Failed to create or update user: {:?}", e))?;
 
     // Link device to user
-    if let Err(_) = app_state
+    app_state
         .database
         .login_device(&device_id, &token_info.email)
         .await
-    {
-        return error_response("database_error");
-    }
+        .map_err(|e| anyhow::anyhow!("Failed to link device to user: {:?}", e))?;
 
-    success_response(())
+    Ok(success_response(()))
 }
 
 async fn logout_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
-) -> Response {
-    if let Err(_) = app_state.database.logout_device(&device_id).await {
-        return error_response("database_error");
-    }
-    success_response(())
+) -> Result<Response, AppError> {
+    app_state
+        .database
+        .logout_device(&device_id)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to logout device: {:?}", e))?;
+    Ok(success_response(()))
 }
 
 async fn thanks_handler(
@@ -176,11 +174,11 @@ async fn thanks_handler(
     ClientIp(ip): ClientIp,
     State(app_state): State<SharedAppState>,
     Json(thanks_req): Json<ThanksRequest>,
-) -> Response {
+) -> Result<Response, AppError> {
     // Validate request (mimicking express-validator behavior)
-    if let Err(_) = thanks_req.validate() {
-        return error_response("validation_error");
-    }
+    thanks_req
+        .validate()
+        .map_err(|e| anyhow::anyhow!("Thanks request validation failed: {:?}", e))?;
 
     let hit = Hit {
         time: chrono::Utc::now().timestamp_millis(),
@@ -202,56 +200,57 @@ async fn thanks_handler(
         user_period: thanks_req.user_period,
     };
 
-    if let Err(_) = app_state.database.create_hit(hit).await {
-        return error_response("database_error");
-    }
-    success_response(())
+    app_state
+        .database
+        .create_hit(hit)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to create hit: {:?}", e))?;
+    Ok(success_response(()))
 }
 
 async fn thanks_again_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
-) -> Response {
-    if let Err(_) = app_state.database.update_hit_leave_time(&device_id).await {
-        return error_response("database_error");
-    }
-
-    success_response(())
+) -> Result<Response, AppError> {
+    app_state
+        .database
+        .update_hit_leave_time(&device_id)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to update hit leave time: {:?}", e))?;
+    Ok(success_response(()))
 }
 
 async fn error_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
     Json(error_data): Json<serde_json::Value>,
-) -> Response {
+) -> Result<Response, AppError> {
     let error_string = serde_json::to_string(&error_data).unwrap_or_default();
 
     if error_string.len() > 4000 {
-        return success_response("error_too_long");
+        return Ok(success_response("error_too_long"));
     }
 
-    if let Err(_) = app_state
+    app_state
         .database
         .create_error(Some(device_id), Some(error_string))
         .await
-    {
-        return error_response("database_error");
-    }
+        .map_err(|e| anyhow::anyhow!("Failed to create error record: {:?}", e))?;
 
-    success_response(())
+    Ok(success_response(()))
 }
 
 async fn update_preferences_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
     Json(prefs_req): Json<UpdatePreferencesRequest>,
-) -> Response {
-    let valid_schools = get_valid_schools(&app_state).await;
+) -> Result<Response, AppError> {
+    let valid_schools = get_valid_schools(&app_state).await?;
 
     // Validate request
-    if let Err(_msg) = prefs_req.validate(&valid_schools) {
-        return error_response("bad_data");
-    }
+    prefs_req
+        .validate(&valid_schools)
+        .map_err(|e| anyhow::anyhow!("Preferences validation failed: {:?}", e))?;
 
     // Sanitize rooms
     let good_rooms = prefs_req.sanitize_rooms();
@@ -261,7 +260,7 @@ async fn update_preferences_handler(
     let rooms_json = serde_json::to_value(&good_rooms).ok();
 
     // Update preferences and get email
-    let email = match app_state
+    let email = app_state
         .database
         .update_user_preferences_and_get_email(
             &device_id,
@@ -271,27 +270,32 @@ async fn update_preferences_handler(
             rooms_json,
         )
         .await
-    {
-        Ok(Some(email)) => email,
-        Ok(None) => return error_response("not_logged_in"),
-        Err(_) => return error_response("database_error"),
-    };
+        .map_err(|e| anyhow::anyhow!("Failed to update user preferences: {:?}", e))?
+        .ok_or_else(|| anyhow::anyhow!("User not logged in for device: {}", device_id))?;
 
     // Record update preference event
-    if let Err(_) = app_state.database.record_upt_pref(&email, &device_id).await {
-        return error_response("database_error");
-    }
+    app_state
+        .database
+        .record_upt_pref(&email, &device_id)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to record update preference event: {:?}", e))?;
 
-    success_response(())
+    Ok(success_response(()))
 }
 
 async fn notif_on_handler(
     DeviceId(device_id): DeviceId,
     State(app_state): State<SharedAppState>,
-) -> Response {
-    match app_state.database.notif_on(&device_id).await {
-        Ok(true) => success_response(()),
-        Ok(false) => error_response("already_on"),
-        Err(_) => error_response("database_error"),
+) -> Result<Response, AppError> {
+    let result = app_state
+        .database
+        .notif_on(&device_id)
+        .await
+        .map_err(|e| anyhow::anyhow!("Failed to turn on notifications: {:?}", e))?;
+
+    if result {
+        Ok(success_response(()))
+    } else {
+        Err(anyhow::anyhow!("Notifications already enabled for device: {}", device_id).into())
     }
 }
