@@ -1,6 +1,6 @@
 use axum::{
     body::{Body, to_bytes},
-    extract::{FromRequestParts, Request},
+    extract::{FromRequestParts, Request, State},
     middleware::Next,
     response::Response,
 };
@@ -45,6 +45,20 @@ fn create_jwt_token(device_id: &str, jwt_secret: &str) -> Result<String, AppErro
         &EncodingKey::from_secret(jwt_secret.as_bytes()),
     )
     .map_err(|e| anyhow::anyhow!("JWT encoding failed: {:?}", e))?)
+}
+
+// Helper function to verify JWT token
+fn verify_jwt_token(token: &str, jwt_secret: &str) -> Result<Claims, AppError> {
+    let mut validation = Validation::new(Algorithm::HS256);
+    validation.required_spec_claims.clear(); // Don't require exp, iat, etc.
+    
+    decode::<Claims>(
+        token,
+        &DecodingKey::from_secret(jwt_secret.as_bytes()),
+        &validation,
+    )
+    .map(|token_data| token_data.claims)
+    .map_err(|e| anyhow::anyhow!("JWT verification failed: {:?}", e).into())
 }
 
 // Custom extractor for device ID
@@ -98,7 +112,11 @@ where
 pub struct AuthMiddleware;
 
 impl AuthMiddleware {
-    pub async fn authenticate(mut request: Request, next: Next) -> Result<Response, AppError> {
+    pub async fn authenticate(
+        State(app_state): State<SharedAppState>,
+        mut request: Request,
+        next: Next,
+    ) -> Result<Response, AppError> {
         // Skip OPTIONS requests
         if request.method() == "OPTIONS" {
             return Ok(next.run(request).await);
@@ -111,32 +129,23 @@ impl AuthMiddleware {
             .cloned()
             .ok_or_else(|| anyhow::anyhow!("Cookies not found in request extensions"))?;
 
-        // Get state from request extensions (set by with_state)
-        let app_state = request
-            .extensions()
-            .get::<SharedAppState>()
-            .cloned()
-            .ok_or_else(|| anyhow::anyhow!("App state not found in request extensions"))?;
-
         let jwt_secret = &app_state.config.jwt_secret;
         let cookie_config = CookieConfig::new(app_state.config.is_production);
 
         // Try to get existing JWT from cookies
         if let Some(jwt_cookie) = cookies.get("periods_io") {
             let jwt_value = jwt_cookie.value().to_string();
-            if let Ok(token_data) = decode::<Claims>(
-                &jwt_value,
-                &DecodingKey::from_secret(jwt_secret.as_bytes()),
-                &Validation::new(Algorithm::HS256),
-            ) {
+            if let Ok(claims) = verify_jwt_token(&jwt_value, jwt_secret) {
                 // Valid token - refresh cookie and add device_id to request
                 let mut cookie = Cookie::new("periods_io", jwt_value);
                 configure_cookie(&mut cookie, &cookie_config);
                 cookies.add(cookie);
 
                 // Add device_id to request extensions
-                request.extensions_mut().insert(token_data.claims.device_id);
+                request.extensions_mut().insert(claims.device_id);
                 return Ok(next.run(request).await);
+            } else {
+                return Err(anyhow::anyhow!("Invalid JWT token").into());
             }
         }
 
@@ -148,18 +157,8 @@ impl AuthMiddleware {
             .map_err(|e| anyhow::anyhow!("Failed to read request body: {:?}", e))?;
 
         // Parse the body as InitRequest
-        let init_request = if body_bytes.is_empty() {
-            // If no body provided, use defaults
-            InitRequest {
-                user_agent: "Unknown".to_string(),
-                platform: "Unknown".to_string(),
-                browser: vec!["Unknown".to_string()],
-            }
-        } else {
-            // Try to parse the JSON body
-            serde_json::from_slice::<InitRequest>(&body_bytes)
-                .map_err(|e| anyhow::anyhow!("Failed to parse init request JSON: {:?}", e))?
-        };
+        let init_request = serde_json::from_slice::<InitRequest>(&body_bytes)
+            .map_err(|e| anyhow::anyhow!("Failed to parse init request JSON: {:?}", e))?;
 
         // Reconstruct the request with the same body for downstream handlers
         let reconstructed_body = Body::from(body_bytes);
@@ -186,5 +185,77 @@ impl AuthMiddleware {
         request.extensions_mut().insert(device_id);
 
         Ok(next.run(request).await)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn test_create_jwt_token_empty_device_id() {
+        let device_id = "";
+        let jwt_secret = "test-secret";
+        
+        let result = create_jwt_token(device_id, jwt_secret);
+        assert!(result.is_ok());  // Empty device_id should still create a valid token
+    }
+    
+    #[test]
+    fn test_verify_jwt_token_wrong_secret() {
+        let device_id = "test-device-789";
+        let jwt_secret = "test-secret";
+        let wrong_secret = "wrong-secret";
+        
+        // Create token with correct secret
+        let token = create_jwt_token(device_id, jwt_secret).unwrap();
+        
+        // Try to verify with wrong secret
+        let result = verify_jwt_token(&token, wrong_secret);
+        assert!(result.is_err());
+    }
+    
+    #[test]
+    fn test_verify_jwt_token_malformed() {
+        let jwt_secret = "test-secret";
+        let malformed_token = "not.a.valid.jwt.token";
+        
+        let result = verify_jwt_token(malformed_token, jwt_secret);
+        assert!(result.is_err());
+    }
+    
+    #[test]
+    fn test_verify_jwt_token_empty() {
+        let jwt_secret = "test-secret";
+        let empty_token = "";
+        
+        let result = verify_jwt_token(empty_token, jwt_secret);
+        assert!(result.is_err());
+    }
+    
+    #[test]
+    fn test_jwt_roundtrip() {
+        let device_id = "roundtrip-test-device";
+        let jwt_secret = "roundtrip-secret";
+        
+        // Create token
+        let token = create_jwt_token(device_id, jwt_secret).unwrap();
+        
+        // Verify token and extract claims
+        let claims = verify_jwt_token(&token, jwt_secret).unwrap();
+        
+        // Should get back the original device_id
+        assert_eq!(claims.device_id, device_id);
+    }
+    
+    #[test]
+    fn test_jwt_unicode_characters() {
+        let device_id = "device-测试-🚀";
+        let jwt_secret = "secret-测试-🔐";
+        
+        let token = create_jwt_token(device_id, jwt_secret).unwrap();
+        let claims = verify_jwt_token(&token, jwt_secret).unwrap();
+        
+        assert_eq!(claims.device_id, device_id);
     }
 }

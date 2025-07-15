@@ -117,9 +117,6 @@ impl ThanksRequest {
         if self.pathname.is_empty() {
             return Err("pathname is required".to_string());
         }
-        if self.referrer.is_empty() {
-            return Err("referrer is required".to_string());
-        }
         if self.school.is_empty() {
             return Err("school is required".to_string());
         }
@@ -134,13 +131,9 @@ impl ThanksRequest {
 }
 
 impl UpdatePreferencesRequest {
-    pub fn validate(&self, valid_schools: &[String]) -> Result<(), String> {
+    pub fn validate(&self) -> Result<(), String> {
         if self.theme > 40 {
             return Err("theme must be <= 40".to_string());
-        }
-
-        if !valid_schools.contains(&self.school) {
-            return Err("invalid school".to_string());
         }
 
         if self.period_names.len() > 20 {

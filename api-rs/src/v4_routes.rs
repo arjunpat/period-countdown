@@ -1,13 +1,12 @@
 use axum::{
     Json, Router,
     extract::State,
-    middleware,
     response::Response,
     routing::{get, post},
 };
 use std::collections::HashMap;
 
-use crate::auth::{AuthMiddleware, ClientIp, DeviceId};
+use crate::auth::{ClientIp, DeviceId};
 use crate::database::Hit;
 use crate::google_auth;
 use crate::responses::{AppError, success_response};
@@ -16,21 +15,6 @@ use crate::themes;
 use crate::types::{
     AccountResponse, LoginRequest, ThanksRequest, ThemeResponse, UpdatePreferencesRequest,
 };
-
-// Helper function to get valid school IDs
-async fn get_valid_schools(app_state: &SharedAppState) -> Result<Vec<String>, AppError> {
-    let schools = app_state
-        .school_data_loader
-        .get_schools_directory()
-        .await
-        .map_err(|e| anyhow::anyhow!("Failed to get schools directory: {}", e))?;
-
-    if let Some(schools_obj) = schools.as_object() {
-        Ok(schools_obj.keys().cloned().collect::<Vec<_>>())
-    } else {
-        Ok(vec!["mvhs".to_string()])
-    }
-}
 
 // Helper function to parse user JSON fields safely
 fn parse_user_data(
@@ -65,7 +49,6 @@ pub fn create_v4_router() -> Router<SharedAppState> {
         .route("/error", post(error_handler))
         .route("/update-preferences", post(update_preferences_handler))
         .route("/notif-on", post(notif_on_handler))
-        .layer(middleware::from_fn(AuthMiddleware::authenticate))
 }
 
 async fn init_handler() -> Result<Response, AppError> {
@@ -84,7 +67,6 @@ async fn account_handler(
         .ok_or_else(|| anyhow::anyhow!("User not found for device: {}", device_id))?;
 
     let admin_emails = &app_state.config.admin_emails;
-    let valid_schools = get_valid_schools(&app_state).await?;
     let (period_names, rooms) = parse_user_data(&user);
 
     // Validate theme
@@ -98,8 +80,12 @@ async fn account_handler(
         0
     };
 
-    let school = if valid_schools.contains(&user.school.clone().unwrap_or_default()) {
-        user.school.unwrap_or_else(|| "mvhs".to_string())
+    let school = if app_state
+        .school_data_loader
+        .is_valid_school(&user.school.clone().unwrap_or_default())
+        .await
+    {
+        user.school.unwrap()
     } else {
         "mvhs".to_string()
     };
@@ -181,7 +167,7 @@ async fn thanks_handler(
         .map_err(|e| anyhow::anyhow!("Thanks request validation failed: {:?}", e))?;
 
     let hit = Hit {
-        time: chrono::Utc::now().timestamp_millis(),
+        time: chrono::Utc::now().timestamp_millis() as u64,
         device_id: Some(device_id),
         leave_time: None,
         ip,
@@ -245,12 +231,12 @@ async fn update_preferences_handler(
     State(app_state): State<SharedAppState>,
     Json(prefs_req): Json<UpdatePreferencesRequest>,
 ) -> Result<Response, AppError> {
-    let valid_schools = get_valid_schools(&app_state).await?;
-
     // Validate request
     prefs_req
-        .validate(&valid_schools)
+        .validate()
         .map_err(|e| anyhow::anyhow!("Preferences validation failed: {:?}", e))?;
+
+
 
     // Sanitize rooms
     let good_rooms = prefs_req.sanitize_rooms();

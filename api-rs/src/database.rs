@@ -10,18 +10,18 @@ use crate::config::AppConfig;
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Device {
     pub device_id: String,
-    pub time: i64,
+    pub time: u64,
     pub platform: Option<String>,
     pub browser: Option<String>,
     pub user_agent: Option<String>,
     pub registered_to: Option<String>,
-    pub time_registered: Option<i64>,
+    pub time_registered: Option<u64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct User {
     pub email: String,
-    pub time: i64,
+    pub time: u64,
     pub first_name: Option<String>,
     pub last_name: Option<String>,
     pub profile_pic: Option<String>,
@@ -33,9 +33,9 @@ pub struct User {
 
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Hit {
-    pub time: i64,
+    pub time: u64,
     pub device_id: Option<String>,
-    pub leave_time: Option<i64>,
+    pub leave_time: Option<u64>,
     pub ip: Option<String>,
     pub pathname: Option<String>,
     pub referrer: Option<String>,
@@ -63,7 +63,7 @@ pub struct Event {
 #[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Error {
     pub db_id: Option<u16>,
-    pub time: i64,
+    pub time: u64,
     pub device_id: Option<String>,
     pub error: Option<String>,
 }
@@ -113,7 +113,7 @@ impl Database {
         user_agent: Option<String>,
     ) -> Result<String, sqlx::Error> {
         let device_id = generate_id(10);
-        let time = chrono::Utc::now().timestamp_millis();
+        let time = chrono::Utc::now().timestamp_millis() as u64;
 
         sqlx::query(
             "INSERT INTO devices (device_id, time, platform, browser, user_agent) VALUES (?, ?, ?, ?, ?)"

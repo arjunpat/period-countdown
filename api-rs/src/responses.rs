@@ -53,6 +53,7 @@ pub fn success_response<T: Serialize>(data: T) -> Response {
 }
 
 // Custom error type that wraps anyhow::Error and implements IntoResponse
+#[derive(Debug)]
 pub struct AppError(anyhow::Error);
 
 impl From<anyhow::Error> for AppError {

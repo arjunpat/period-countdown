@@ -7,7 +7,7 @@ pub async fn validate_google_token(
 ) -> Result<GoogleTokenInfo, Box<dyn std::error::Error + Send + Sync>> {
     let client = Client::new();
     let url = format!(
-        "https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}",
+        "https://www.googleapis.com/oauth2/v3/userinfo?access_token={}",
         token
     );
 
@@ -18,6 +18,8 @@ pub async fn validate_google_token(
     }
 
     let token_info: Value = response.json().await?;
+
+    println!("{:#?}", token_info);
 
     // Validate required fields exist
     let email = token_info

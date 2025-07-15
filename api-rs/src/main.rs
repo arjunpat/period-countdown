@@ -1,4 +1,7 @@
-use axum::http::{Method, header};
+use axum::{
+    http::{Method, header},
+    middleware,
+};
 use dotenvy::dotenv;
 use std::sync::Arc;
 use tokio::net::TcpListener;
@@ -27,6 +30,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Load configuration from environment variables
     let config = AppConfig::from_env().map_err(|e| anyhow::anyhow!(e))?;
+    println!("{:#?}", config);
     println!("Starting server with configuration loaded");
 
     // Create database connection with config
@@ -46,11 +50,17 @@ async fn main() -> anyhow::Result<()> {
     });
 
     let cors = CorsLayer::new()
-        .allow_origin([
-            "http://localhost:8080".parse().unwrap(),
-            "https://periods.io".parse().unwrap(),
-            "https://account.periods.io".parse().unwrap(),
-        ])
+        .allow_origin(if app_state.config.is_production {
+            vec![
+                "https://periods.io".parse().unwrap(),
+                "https://account.periods.io".parse().unwrap(),
+            ]
+        } else {
+            vec![
+                "http://localhost:8080".parse().unwrap(),
+                "http://localhost:8082".parse().unwrap(),
+            ]
+        })
         .allow_methods([
             Method::GET,
             Method::POST,
@@ -68,10 +78,13 @@ async fn main() -> anyhow::Result<()> {
     // Create main router with existing routes
     let main_router = routes::create_router();
 
-    // Create v4 router
-    let v4_router = v4_routes::create_v4_router();
+    // Create v4 router with auth middleware
+    let v4_router = v4_routes::create_v4_router().layer(middleware::from_fn_with_state(
+        app_state.clone(),
+        auth::AuthMiddleware::authenticate,
+    ));
 
-    // Combine routers
+    // Combine routers and apply state
     let app = main_router
         .nest("/v4", v4_router)
         .with_state(app_state.clone())
