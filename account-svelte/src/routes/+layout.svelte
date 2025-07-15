@@ -1,10 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
-	import { loadUser, setAccount } from '../lib/store';
+	import { loadUser } from '../lib/store';
 	import { admin, profile_pic } from '../lib/store';
 	import { post } from '../lib/api';
 	import { getClientInformation } from '../../../common';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import '../app.css';
 
 	onMount(async () => {
@@ -13,7 +14,7 @@
 		goto('/settings');
 		if (accessTokenLocation > -1) {
 			let accessToken = window.location.href.substring(accessTokenLocation + 13);
-			window.history.replaceState(null, "", window.location.pathname);
+			window.history.replaceState(null, '', window.location.pathname);
 
 			console.log(accessToken);
 
@@ -22,12 +23,11 @@
 			}
 
 			await post('/v4/init', getClientInformation());
-			let res = await post('/v4/login', {
+			await post('/v4/login', {
 				google_token: accessToken
 			});
-
 		}
-		
+
 		loadUser();
 	});
 </script>
@@ -35,11 +35,16 @@
 <div id="nav-links">
 	<div>
 		{#if $admin}
-			<a href="/admin/analytics">Analytics</a>
-			<a href="/admin/chart">Chart</a>
+			<a
+				href="/admin/analytics"
+				class:router-link-active={$page.url.pathname === '/admin/analytics'}>Analytics</a
+			>
+			<a href="/admin/chart" class:router-link-active={$page.url.pathname === '/admin/chart'}
+				>Chart</a
+			>
 		{/if}
-		<a href="/settings">Settings</a>
-		<a href="/logout">Logout</a>
+		<a href="/settings" class:router-link-active={$page.url.pathname === '/settings'}>Settings</a>
+		<a href="/logout" class:router-link-active={$page.url.pathname === '/logout'}>Logout</a>
 	</div>
 	<img id="profile-pic" src={$profile_pic} alt="" />
 </div>
@@ -73,6 +78,12 @@
 	#nav-links > div > a:hover {
 		text-decoration: underline;
 		text-decoration-color: rgba(241, 116, 0, 1);
+	}
+
+	:global(.router-link-active) {
+		text-decoration: underline !important;
+		text-decoration-color: rgba(241, 116, 0, 1) !important;
+		font-weight: bold;
 	}
 
 	#profile-pic {
