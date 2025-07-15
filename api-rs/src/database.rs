@@ -380,4 +380,428 @@ impl Database {
 
         Ok(())
     }
+
+    // Analytics operations for admin routes
+
+    // Get timestamps for bucketing
+    pub async fn get_timestamps_for_table(
+        &self,
+        table: &str,
+        from: u64,
+        to: u64,
+    ) -> Result<Vec<u64>, sqlx::Error> {
+        let query_str = format!(
+            "SELECT time FROM {} WHERE time > ? AND time < ? ORDER BY time ASC",
+            table
+        );
+        let rows = sqlx::query(&query_str)
+            .bind(from)
+            .bind(to)
+            .fetch_all(&self.pool)
+            .await?;
+
+        let timestamps: Result<Vec<u64>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| row.try_get::<u64, _>("time"))
+            .collect();
+        let timestamps = timestamps?;
+
+        Ok(timestamps)
+    }
+
+    // Column statistics helper
+    pub async fn col_stats(
+        &self,
+        table: &str,
+        column: &str,
+        from: u64,
+        to: u64,
+    ) -> Result<Value, sqlx::Error> {
+        let query_str = format!(
+            "SELECT MAX({}) AS max, MIN({}) AS min, CAST(AVG({}) AS DOUBLE) AS avg, CAST(STD({}) AS DOUBLE) as std FROM {} WHERE time > ? AND time < ?",
+            column, column, column, column, table
+        );
+
+        let row = sqlx::query(&query_str)
+            .bind(from)
+            .bind(to)
+            .fetch_one(&self.pool)
+            .await?;
+
+        let max: Option<u16> = row.try_get("max")?;
+        let min: Option<u16> = row.try_get("min")?;
+        let avg: Option<f64> = row.try_get("avg")?;
+        let std: Option<f64> = row.try_get("std")?;
+
+        Ok(serde_json::json!({
+            "max": max,
+            "min": min,
+            "avg": avg,
+            "std": std
+        }))
+    }
+
+    // Generic popular column values helper
+    pub async fn col_popular<T>(
+        &self,
+        table: &str,
+        column: &str,
+        limit: u32,
+        from: u64,
+        to: u64,
+    ) -> Result<Vec<Value>, sqlx::Error>
+    where
+        T: for<'r> sqlx::Decode<'r, sqlx::MySql> + sqlx::Type<sqlx::MySql> + serde::Serialize,
+    {
+        let query_str = format!(
+            "SELECT {} as value, COUNT(*) AS count FROM {} WHERE time > ? AND time < ? GROUP BY value ORDER BY count DESC LIMIT {}",
+            column, table, limit
+        );
+
+        let rows = sqlx::query(&query_str)
+            .bind(from)
+            .bind(to)
+            .fetch_all(&self.pool)
+            .await?;
+
+        let results: Result<Vec<Value>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| {
+                let count: i64 = row.try_get("count")?;
+                let value: Option<T> = row.try_get("value")?;
+
+                Ok(serde_json::json!({
+                    "value": value,
+                    "count": count
+                }))
+            })
+            .collect();
+        let results = results?;
+
+        Ok(results)
+    }
+
+    // Hits analytics
+    pub async fn get_hits_count(&self, from: u64, to: u64) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM hits WHERE time > ? AND time < ?")
+            .bind(from)
+            .bind(to)
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_hits_from_users_count(&self, from: u64, to: u64) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query(
+            "SELECT COUNT(*) as count FROM hits WHERE time > ? AND time < ? AND device_id IN (SELECT device_id FROM devices WHERE registered_to IS NOT NULL)"
+        )
+        .bind(from)
+        .bind(to)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_unique_devices_count(&self, from: u64, to: u64) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query(
+            "SELECT COUNT(DISTINCT device_id) as count FROM hits WHERE time > ? AND time < ?",
+        )
+        .bind(from)
+        .bind(to)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_unique_users_in_hits(
+        &self,
+        from: u64,
+        to: u64,
+    ) -> Result<Vec<User>, sqlx::Error> {
+        let users = sqlx::query_as::<_, User>(
+            "SELECT * FROM users WHERE email IN (SELECT registered_to FROM devices WHERE device_id IN (SELECT device_id FROM hits WHERE time > ? AND time < ?))"
+        )
+        .bind(from)
+        .bind(to)
+        .fetch_all(&self.pool)
+        .await?;
+
+        Ok(users)
+    }
+
+    pub async fn get_top_devices_in_hits(
+        &self,
+        from: u64,
+        to: u64,
+    ) -> Result<Vec<Value>, sqlx::Error> {
+        let rows = sqlx::query(
+            "SELECT a.device_id, b.platform, b.browser, COUNT(a.device_id) as count, b.first_name, b.last_name, b.registered_to 
+             FROM hits a LEFT JOIN (
+                 SELECT c.device_id, c.registered_to, c.platform, c.browser, d.first_name, d.last_name 
+                 FROM devices c LEFT JOIN users d ON c.registered_to = d.email
+             ) b ON a.device_id = b.device_id 
+             WHERE time > ? AND time < ? 
+             GROUP BY a.device_id 
+             ORDER BY count DESC LIMIT 10"
+        )
+        .bind(from)
+        .bind(to)
+        .fetch_all(&self.pool)
+        .await?;
+
+        let results: Result<Vec<Value>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| {
+                Ok(serde_json::json!({
+                    "device_id": row.try_get::<Option<String>, _>("device_id")?,
+                    "platform": row.try_get::<Option<String>, _>("platform")?,
+                    "browser": row.try_get::<Option<String>, _>("browser")?,
+                    "count": row.try_get::<i64, _>("count")?,
+                    "first_name": row.try_get::<Option<String>, _>("first_name")?,
+                    "last_name": row.try_get::<Option<String>, _>("last_name")?,
+                    "registered_to": row.try_get::<Option<String>, _>("registered_to")?
+                }))
+            })
+            .collect();
+        let results = results?;
+
+        Ok(results)
+    }
+
+    // Devices analytics
+    pub async fn get_devices_count(&self, from: u64, to: u64) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM devices WHERE time > ? AND time < ?")
+            .bind(from)
+            .bind(to)
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_devices_registered_count(
+        &self,
+        from: u64,
+        to: u64,
+    ) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM devices WHERE time_registered > ? AND time_registered < ?")
+            .bind(from)
+            .bind(to)
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    // Errors analytics
+    pub async fn get_errors_in_range(&self, from: u64, to: u64) -> Result<Vec<Error>, sqlx::Error> {
+        let errors = sqlx::query_as::<_, Error>("SELECT * FROM errors WHERE time > ? AND time < ?")
+            .bind(from)
+            .bind(to)
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(errors)
+    }
+
+    // Events analytics
+    pub async fn get_events_count(&self, from: u64, to: u64) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM events WHERE time > ? AND time < ?")
+            .bind(from)
+            .bind(to)
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_events_count_by_type(
+        &self,
+        event_type: &str,
+        from: u64,
+        to: u64,
+    ) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query(
+            "SELECT COUNT(*) as count FROM events WHERE event = ? AND time > ? AND time < ?",
+        )
+        .bind(event_type)
+        .bind(from)
+        .bind(to)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    // Users analytics
+    pub async fn get_users_in_range(&self, from: u64, to: u64) -> Result<Vec<User>, sqlx::Error> {
+        let users = sqlx::query_as::<_, User>("SELECT * FROM users WHERE time > ? AND time < ?")
+            .bind(from)
+            .bind(to)
+            .fetch_all(&self.pool)
+            .await?;
+
+        Ok(users)
+    }
+
+    // Total statistics (no time range)
+    pub async fn get_total_hits_count(&self) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM hits")
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_total_devices_count(&self) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM devices")
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_total_devices_registered_count(&self) -> Result<i64, sqlx::Error> {
+        let row =
+            sqlx::query("SELECT COUNT(*) as count FROM devices WHERE registered_to IS NOT NULL")
+                .fetch_one(&self.pool)
+                .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_total_devices_platform_stats(&self) -> Result<Vec<Value>, sqlx::Error> {
+        let rows = sqlx::query("SELECT platform as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let results: Result<Vec<Value>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| {
+                let count: i64 = row.try_get("count")?;
+
+                let value: Option<String> = row.try_get("value")?;
+                let value = match value {
+                    Some(v) => serde_json::Value::String(v),
+                    None => serde_json::Value::Null,
+                };
+
+                Ok(serde_json::json!({
+                    "value": value,
+                    "count": count
+                }))
+            })
+            .collect();
+        let results = results?;
+
+        Ok(results)
+    }
+
+    pub async fn get_total_devices_browser_stats(&self) -> Result<Vec<Value>, sqlx::Error> {
+        let rows = sqlx::query("SELECT browser as value, COUNT(*) AS count FROM devices GROUP BY value ORDER BY count DESC LIMIT 18")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let results: Result<Vec<Value>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| {
+                let count: i64 = row.try_get("count")?;
+
+                let value: Option<String> = row.try_get("value")?;
+                let value = match value {
+                    Some(v) => serde_json::Value::String(v),
+                    None => serde_json::Value::Null,
+                };
+
+                Ok(serde_json::json!({
+                    "value": value,
+                    "count": count
+                }))
+            })
+            .collect();
+        let results = results?;
+
+        Ok(results)
+    }
+
+    pub async fn get_total_errors_count(&self) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM errors")
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_total_events_count(&self) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM events")
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_total_users_count(&self) -> Result<i64, sqlx::Error> {
+        let row = sqlx::query("SELECT COUNT(*) as count FROM users")
+            .fetch_one(&self.pool)
+            .await?;
+
+        Ok(row.try_get("count")?)
+    }
+
+    pub async fn get_total_users_theme_stats(&self) -> Result<Vec<Value>, sqlx::Error> {
+        let rows = sqlx::query("SELECT theme as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let results: Result<Vec<Value>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| {
+                let count: i64 = row.try_get("count")?;
+
+                let value: Option<u8> = row.try_get("value")?;
+                let value = match value {
+                    Some(v) => serde_json::Value::Number(v.into()),
+                    None => serde_json::Value::Null,
+                };
+
+                Ok(serde_json::json!({
+                    "value": value,
+                    "count": count
+                }))
+            })
+            .collect();
+        let results = results?;
+
+        Ok(results)
+    }
+
+    pub async fn get_total_users_school_stats(&self) -> Result<Vec<Value>, sqlx::Error> {
+        let rows = sqlx::query("SELECT school as value, COUNT(*) AS count FROM users GROUP BY value ORDER BY count DESC LIMIT 18")
+            .fetch_all(&self.pool)
+            .await?;
+
+        let results: Result<Vec<Value>, sqlx::Error> = rows
+            .into_iter()
+            .map(|row| {
+                let count: i64 = row.try_get("count")?;
+
+                let value: Option<String> = row.try_get("value")?;
+                let value = match value {
+                    Some(v) => serde_json::Value::String(v),
+                    None => serde_json::Value::Null,
+                };
+
+                Ok(serde_json::json!({
+                    "value": value,
+                    "count": count
+                }))
+            })
+            .collect();
+        let results = results?;
+
+        Ok(results)
+    }
 }

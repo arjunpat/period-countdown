@@ -8,6 +8,7 @@ use tokio::net::TcpListener;
 use tower_cookies::CookieManagerLayer;
 use tower_http::cors::CorsLayer;
 
+mod admin_routes;
 mod auth;
 mod config;
 mod database;
@@ -78,11 +79,24 @@ async fn main() -> anyhow::Result<()> {
     // Create main router with existing routes
     let main_router = routes::create_router();
 
-    // Create v4 router with auth middleware
-    let v4_router = v4_routes::create_v4_router().layer(middleware::from_fn_with_state(
-        app_state.clone(),
-        auth::AuthMiddleware::authenticate,
-    ));
+    // Create admin router with auth and admin middleware
+    let admin_router = admin_routes::create_admin_router()
+        .layer(middleware::from_fn_with_state(
+            app_state.clone(),
+            admin_routes::admin_middleware,
+        ))
+        .layer(middleware::from_fn_with_state(
+            app_state.clone(),
+            auth::AuthMiddleware::authenticate,
+        ));
+
+    // Create v4 router with auth middleware and nest admin routes under it
+    let v4_router = v4_routes::create_v4_router()
+        .nest("/admin", admin_router)
+        .layer(middleware::from_fn_with_state(
+            app_state.clone(),
+            auth::AuthMiddleware::authenticate,
+        ));
 
     // Combine routers and apply state
     let app = main_router

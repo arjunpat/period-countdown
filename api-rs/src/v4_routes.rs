@@ -236,8 +236,6 @@ async fn update_preferences_handler(
         .validate()
         .map_err(|e| anyhow::anyhow!("Preferences validation failed: {:?}", e))?;
 
-
-
     // Sanitize rooms
     let good_rooms = prefs_req.sanitize_rooms();
 
