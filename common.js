@@ -43,7 +43,7 @@ export function post(url, json) {
 export function getClientInformation() {
   let ua = window.navigator.userAgent;
   let chrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-  let int_exp = /*@cc_on!@*/false || !!document.documentMode;
+  let int_exp = !!document.documentMode;
 
   let temp = {
     chrome,
@@ -60,7 +60,7 @@ export function getClientInformation() {
   let browser = [];
 
   for (let val in temp)
-    if (temp.hasOwnProperty(val) && temp[val] === true)
+    if (Object.prototype.hasOwnProperty.call(temp, val) && temp[val] === true)
       browser.push(val);
 
   return {
