@@ -11,7 +11,7 @@
           <br>
           <span>School: {{ user.school || 'null' }}</span><br>
           <span>Theme: {{ user.theme || 'null' }}</span><br>
-          <code v-html="textToHTML(user.period_names)"></code>
+          <code v-html="jsonToHTML(user.period_names)"></code>
         </div>
       </div>
     </div>
@@ -23,7 +23,8 @@
 export default {
   props: ['title', 'users'],
   methods: {
-    textToHTML(text) {
+    jsonToHTML(json) {
+      let text = JSON.stringify(json);
       if (!text) {
         return 'null';
       }
