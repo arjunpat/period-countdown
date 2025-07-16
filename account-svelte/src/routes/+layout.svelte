@@ -3,7 +3,7 @@
 	import { loadUser } from '../lib/store';
 	import { admin, profile_pic } from '../lib/store';
 	import { post } from '../lib/api';
-	import { getClientInformation } from '../../../common';
+	import { getClientInformation, isProd } from '../../../common';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import '../app.css';
@@ -34,6 +34,9 @@
 
 <div id="nav-links">
 	<div>
+		{#if !$admin}
+			<a href={isProd ? 'https://periods.io' : 'http://localhost:8080'}>Back to periods.io</a>
+		{/if}
 		{#if $admin}
 			<a
 				href="/admin/analytics"
@@ -42,8 +45,8 @@
 			<a href="/admin/chart" class:router-link-active={$page.url.pathname === '/admin/chart'}
 				>Chart</a
 			>
+			<a href="/settings" class:router-link-active={$page.url.pathname === '/settings'}>Settings</a>
 		{/if}
-		<a href="/settings" class:router-link-active={$page.url.pathname === '/settings'}>Settings</a>
 		<a href="/logout" class:router-link-active={$page.url.pathname === '/logout'}>Logout</a>
 	</div>
 	<img id="profile-pic" src={$profile_pic} alt="" />

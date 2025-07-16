@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { saveSettings } from '../../store';
 	import { onMount, onDestroy } from 'svelte';
 
@@ -12,7 +12,7 @@
 		}, 2000);
 	}
 
-	function handleKeydown(event) {
+	function handleKeydown(event: KeyboardEvent) {
 		if ((event.ctrlKey || event.metaKey) && event.key === 's') {
 			event.preventDefault();
 			save();

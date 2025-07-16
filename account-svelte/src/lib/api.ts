@@ -1,7 +1,7 @@
 const isProd = window.location.origin.includes('periods.io');
 const serverHost = isProd ? 'https://api.periods.io' : 'http://localhost:8081';
 
-async function get(url) {
+async function get(url: string): Promise<any> {
 	if (!url.includes('http')) {
 		url = serverHost + url;
 	}
@@ -20,7 +20,7 @@ async function get(url) {
 	return json;
 }
 
-async function post(url, json) {
+async function post(url: string, json: any): Promise<any> {
 	if (!url.includes('http')) {
 		url = serverHost + url;
 	}
@@ -53,7 +53,7 @@ async function loadThemes() {
 	return await get('/themes');
 }
 
-async function loadPeriods(school) {
+async function loadPeriods(school: string) {
 	return await get(`/periods/${school}`);
 }
 

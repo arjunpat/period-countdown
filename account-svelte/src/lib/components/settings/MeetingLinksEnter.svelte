@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 	import { periods, school, loadPeriods } from '../../store';
 	import MeetingLinkInput from './MeetingLinkInput.svelte';
 
-	let columns = [];
+	let columns: string[][] = [];
 
 	$: {
 		if ($school) {
@@ -51,10 +51,6 @@
 	}
 
 	@media only screen and (max-width: 500px) {
-		.margin-top {
-			height: 35px;
-		}
-
 		.container {
 			display: block;
 		}

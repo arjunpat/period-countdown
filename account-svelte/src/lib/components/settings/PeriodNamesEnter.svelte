@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 	import { periods, school, loadPeriods } from '../../store';
 	import PeriodNameInput from './PeriodNameInput.svelte';
 
-	let columns = [];
+	let columns: string[][] = [];
 
 	$: {
 		if ($school) {

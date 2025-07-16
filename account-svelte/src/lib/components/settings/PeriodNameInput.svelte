@@ -1,14 +1,14 @@
-<script>
+<script lang="ts">
 	import { periodNames, setPeriodName } from '../../store';
 	import { onMount } from 'svelte';
 
-	export let periodName;
+	export let periodName: string;
 
 	let id = Math.random().toString(36).substring(7);
 	let isFree = false;
 	let value = '';
 
-	function isFreePeriod(name) {
+	function isFreePeriod(name: string) {
 		if (typeof name !== 'string') return false;
 		name = name.trim().toLowerCase();
 		return ['free', 'none', 'nothin'].some((a) => name.includes(a));

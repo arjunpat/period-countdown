@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 	import { meetingLinks, setMeetingLink } from '../../store';
 	import { onMount } from 'svelte';
 
-	export let periodName;
+	export let periodName: string;
 
 	let id = Math.random().toString(36).substring(7);
 	let validUrl = true;

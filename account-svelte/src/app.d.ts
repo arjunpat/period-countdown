@@ -8,6 +8,27 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 	}
+
+	interface Window {
+		chrome?: {
+			webstore?: any;
+			runtime?: any;
+		};
+		StyleMedia?: any;
+		safari?: any;
+		opr?: {
+			addons?: any;
+		};
+		opera?: any;
+	}
+
+	interface Document {
+		documentMode?: any;
+	}
+
+	declare var safari: any;
+	declare var InstallTrigger: any;
+	declare var opr: any;
 }
 
 export {};

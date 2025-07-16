@@ -6,17 +6,17 @@ export const email = writable('');
 export const profile_pic = writable('');
 export const school = writable('');
 export const admin = writable(false);
-export const periods = writable([]);
+export const periods = writable<string[]>([]);
 export const schools = writable([]);
 export const themes = writable([]);
 export const themeNum = writable(0);
 export const first_name = writable('');
 export const last_name = writable('');
-export const meetingLinks = writable({});
-export const periodNames = writable({});
+export const meetingLinks = writable<Record<string, string>>({});
+export const periodNames = writable<Record<string, string>>({});
 export const loading = writable(true);
 
-export function setAccount(data) {
+export function setAccount(data: any) {
 	email.set(data.email || '');
 	profile_pic.set(data.profile_pic || '');
 	school.set(data.school || '');
@@ -26,7 +26,7 @@ export function setAccount(data) {
 	last_name.set(data.last_name || '');
 
 	// Handle meeting links from rooms
-	const newMeetingLinks = {};
+	const newMeetingLinks: Record<string, string> = {};
 	if (data.rooms) {
 		for (const key in data.rooms) {
 			if (data.rooms[key] && data.rooms[key].type === 'url') {
@@ -58,7 +58,7 @@ export async function loadUser() {
 	}
 }
 
-export async function loadPeriods(schoolName) {
+export async function loadPeriods(schoolName: string) {
 	if (!schoolName) return;
 	const res = await get(`/periods/${schoolName}`);
 	periods.set(res);
@@ -74,14 +74,14 @@ export async function loadThemes() {
 	themes.set(res);
 }
 
-export function setPeriodName(periodName, value) {
+export function setPeriodName(periodName: string, value: string) {
 	periodNames.update((names) => ({
 		...names,
 		[periodName]: value
 	}));
 }
 
-export function setMeetingLink(periodName, url) {
+export function setMeetingLink(periodName: string, url: string) {
 	meetingLinks.update((links) => {
 		const newLinks = { ...links };
 		if (url && url.trim()) {
@@ -93,11 +93,11 @@ export function setMeetingLink(periodName, url) {
 	});
 }
 
-export function setSchool(schoolName) {
+export function setSchool(schoolName: string) {
 	school.set(schoolName);
 }
 
-export function setThemeNum(themeNumber) {
+export function setThemeNum(themeNumber: number) {
 	themeNum.set(themeNumber);
 }
 
@@ -117,7 +117,7 @@ export async function saveSettings() {
 			}
 		}
 
-		const rooms = {};
+		const rooms: Record<string, { type: string; url: string }> = {};
 		for (const key in $meetingLinks) {
 			rooms[key] = {
 				type: 'url',
