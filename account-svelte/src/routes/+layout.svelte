@@ -11,7 +11,6 @@
 	onMount(async () => {
 		// Handle OAuth callback
 		let accessTokenLocation = window.location.href.indexOf('access_token=');
-		goto('/settings');
 		if (accessTokenLocation > -1) {
 			let accessToken = window.location.href.substring(accessTokenLocation + 13);
 			window.history.replaceState(null, '', window.location.pathname);
@@ -26,6 +25,9 @@
 			await post('/v4/login', {
 				google_token: accessToken
 			});
+			
+			// Redirect to settings after successful OAuth
+			goto('/settings');
 		}
 
 		loadUser();
@@ -49,7 +51,7 @@
 		{/if}
 		<a href="/logout" class:router-link-active={$page.url.pathname === '/logout'}>Logout</a>
 	</div>
-	<img id="profile-pic" src={$profile_pic} alt="" />
+	<img id="profile-pic" src={$profile_pic} alt="" on:click={() => goto('/profile')} />
 </div>
 
 <slot />
