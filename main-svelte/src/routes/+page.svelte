@@ -45,11 +45,6 @@
 		setTimeout(() => {
 			preloaderRef.hidePreloader();
 		}, 250);
-
-		// Cleanup on component destroy
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
 	});
 </script>
 

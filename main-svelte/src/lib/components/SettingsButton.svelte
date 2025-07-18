@@ -1,22 +1,15 @@
 <script lang="ts">
 	import { preferences } from '$lib/stores/preferences';
-
+	import { isProd } from '../../../../common.js';
 	const theme = $derived($preferences.theme);
 	const screenWidth = $derived($preferences.screenWidth);
 
-	// Extract last color from gradient (original logic)
 	const iconColor = $derived(theme.b.substring(theme.b.lastIndexOf('#'), theme.b.lastIndexOf(')')));
-
-	// Responsive calculations from original updateScreenDimensions
-	// Settings button padding: Math.min(45, dimension / 18)
 	const buttonPadding = $derived(Math.min(45, screenWidth / 18));
-
-	// Inner div padding: Math.min(18, dimension / 28)
 	const innerPadding = $derived(Math.min(18, screenWidth / 28));
 
 	function handleSettingsClick() {
-		// Mock settings click action
-		console.log('Mock settings click');
+		window.location.href = isProd ? 'https://account.periods.io/settings' : 'http://localhost:8082/settings';
 	}
 </script>
 
@@ -39,13 +32,13 @@
 		bottom: 0;
 		right: 0;
 		position: fixed;
-		padding: 45px; /* Default fallback */
+		padding: 45px;
 		user-select: none;
 	}
 
 	#settings-button > div {
 		border-radius: 50%;
-		padding: 18px; /* Default fallback */
+		padding: 18px;
 		cursor: pointer;
 		box-shadow:
 			0 6px 10px 0 rgba(0, 0, 0, 0.14),
@@ -70,7 +63,6 @@
 		user-select: none;
 	}
 
-	/* Extension styles */
 	@media only screen and (width: 400px) and (height: 400px) {
 		#settings-button {
 			padding: 20px;

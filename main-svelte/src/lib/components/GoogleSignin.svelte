@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { preferences } from '$lib/stores/preferences';
 	import { getSignInUrl, openAccountSettings } from '$lib/services/auth';
+	import { isProd } from '../../../../common.js';
 	
 	// Reactive authentication state
 	const isLoggedIn = $derived(!!$preferences.googleAccount);
@@ -17,7 +18,7 @@
 	}
 	
 	function handleProfileClick() {
-		openAccountSettings();
+		window.location.href = isProd ? 'https://account.periods.io/settings' : 'http://localhost:8082/settings';
 	}
 </script>
 

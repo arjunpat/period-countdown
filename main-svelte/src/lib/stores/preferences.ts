@@ -21,7 +21,7 @@ export interface Preferences {
 	googleAccount?: GoogleAccount;
 	periodNames?: Record<string, string>;
 	school?: string;
-	rooms?: Record<string, any>;
+	rooms?: Record<string, { type: string; url: string }>;
 }
 
 const defaultPreferences: Preferences = {
@@ -59,7 +59,16 @@ export function updateScreenDimensions(width: number, height: number) {
 	}));
 }
 
-export function setGoogleAccount(data: any) {
+export function setGoogleAccount(data: {
+	first_name: string;
+	last_name: string;
+	profile_pic: string;
+	email: string;
+	period_names: Record<string, string>;
+	theme: Theme;
+	school: string;
+	rooms: Record<string, { type: string; url: string }>;
+}) {
 	preferences.update((prefs) => ({
 		...prefs,
 		googleAccount: {
@@ -83,4 +92,10 @@ export function clearAuth() {
 		school: undefined,
 		rooms: undefined
 	}));
+}
+
+export function clearAll() {
+	if (typeof window !== 'undefined') {
+		localStorage.clear();
+	}
 }

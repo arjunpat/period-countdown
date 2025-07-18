@@ -5,13 +5,14 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
-	preprocess: vitePreprocess(),
+	// preprocess: vitePreprocess(),
 
 	kit: {
 		// Use static adapter for single-page app deployment
-		adapter: adapter({
-			fallback: 'index.html'
-		})
+		adapter: adapter(),
+		prerender: {
+      entries: ['*'],
+    }
 	}
 };
 
